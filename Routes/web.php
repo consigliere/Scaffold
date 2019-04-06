@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 3/11/19 7:21 PM
+ * Last modified 4/6/19 9:58 AM
  */
 
 /**
@@ -21,5 +21,8 @@
 */
 
 Route::prefix('scaffold')->group(function() {
-    Route::get('/', 'ScaffoldController@index');
+    // Route::get('/', 'ScaffoldController@index');
+    Route::get('/', function() {
+        return redirect()->route('voyager.login');
+    })->name('login');
 });
