@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 3/11/19 7:21 PM
+ * Last modified 4/9/19 1:26 PM
  */
 
 /**
@@ -11,8 +11,8 @@
 
 namespace App\Components\Scaffold\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
+use Illuminate\Support\ServiceProvider;
 
 class ScaffoldServiceProvider extends ServiceProvider
 {
@@ -35,6 +35,15 @@ class ScaffoldServiceProvider extends ServiceProvider
         $this->registerViews();
         $this->registerFactories();
         $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
+
+        $dispatcher = $this->app->make('events');
+
+        $dispatcher->subscribe(\App\Components\Scaffold\Listeners\UserEventSubscriber::class);
+        $dispatcher->subscribe(\App\Components\Scaffold\Listeners\RoleEventSubscriber::class);
+        $dispatcher->subscribe(\App\Components\Scaffold\Listeners\PermissionEventSubscriber::class);
+        $dispatcher->subscribe(\App\Components\Scaffold\Listeners\V1\UserEventSubscriber::class);
+        $dispatcher->subscribe(\App\Components\Scaffold\Listeners\V1\RoleEventSubscriber::class);
+        $dispatcher->subscribe(\App\Components\Scaffold\Listeners\V1\PermissionEventSubscriber::class);
     }
 
     /**
@@ -45,6 +54,30 @@ class ScaffoldServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->register(RouteServiceProvider::class);
+
+        $this->app->bind(\App\Components\Scaffold\Repositories\UserRepositoryInterface::class, function($app) {
+            return new \App\Components\Scaffold\Repositories\User\UserRepository();
+        });
+
+        $this->app->bind(\App\Components\Scaffold\Repositories\RoleRepositoryInterface::class, function($app) {
+            return new \App\Components\Scaffold\Repositories\Role\RoleRepository();
+        });
+
+        $this->app->bind(\App\Components\Scaffold\Repositories\PermissionRepositoryInterface::class, function($app) {
+            return new \App\Components\Scaffold\Repositories\Permission\PermissionRepository();
+        });
+
+        $this->app->bind(\App\Components\Scaffold\Repositories\V1\UserRepositoryInterface::class, function($app) {
+            return new \App\Components\Scaffold\Repositories\V1\User\UserRepository();
+        });
+
+        $this->app->bind(\App\Components\Scaffold\Repositories\V1\RoleRepositoryInterface::class, function($app) {
+            return new \App\Components\Scaffold\Repositories\V1\Role\RoleRepository();
+        });
+
+        $this->app->bind(\App\Components\Scaffold\Repositories\V1\PermissionRepositoryInterface::class, function($app) {
+            return new \App\Components\Scaffold\Repositories\V1\Permission\PermissionRepository();
+        });
     }
 
     /**
