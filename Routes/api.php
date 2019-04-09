@@ -1,15 +1,13 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 3/11/19 7:21 PM
+ * Last modified 4/9/19 1:42 PM
  */
 
 /**
  * api.php
  * Created by @anonymoussc on 03/11/2019 7:31 PM.
  */
-
-use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +20,14 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/scaffold', function (Request $request) {
-    return $request->user();
+//Route::middleware('auth:api')->get('/scaffold', function (Request $request) {
+//    return $request->user();
+//});
+
+Route::group(['prefix' => 'v1'], function() {
+    Route::group(['middleware' => 'auth:api',
+                  'prefix'     => 'user',
+                  'namespace'  => '\App\Components\Scaffold\Http\Controllers\V1'], function() {
+        Route::get('/profile', 'UserController@profile');
+    });
 });
