@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/9/19 12:02 AM
+ * Last modified 4/23/19 3:56 PM
  */
 
 /**
@@ -14,5 +14,6 @@ namespace App\Components\Scaffold\Repositories;
 
 interface UserRepositoryInterface
 {
+    public function create(array $data = [], array $option = [], array $param = []);
 
 }

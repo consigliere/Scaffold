@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/9/19 1:26 PM
+ * Last modified 4/20/19 5:09 PM
  */
 
 /**
@@ -41,9 +41,6 @@ class ScaffoldServiceProvider extends ServiceProvider
         $dispatcher->subscribe(\App\Components\Scaffold\Listeners\UserEventSubscriber::class);
         $dispatcher->subscribe(\App\Components\Scaffold\Listeners\RoleEventSubscriber::class);
         $dispatcher->subscribe(\App\Components\Scaffold\Listeners\PermissionEventSubscriber::class);
-        $dispatcher->subscribe(\App\Components\Scaffold\Listeners\V1\UserEventSubscriber::class);
-        $dispatcher->subscribe(\App\Components\Scaffold\Listeners\V1\RoleEventSubscriber::class);
-        $dispatcher->subscribe(\App\Components\Scaffold\Listeners\V1\PermissionEventSubscriber::class);
     }
 
     /**
@@ -65,18 +62,6 @@ class ScaffoldServiceProvider extends ServiceProvider
 
         $this->app->bind(\App\Components\Scaffold\Repositories\PermissionRepositoryInterface::class, function($app) {
             return new \App\Components\Scaffold\Repositories\Permission\PermissionRepository();
-        });
-
-        $this->app->bind(\App\Components\Scaffold\Repositories\V1\UserRepositoryInterface::class, function($app) {
-            return new \App\Components\Scaffold\Repositories\V1\User\UserRepository();
-        });
-
-        $this->app->bind(\App\Components\Scaffold\Repositories\V1\RoleRepositoryInterface::class, function($app) {
-            return new \App\Components\Scaffold\Repositories\V1\Role\RoleRepository();
-        });
-
-        $this->app->bind(\App\Components\Scaffold\Repositories\V1\PermissionRepositoryInterface::class, function($app) {
-            return new \App\Components\Scaffold\Repositories\V1\Permission\PermissionRepository();
         });
     }
 

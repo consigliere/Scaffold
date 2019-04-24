@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/9/19 1:42 PM
+ * Last modified 4/22/19 1:14 PM
  */
 
 /**
@@ -25,9 +25,16 @@
 //});
 
 Route::group(['prefix' => 'v1'], function() {
-    Route::group(['middleware' => 'auth:api',
-                  'prefix'     => 'user',
-                  'namespace'  => '\App\Components\Scaffold\Http\Controllers\V1'], function() {
-        Route::get('/profile', 'UserController@profile');
-    });
+    Route::group(
+        [
+            'middleware' => 'auth:api',
+            'prefix'     => 'user',
+            'namespace'  => '\App\Components\Scaffold\Http\Controllers',
+        ],
+        function() {
+            // Route::get('/profile', 'UserController@profile');
+            Route::post('/', 'UserController@create');
+            Route::put('/{id}', 'UserController@update');
+        }
+    );
 });

@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 3/11/19 7:21 PM
+ * Last modified 4/25/19 2:04 AM
  */
 
 /**
@@ -10,5 +10,11 @@
  */
 
 return [
-    'name' => 'Scaffold'
+    'name' => 'Scaffold',
+    'api'  => [
+        'meta' => [
+            'author' => ['anonymoussc'],
+            'email'  => '50c5ac69@opayq.com',
+        ],
+    ],
 ];
