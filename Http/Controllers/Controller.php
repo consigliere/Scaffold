@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/25/19 5:26 AM
+ * Last modified 4/25/19 7:10 PM
  */
 
 /**
@@ -15,9 +15,12 @@ use App\Components\Signal\Shared\{
     ErrorLog, Signal
 };
 use App\Components\Signature\Http\Controllers\SignatureController as BaseController;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Http\JsonResponse;
+use JsonSerializable;
 
 /**
  * Class Controller
@@ -26,4 +29,22 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 abstract class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests, Signal, ErrorLog;
+
+    /**
+     * Create a json response
+     *
+     * @param       $data
+     * @param int   $statusCode
+     * @param array $headers
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function response($data, $statusCode = 200, array $headers = ['Content-Type' => 'application/vnd.api+json',]): JsonResponse
+    {
+        if ($data instanceof Arrayable && !$data instanceof JsonSerializable) {
+            $data = $data->toArray();
+        }
+
+        return new JsonResponse($data, $statusCode, $headers);
+    }
 }

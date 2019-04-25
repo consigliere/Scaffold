@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/25/19 5:26 AM
+ * Last modified 4/25/19 6:59 PM
  */
 
 /**
@@ -47,17 +47,7 @@ class UserController extends Controller
                 ->setStatusCode(500);
         }
 
-        /*$records = (!$data)
-            ? response()->fail(['result' => $data, 'message' => 'Failed create User data',])
-            : response()->success(
-                [
-                    'result'  => $data,
-                    'message' => 'User data has been successfully created',
-                    'link'    => '',
-                ]
-            );*/
-
-        return $this->response($response);
+        return $this->response($response, 201);
     }
 
     public function read()
