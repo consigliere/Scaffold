@@ -1,11 +1,11 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/25/19 7:04 PM
+ * Last modified 4/26/19 2:50 AM
  */
 
 /**
- * UserCreateDataResponse.php
+ * CreateUserResponse.php
  * Created by @anonymoussc on 04/24/2019 5:42 PM.
  */
 
@@ -13,7 +13,7 @@ namespace App\Components\Scaffold\Services\User\Responses;
 
 use Illuminate\Support\Facades\Config;
 
-class UserCreateDataResponse
+class CreateUserResponse
 {
     public function __invoke($data, array $option = [], array $param = [])
     {

@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/25/19 5:26 AM
+ * Last modified 4/27/19 4:07 AM
  */
 
 /**
@@ -23,16 +23,16 @@ class UserCreateFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'roleId'   => '',
-            //'uuid'              => '',
-            'username' => 'required',
-            'name'     => 'required',
-            'email'    => 'required',
-            //'avatar'            => '',
-            //'emailVerifiedAt' => '',
-            'password' => 'required',
-            //'rememberToken'    => '',
-            'settings' => '',
+            'roleId'          => '',
+            'uuid'            => '',
+            'username'        => 'required',
+            'name'            => 'required',
+            'email'           => 'required',
+            'avatar'          => '',
+            'emailVerifiedAt' => '',
+            'password'        => 'required',
+            'rememberToken'   => '',
+            'settings'        => '',
         ];
     }
 }
