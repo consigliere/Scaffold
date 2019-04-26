@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/25/19 6:59 PM
+ * Last modified 4/27/19 4:12 AM
  */
 
 /**
@@ -54,9 +54,24 @@ class UserController extends Controller
     {
     }
 
-    public function update($id, UserUpdateFormRequest $request)
+    public function update($uuid, UserUpdateFormRequest $request)
     {
+        try {
+            $data   = $request->all();
+            $option = [];
 
+            $param['self']['link'] = $request->fullUrl();
+
+            $response = $this->userService->update($uuid, $data, $option, $param);
+        } catch (\Exception $error) {
+            $this->fireLog('error', $error->getMessage(), ['error' => $error]);
+
+            return response()
+                ->error($error->getMessage(), $error->getCode())
+                ->setStatusCode(500);
+        }
+
+        return $this->response($response, 200);
     }
 
     public function delete()

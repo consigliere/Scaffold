@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/25/19 1:20 AM
+ * Last modified 4/26/19 6:36 PM
  */
 
 /**
@@ -11,30 +11,25 @@
 
 namespace App\Components\Scaffold\Services\User\Shared;
 
-use App\Components\Scaffold\Services\User\Requests\UserCreateDataRequest;
-use App\Components\Scaffold\Services\User\Responses\UserCreateDataResponse;
-
 trait UserCallable
 {
-    public function createData(UserCreateDataRequest $userCreate, array $data = [], array $option = [], $param = [])
+    public function createData(Callable $create, array $data = [], array $option = [], $param = []): array
     {
-        return $userCreate($data, $option, $param);
+        return $create($data, $option, $param);
     }
 
-    public function createOptionData()
-    {
-    }
-
-    public function createDataResponse(UserCreateDataResponse $response, $dataObj, array $option = [], array $param = [])
+    public function createResponse(Callable $response, $dataObj, array $option = [], array $param = []): array
     {
         return $response($dataObj, $option, $param);
     }
 
-    public function createSuccessDataResponse()
+    public function updateData(Callable $update, $uuid, array $data = [], array $option = [], array $param = [])
     {
+        return $update($uuid, $data, $option, $param);
     }
 
-    public function createFailDataResponse()
+    public function updateResponse(Callable $response, $uuid, $dataObj, array $option = [], array $param = [])
     {
+        return $response($uuid, $dataObj, $option, $param);
     }
 }

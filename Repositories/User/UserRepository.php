@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/24/19 5:04 PM
+ * Last modified 4/27/19 4:04 AM
  */
 
 /**
@@ -41,10 +41,55 @@ class UserRepository extends Repository implements UserRepositoryInterface
         $user->password       = $data['password'];
         $user->remember_token = $data['remember_token'];
         $user->settings       = $data['settings'];
-        if (($data['avatar'] !== '') && ($data['avatar'] !== null) && ($data['avatar'] !== false)) {
+        if (isset($data['avatar']) && !empty($data['avatar']) && ($data['avatar'] !== null)) {
             $user->avatar = $data['avatar'];
         }
-        // $user->email_verified_at = $data['email_verified_at'];
+
+        if (isset($data['email_verified_at']) && !empty($data['email_verified_at']) && ($data['email_verified_at'] !== null)) {
+            $user->email_verified_at = $data['email_verified_at'];
+        }
+
+        $user->save();
+
+        return $user;
+    }
+
+    public function update($uuid, array $data = [], array $option = [], array $param = [])
+    {
+        // dd('im here');
+        // $user = $this->getModel()::where('uuid', '=', $uuid)->orWhere('id', '=', $uuid)->firstOrFail();
+        // dd($data);
+        $user = $this->getModel()->where('uuid', '=', $uuid)->firstOrFail();
+
+        // dd($user);
+
+        if (isset($data['role_id']) && !empty($data['role_id']) && ($data['role_id'] !== null)) {
+            $user->role_id = $data['role_id'];
+        }
+        if (isset($data['username']) && !empty($data['username']) && ($data['username'] !== null)) {
+            $user->username = $data['username'];
+        }
+        if (isset($data['name']) && !empty($data['name']) && ($data['name'] !== null)) {
+            $user->name = $data['name'];
+        }
+        if (isset($data['email']) && !empty($data['email']) && ($data['email'] !== null)) {
+            $user->email = $data['email'];
+        }
+        if (isset($data['password']) && !empty($data['password']) && ($data['password'] !== null)) {
+            $user->password = $data['password'];
+        }
+        if (isset($data['remember_token']) && !empty($data['remember_token']) && ($data['remember_token'] !== null)) {
+            $user->remember_token = $data['remember_token'];
+        }
+        if (isset($data['settings']) && !empty($data['settings']) && ($data['settings'] !== null)) {
+            $user->settings = $data['settings'];
+        }
+        if (isset($data['avatar']) && !empty($data['avatar']) && ($data['avatar'] !== null)) {
+            $user->avatar = $data['avatar'];
+        }
+        if (isset($data['email_verified_at']) && !empty($data['email_verified_at']) && ($data['email_verified_at'] !== null)) {
+            $user->email_verified_at = $data['email_verified_at'];
+        }
 
         $user->save();
 
