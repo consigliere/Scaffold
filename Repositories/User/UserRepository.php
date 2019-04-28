@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/27/19 4:04 AM
+ * Last modified 4/28/19 3:19 PM
  */
 
 /**
@@ -56,12 +56,7 @@ class UserRepository extends Repository implements UserRepositoryInterface
 
     public function update($uuid, array $data = [], array $option = [], array $param = [])
     {
-        // dd('im here');
-        // $user = $this->getModel()::where('uuid', '=', $uuid)->orWhere('id', '=', $uuid)->firstOrFail();
-        // dd($data);
-        $user = $this->getModel()->where('uuid', '=', $uuid)->firstOrFail();
-
-        // dd($user);
+        $user = $this->getModel()::where('uuid', '=', $uuid)->orWhere('id', '=', $uuid)->firstOrFail();
 
         if (isset($data['role_id']) && !empty($data['role_id']) && ($data['role_id'] !== null)) {
             $user->role_id = $data['role_id'];

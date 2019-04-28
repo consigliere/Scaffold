@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/27/19 4:12 AM
+ * Last modified 4/27/19 5:17 AM
  */
 
 /**
@@ -20,7 +20,7 @@ class UpdateFromUserRequest
         if (!empty($data)) {
             $user = [
                 'role_id'           => $data['roleId'],
-                'username'          => $data['username'],
+                'username'          => strtolower($data['username']),
                 'name'              => $data['name'],
                 'email'             => $data['email'],
                 'avatar'            => $data['avatar'],

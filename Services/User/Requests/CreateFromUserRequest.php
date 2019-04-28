@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/26/19 3:07 AM
+ * Last modified 4/27/19 5:17 AM
  */
 
 /**
@@ -23,7 +23,7 @@ class CreateFromUserRequest
             $user = [
                 'role_id'           => ($data['roleId'] === 1) ? $data['roleId'] : 2,
                 'uuid'              => (string)Uuid::generate(5, $data['username'], Uuid::NS_DNS),
-                'username'          => $data['username'],
+                'username'          => strtolower($data['username']),
                 'name'              => $data['name'],
                 'email'             => $data['email'],
                 'avatar'            => $data['avatar'],
