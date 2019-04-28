@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/28/19 3:19 PM
+ * Last modified 4/29/19 3:15 AM
  */
 
 /**
@@ -54,9 +54,9 @@ class UserRepository extends Repository implements UserRepositoryInterface
         return $user;
     }
 
-    public function update($uuid, array $data = [], array $option = [], array $param = [])
+    public function update($id, array $data = [], array $option = [], array $param = [])
     {
-        $user = $this->getModel()::where('uuid', '=', $uuid)->orWhere('id', '=', $uuid)->firstOrFail();
+        $user = $this->getModel()::where('id', '=', $id)->firstOrFail();
 
         if (isset($data['role_id']) && !empty($data['role_id']) && ($data['role_id'] !== null)) {
             $user->role_id = $data['role_id'];
@@ -89,5 +89,27 @@ class UserRepository extends Repository implements UserRepositoryInterface
         $user->save();
 
         return $user;
+    }
+
+    public function getIdBy($uuid, array $param = [])
+    {
+        $users = $this->getModel()::where('uuid', '=', $uuid)->orWhere('id', '=', $uuid)->get();
+
+        $uid = [];
+        $i   = 0;
+        foreach ($users as $user) {
+            $uid[$i] = $this->getModel()::where([
+                ['id', '=', $user->id],
+                ['uuid', '=', $uuid],
+            ])->first();
+
+            if (null === $uid[$i]) {
+                unset($uid[$i]);
+            } else {
+                return $uid[$i]->id;
+            }
+
+            $i++;
+        }
     }
 }

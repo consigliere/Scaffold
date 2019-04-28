@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/27/19 4:12 AM
+ * Last modified 4/29/19 3:19 AM
  */
 
 /**
@@ -15,6 +15,7 @@ use App\Components\Scaffold\Http\Requests\{
     UserCreateFormRequest, UserUpdateFormRequest
 };
 use App\Components\Scaffold\Services\UserService;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -74,7 +75,18 @@ class UserController extends Controller
         return $this->response($response, 200);
     }
 
-    public function delete()
+    public function delete($uuid, Request $request)
     {
+        try {
+            $response = $this->userService->delete($uuid);
+        } catch (\Exception $error) {
+            $this->fireLog('error', $error->getMessage(), ['error' => $error]);
+
+            return response()
+                ->error($error->getMessage(), $error->getCode())
+                ->setStatusCode(500);
+        }
+
+        return $this->response(null, 204);
     }
 }

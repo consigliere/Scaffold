@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/27/19 4:12 AM
+ * Last modified 4/29/19 2:49 AM
  */
 
 /**
@@ -51,13 +51,21 @@ class UserService extends Service
     public function update($uuid, array $data, array $option = [], array $param = [])
     {
         $updateData = $this->updateData(new UpdateFromUserRequest, $uuid, $data, $option, $param);
-        $user       = $this->userRepository->update($uuid, $updateData);
+        $id         = $this->userRepository->getIdBy($uuid) ?? $uuid;
+        $user       = $this->userRepository->update($id, $updateData);
         $response   = $this->updateResponse(new UpdateUserResponse, $uuid, $user, $option, $param);
 
         return $response;
     }
 
-    public function delete()
+    public function delete($uuid, array $param = [])
     {
+        $ids = explode(",", $uuid);
+
+        foreach ($ids as $id) {
+            $id = $this->userRepository->getIdBy($id) ?? $id;
+
+            $this->userRepository->delete($id);
+        }
     }
 }

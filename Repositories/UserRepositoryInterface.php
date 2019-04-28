@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/27/19 4:12 AM
+ * Last modified 4/29/19 3:15 AM
  */
 
 /**
@@ -16,6 +16,6 @@ interface UserRepositoryInterface
 {
     public function create(array $data = [], array $option = [], array $param = []);
 
-    public function update($uuid, array $data = [], array $option = [], array $param = []);
+    public function update($id, array $data = [], array $option = [], array $param = []);
 
 }
