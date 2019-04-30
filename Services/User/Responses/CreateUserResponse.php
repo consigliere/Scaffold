@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/26/19 2:50 AM
+ * Last modified 5/1/19 3:57 AM
  */
 
 /**
@@ -31,7 +31,7 @@ class CreateUserResponse
                     ],
                 ],
                 'link' => [
-                    'self' => $param['self']['link'],
+                    'self' => $param['link']['fullUrl'],
                 ],
                 'meta' => [
                     'copyright' => 'copyrightⒸ ' . date('Y') . ' ' . Config::get('app.name'),
