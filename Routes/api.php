@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/28/19 5:25 PM
+ * Last modified 4/30/19 4:37 PM
  */
 
 /**
@@ -20,19 +20,18 @@
 |
 */
 
-//Route::middleware('auth:api')->get('/scaffold', function (Request $request) {
-//    return $request->user();
-//});
-
 Route::group(['prefix' => 'v1'], function() {
     Route::group(
         [
             'middleware' => 'auth:api',
-            'prefix'     => 'user',
+            'prefix'     => 'users',
             'namespace'  => '\App\Components\Scaffold\Http\Controllers',
         ],
         function() {
             // Route::get('/profile', 'UserController@profile');
+            Route::get('/', 'UserController@browse');
+            Route::get('/{uuid}', 'UserController@read');
+            Route::get('/{uuid}/{relationship}', 'UserController@read');
             Route::post('/', 'UserController@create');
             Route::patch('/{uuid}', 'UserController@update');
             Route::delete('/{uuid}', 'UserController@delete');

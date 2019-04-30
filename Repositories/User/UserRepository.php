@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/29/19 3:15 AM
+ * Last modified 5/1/19 6:02 AM
  */
 
 /**
@@ -27,6 +27,13 @@ class UserRepository extends Repository implements UserRepositoryInterface
         $this->userCfg = Config::get('auth.providers.apis.model');
 
         return new $this->userCfg;
+    }
+
+    public function browse(array $data = [], array $option = [], array $param = [])
+    {
+        $user = $this->getModel();
+
+        return $user->paginate($option['header']['paging']);
     }
 
     public function create(array $data = [], array $option = [], array $param = [])
@@ -99,8 +106,8 @@ class UserRepository extends Repository implements UserRepositoryInterface
         $i   = 0;
         foreach ($users as $user) {
             $uid[$i] = $this->getModel()::where([
-                ['id', '=', $user->id],
-                ['uuid', '=', $uuid],
+                ['id', $user->id],
+                ['uuid', $uuid],
             ])->first();
 
             if (null === $uid[$i]) {

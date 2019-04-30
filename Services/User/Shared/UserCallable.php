@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/26/19 6:36 PM
+ * Last modified 4/30/19 3:58 PM
  */
 
 /**
@@ -13,6 +13,11 @@ namespace App\Components\Scaffold\Services\User\Shared;
 
 trait UserCallable
 {
+    public function browseResponse(Callable $response, $dataObj, array $option = [], array $param = [])
+    {
+        return $response($dataObj, $option, $param);
+    }
+
     public function createData(Callable $create, array $data = [], array $option = [], $param = []): array
     {
         return $create($data, $option, $param);

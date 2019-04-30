@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/29/19 2:49 AM
+ * Last modified 5/1/19 6:02 AM
  */
 
 /**
@@ -14,6 +14,7 @@ namespace App\Components\Scaffold\Services;
 use App\Components\Scaffold\Repositories\UserRepositoryInterface;
 use App\Components\Scaffold\Services\User\Requests\CreateFromUserRequest;
 use App\Components\Scaffold\Services\User\Requests\UpdateFromUserRequest;
+use App\Components\Scaffold\Services\User\Responses\BrowseUserResponse;
 use App\Components\Scaffold\Services\User\Responses\CreateUserResponse;
 use App\Components\Scaffold\Services\User\Responses\UpdateUserResponse;
 use App\Components\Scaffold\Services\User\Shared\UserCallable;
@@ -30,8 +31,12 @@ class UserService extends Service
         $this->userRepository = $userRepository;
     }
 
-    public function browse()
+    public function browse(array $data = [], array $option = [], array $param = [])
     {
+        $users    = $this->userRepository->browse($data, $option, $param);
+        $response = $this->browseResponse(new BrowseUserResponse, $users, $option, $param);
+
+        return $response;
     }
 
 

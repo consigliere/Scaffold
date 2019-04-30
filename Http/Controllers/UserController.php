@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/29/19 3:19 AM
+ * Last modified 5/1/19 6:02 AM
  */
 
 /**
@@ -16,6 +16,7 @@ use App\Components\Scaffold\Http\Requests\{
 };
 use App\Components\Scaffold\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 
 class UserController extends Controller
 {
@@ -26,19 +27,45 @@ class UserController extends Controller
         $this->userService = $userService;
     }
 
-    public function browse()
+    public function browse(Request $request)
     {
+        $data   = [];
+        $option = [
+            'header' => [
+                'paging' => $request->header('Page-Paging') ?? Config::get('scaffold.api.page_paging'),
+            ],
+        ];
+        $param  = [
+            'link' => [
+                'fullUrl' => $request->fullUrl(),
+                'url'     => $request->url(),
+            ],
+        ];
 
+        try {
+            $response = $this->userService->browse($data, $option, $param);
+        } catch (\Exception $error) {
+            $this->fireLog('error', $error->getMessage(), ['error' => $error]);
+
+            return response()
+                ->error($error->getMessage(), $error->getCode())
+                ->setStatusCode(500);
+        }
+
+        return $this->response($response, 200);
     }
 
     public function create(UserCreateFormRequest $request)
     {
+        $data   = $request->all();
+        $option = [];
+        $param  = [
+            'link' => [
+                'fullUrl' => $request->fullUrl(),
+            ],
+        ];
+
         try {
-            $data   = $request->all();
-            $option = [];
-
-            $param['self']['link'] = $request->fullUrl();
-
             $response = $this->userService->create($data, $option, $param);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error]);
@@ -51,18 +78,22 @@ class UserController extends Controller
         return $this->response($response, 201);
     }
 
-    public function read()
+    public function read($uuid = null, $relationship = null, Request $request)
     {
+
     }
 
     public function update($uuid, UserUpdateFormRequest $request)
     {
+        $data   = $request->all();
+        $option = [];
+        $param  = [
+            'link' => [
+                'fullUrl' => $request->fullUrl(),
+            ],
+        ];
+
         try {
-            $data   = $request->all();
-            $option = [];
-
-            $param['self']['link'] = $request->fullUrl();
-
             $response = $this->userService->update($uuid, $data, $option, $param);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error]);
