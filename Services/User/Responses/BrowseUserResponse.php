@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/2/19 12:31 AM
+ * Last modified 5/2/19 2:06 AM
  */
 
 /**
@@ -31,9 +31,9 @@ class BrowseUserResponse
         $newData = [];
 
         if (!empty($data)) {
-            $newData = $data->map(function($value, $key) {
+            $newData = $data->map(function($value, $key) use ($param) {
                 return [
-                    'type'       => 'users',
+                    'type'       => $param['type'],
                     'id'         => $value->uuid,
                     'attributes' => [
                         'username' => $value->username,
