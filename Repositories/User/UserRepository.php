@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/2/19 12:31 AM
+ * Last modified 5/2/19 1:53 AM
  */
 
 /**
@@ -45,7 +45,7 @@ class UserRepository extends Repository implements UserRepositoryInterface
      */
     public function browse(array $data = [], array $option = [], array $param = [])
     {
-        $paging = $data['header']['paging'];
+        $paging = (int)$data['header']['paging'];
         $user   = $this->getModel();
 
         return $user->paginate($paging);
