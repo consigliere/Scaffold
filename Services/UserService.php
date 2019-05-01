@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/2/19 12:31 AM
+ * Last modified 5/2/19 3:10 AM
  */
 
 /**
@@ -12,12 +12,11 @@
 namespace App\Components\Scaffold\Services;
 
 use App\Components\Scaffold\Repositories\UserRepositoryInterface;
-use App\Components\Scaffold\Services\User\Requests\{
-    CreateFromUserRequest, UpdateFromUserRequest
-};
-use App\Components\Scaffold\Services\User\Responses\{
-    BrowseUserResponse, CreateUserResponse, UpdateUserResponse
-};
+use App\Components\Scaffold\Services\User\Requests\CreateFromUserRequest;
+use App\Components\Scaffold\Services\User\Requests\UpdateFromUserRequest;
+use App\Components\Scaffold\Services\User\Responses\BrowseUserResponse;
+use App\Components\Scaffold\Services\User\Responses\CreateUserResponse;
+use App\Components\Scaffold\Services\User\Responses\UpdateUserResponse;
 use App\Components\Scaffold\Services\User\Shared\UserCallable;
 use Illuminate\Foundation\Application;
 
@@ -47,13 +46,24 @@ class UserService extends Service
 
     /**
      * @param array $data
-     * @param array $option
-     * @param array $param
+     * @param array $params
      *
      * @return mixed
+     * @internal param array $option
+     * @internal param array $param
+     *
      */
-    public function browse(array $data = [], array $option = [], array $param = [])
+    public function browse(array $data = [], ...$params)
     {
+        foreach ($params as $val) {
+            if (isset($val['param'])) {
+                $param = $val['param'];
+            }
+            if (isset($val['option'])) {
+                $option = $val['option'];
+            }
+        }
+
         $users    = $this->userRepository->browse($data, $option, $param);
         $response = $this->browseResponse(new BrowseUserResponse, $users, $option, $param);
 
@@ -67,9 +77,9 @@ class UserService extends Service
      *
      * @return array
      */
-    public function create(array $data, array $option = [], array $param = [])
+    public function create(array $data, array $option = [], array $param = []): array
     {
-        $newUser  = $this->createData(new CreateFromUserRequest, $data);
+        $newUser  = $this->createData(new CreateFromUserRequest, $data['input']);
         $user     = $this->userRepository->create($newUser);
         $response = $this->createResponse(new CreateUserResponse, $user, $option, $param);
 
@@ -93,7 +103,7 @@ class UserService extends Service
      */
     public function update($uuid, array $data, array $option = [], array $param = [])
     {
-        $updateData = $this->updateData(new UpdateFromUserRequest, $uuid, $data, $option, $param);
+        $updateData = $this->updateData(new UpdateFromUserRequest, $uuid, $data['input'], $option, $param);
         $id         = $this->userRepository->getIdBy($uuid) ?? $uuid;
         $user       = $this->userRepository->update($id, $updateData);
         $response   = $this->updateResponse(new UpdateUserResponse, $uuid, $user, $option, $param);
