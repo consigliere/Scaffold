@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/1/19 6:02 AM
+ * Last modified 5/2/19 12:31 AM
  */
 
 /**
@@ -15,8 +15,15 @@ use App\Components\Scaffold\Repositories\Repository;
 use App\Components\Scaffold\Repositories\UserRepositoryInterface;
 use Illuminate\Support\Facades\Config;
 
+/**
+ * Class UserRepository
+ * @package App\Components\Scaffold\Repositories\User
+ */
 class UserRepository extends Repository implements UserRepositoryInterface
 {
+    /**
+     * @var
+     */
     private $userCfg;
 
     /**
@@ -29,13 +36,28 @@ class UserRepository extends Repository implements UserRepositoryInterface
         return new $this->userCfg;
     }
 
+    /**
+     * @param array $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return mixed
+     */
     public function browse(array $data = [], array $option = [], array $param = [])
     {
-        $user = $this->getModel();
+        $paging = $data['header']['paging'];
+        $user   = $this->getModel();
 
-        return $user->paginate($option['header']['paging']);
+        return $user->paginate($paging);
     }
 
+    /**
+     * @param array $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return mixed
+     */
     public function create(array $data = [], array $option = [], array $param = [])
     {
         $user = $this->getModel();
@@ -61,6 +83,14 @@ class UserRepository extends Repository implements UserRepositoryInterface
         return $user;
     }
 
+    /**
+     * @param       $id
+     * @param array $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return mixed
+     */
     public function update($id, array $data = [], array $option = [], array $param = [])
     {
         $user = $this->getModel()::where('id', '=', $id)->firstOrFail();
@@ -98,6 +128,12 @@ class UserRepository extends Repository implements UserRepositoryInterface
         return $user;
     }
 
+    /**
+     * @param       $uuid
+     * @param array $param
+     *
+     * @return mixed
+     */
     public function getIdBy($uuid, array $param = [])
     {
         $users = $this->getModel()::where('uuid', '=', $uuid)->orWhere('id', '=', $uuid)->get();

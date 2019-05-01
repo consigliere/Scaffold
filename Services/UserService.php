@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/1/19 6:02 AM
+ * Last modified 5/2/19 12:31 AM
  */
 
 /**
@@ -12,25 +12,46 @@
 namespace App\Components\Scaffold\Services;
 
 use App\Components\Scaffold\Repositories\UserRepositoryInterface;
-use App\Components\Scaffold\Services\User\Requests\CreateFromUserRequest;
-use App\Components\Scaffold\Services\User\Requests\UpdateFromUserRequest;
-use App\Components\Scaffold\Services\User\Responses\BrowseUserResponse;
-use App\Components\Scaffold\Services\User\Responses\CreateUserResponse;
-use App\Components\Scaffold\Services\User\Responses\UpdateUserResponse;
+use App\Components\Scaffold\Services\User\Requests\{
+    CreateFromUserRequest, UpdateFromUserRequest
+};
+use App\Components\Scaffold\Services\User\Responses\{
+    BrowseUserResponse, CreateUserResponse, UpdateUserResponse
+};
 use App\Components\Scaffold\Services\User\Shared\UserCallable;
 use Illuminate\Foundation\Application;
 
+/**
+ * Class UserService
+ * @package App\Components\Scaffold\Services
+ */
 class UserService extends Service
 {
     use UserCallable;
 
+    /**
+     * @var \App\Components\Scaffold\Repositories\UserRepositoryInterface
+     */
     private $userRepository;
 
+    /**
+     * UserService constructor.
+     *
+     * @param \Illuminate\Foundation\Application                            $app
+     * @param \App\Components\Scaffold\Repositories\UserRepositoryInterface $userRepository
+     */
     public function __construct(Application $app, UserRepositoryInterface $userRepository)
     {
         $this->userRepository = $userRepository;
     }
 
+    /**
+     * @param array $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return mixed
+     */
     public function browse(array $data = [], array $option = [], array $param = [])
     {
         $users    = $this->userRepository->browse($data, $option, $param);
@@ -39,7 +60,13 @@ class UserService extends Service
         return $response;
     }
 
-
+    /**
+     * @param array $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return array
+     */
     public function create(array $data, array $option = [], array $param = [])
     {
         $newUser  = $this->createData(new CreateFromUserRequest, $data);
@@ -49,10 +76,21 @@ class UserService extends Service
         return $response;
     }
 
+    /**
+     *
+     */
     public function read()
     {
     }
 
+    /**
+     * @param       $uuid
+     * @param array $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return mixed
+     */
     public function update($uuid, array $data, array $option = [], array $param = [])
     {
         $updateData = $this->updateData(new UpdateFromUserRequest, $uuid, $data, $option, $param);
@@ -63,6 +101,10 @@ class UserService extends Service
         return $response;
     }
 
+    /**
+     * @param       $uuid
+     * @param array $param
+     */
     public function delete($uuid, array $param = [])
     {
         $ids = explode(",", $uuid);

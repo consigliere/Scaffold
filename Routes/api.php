@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/30/19 4:37 PM
+ * Last modified 5/1/19 5:08 PM
  */
 
 /**
@@ -31,7 +31,6 @@ Route::group(['prefix' => 'v1'], function() {
             // Route::get('/profile', 'UserController@profile');
             Route::get('/', 'UserController@browse');
             Route::get('/{uuid}', 'UserController@read');
-            Route::get('/{uuid}/{relationship}', 'UserController@read');
             Route::post('/', 'UserController@create');
             Route::patch('/{uuid}', 'UserController@update');
             Route::delete('/{uuid}', 'UserController@delete');

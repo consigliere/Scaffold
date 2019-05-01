@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/1/19 6:02 AM
+ * Last modified 5/2/19 12:35 AM
  */
 
 /**
@@ -18,23 +18,40 @@ use App\Components\Scaffold\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 
+/**
+ * Class UserController
+ * @package App\Components\Scaffold\Http\Controllers
+ */
 class UserController extends Controller
 {
+    /**
+     * @var \App\Components\Scaffold\Services\UserService
+     */
     public $userService;
 
+    /**
+     * UserController constructor.
+     *
+     * @param \App\Components\Scaffold\Services\UserService $userService
+     */
     public function __construct(UserService $userService)
     {
         $this->userService = $userService;
     }
 
-    public function browse(Request $request)
+    /**
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function browse(Request $request): \Illuminate\Http\JsonResponse
     {
-        $data   = [];
-        $option = [
+        $data   = [
             'header' => [
                 'paging' => $request->header('Page-Paging') ?? Config::get('scaffold.api.page_paging'),
             ],
         ];
+        $option = [];
         $param  = [
             'link' => [
                 'fullUrl' => $request->fullUrl(),
@@ -55,7 +72,12 @@ class UserController extends Controller
         return $this->response($response, 200);
     }
 
-    public function create(UserCreateFormRequest $request)
+    /**
+     * @param \App\Components\Scaffold\Http\Requests\UserCreateFormRequest $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function create(UserCreateFormRequest $request): \Illuminate\Http\JsonResponse
     {
         $data   = $request->all();
         $option = [];
@@ -78,12 +100,23 @@ class UserController extends Controller
         return $this->response($response, 201);
     }
 
+    /**
+     * @param null                     $uuid
+     * @param null                     $relationship
+     * @param \Illuminate\Http\Request $request
+     */
     public function read($uuid = null, $relationship = null, Request $request)
     {
 
     }
 
-    public function update($uuid, UserUpdateFormRequest $request)
+    /**
+     * @param                                                              $uuid
+     * @param \App\Components\Scaffold\Http\Requests\UserUpdateFormRequest $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update($uuid, UserUpdateFormRequest $request): \Illuminate\Http\JsonResponse
     {
         $data   = $request->all();
         $option = [];
@@ -106,7 +139,13 @@ class UserController extends Controller
         return $this->response($response, 200);
     }
 
-    public function delete($uuid, Request $request)
+    /**
+     * @param                          $uuid
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delete($uuid, Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $response = $this->userService->delete($uuid);
