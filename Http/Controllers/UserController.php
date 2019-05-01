@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/2/19 12:35 AM
+ * Last modified 5/2/19 3:19 AM
  */
 
 /**
@@ -11,9 +11,8 @@
 
 namespace App\Components\Scaffold\Http\Controllers;
 
-use App\Components\Scaffold\Http\Requests\{
-    UserCreateFormRequest, UserUpdateFormRequest
-};
+use App\Components\Scaffold\Http\Requests\UserCreateFormRequest;
+use App\Components\Scaffold\Http\Requests\UserUpdateFormRequest;
 use App\Components\Scaffold\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
@@ -24,6 +23,10 @@ use Illuminate\Support\Facades\Config;
  */
 class UserController extends Controller
 {
+    /**
+     * @var string
+     */
+    public $type;
     /**
      * @var \App\Components\Scaffold\Services\UserService
      */
@@ -37,6 +40,7 @@ class UserController extends Controller
     public function __construct(UserService $userService)
     {
         $this->userService = $userService;
+        $this->type        = 'users';
     }
 
     /**
@@ -46,13 +50,14 @@ class UserController extends Controller
      */
     public function browse(Request $request): \Illuminate\Http\JsonResponse
     {
-        $data   = [
+        $data          = [
             'header' => [
                 'paging' => $request->header('Page-Paging') ?? Config::get('scaffold.api.page_paging'),
             ],
         ];
-        $option = [];
-        $param  = [
+        $opt['option'] = [];
+        $par['param']  = [
+            'type' => $this->type,
             'link' => [
                 'fullUrl' => $request->fullUrl(),
                 'url'     => $request->url(),
@@ -60,7 +65,7 @@ class UserController extends Controller
         ];
 
         try {
-            $response = $this->userService->browse($data, $option, $param);
+            $response = $this->userService->browse($data, $par, $opt);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error]);
 
@@ -79,9 +84,12 @@ class UserController extends Controller
      */
     public function create(UserCreateFormRequest $request): \Illuminate\Http\JsonResponse
     {
-        $data   = $request->all();
+        $data   = [
+            'input' => $request->all(),
+        ];
         $option = [];
         $param  = [
+            'type' => $this->type,
             'link' => [
                 'fullUrl' => $request->fullUrl(),
             ],
@@ -118,9 +126,12 @@ class UserController extends Controller
      */
     public function update($uuid, UserUpdateFormRequest $request): \Illuminate\Http\JsonResponse
     {
-        $data   = $request->all();
+        $data   = [
+            'input' => $request->all(),
+        ];
         $option = [];
         $param  = [
+            'type' => $this->type,
             'link' => [
                 'fullUrl' => $request->fullUrl(),
             ],
