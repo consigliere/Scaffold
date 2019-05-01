@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/1/19 3:57 AM
+ * Last modified 5/2/19 2:13 AM
  */
 
 /**
@@ -22,7 +22,7 @@ class UpdateUserResponse
         if (!empty($data)) {
             $user = [
                 'data' => [
-                    'type'       => 'users',
+                    'type'       => $param['type'],
                     'id'         => $uuid,
                     'attributes' => [
                         'username' => $data->username,
@@ -36,7 +36,6 @@ class UpdateUserResponse
                 'meta' => [
                     'copyright' => 'copyrightⒸ ' . date('Y') . ' ' . Config::get('app.name'),
                     'author'    => Config::get('scaffold.api.meta.author'),
-                    // 'email'     => Config::get('scaffold.api.meta.email'),
                 ],
 
             ];
