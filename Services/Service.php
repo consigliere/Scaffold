@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/9/19 1:46 PM
+ * Last modified 5/3/19 2:49 AM
  */
 
 /**
@@ -11,15 +11,16 @@
 
 namespace App\Components\Scaffold\Services;
 
-use App\Components\Signal\Shared\ErrorLog;
-use App\Components\Signal\Shared\Signal;
+use App\Components\Signal\Shared\{
+    ErrorLog, Signal
+};
+use App\Components\Signature\Services\SignatureService as BaseService;
 
 /**
  * Class Service
  * @package App\Components\Passerby\Services
  */
-class Service
+class Service extends BaseService
 {
     use Signal, ErrorLog;
-
 }
