@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/2/19 1:53 AM
+ * Last modified 5/3/19 4:26 AM
  */
 
 /**
@@ -70,6 +70,7 @@ class UserRepository extends Repository implements UserRepositoryInterface
         $user->password       = $data['password'];
         $user->remember_token = $data['remember_token'];
         $user->settings       = $data['settings'];
+        $user->created_by     = $param['user']['id'] ?? 0;
         if (isset($data['avatar']) && !empty($data['avatar']) && ($data['avatar'] !== null)) {
             $user->avatar = $data['avatar'];
         }

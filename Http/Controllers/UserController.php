@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/2/19 5:35 PM
+ * Last modified 5/3/19 4:30 AM
  */
 
 /**
@@ -92,6 +92,9 @@ class UserController extends Controller
             'type' => $this->type,
             'link' => [
                 'fullUrl' => $request->fullUrl(),
+            ],
+            'user' => [
+                'id' => $request->user()->id,
             ],
         ];
 

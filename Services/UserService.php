@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/2/19 5:35 PM
+ * Last modified 5/3/19 3:47 AM
  */
 
 /**
@@ -69,7 +69,7 @@ class UserService extends Service
     public function create(array $data, array $option = [], array $param = []): array
     {
         $newUser  = $this->createData(new CreateFromUserRequest, $data['input']);
-        $user     = $this->userRepository->create($newUser);
+        $user     = $this->userRepository->create($newUser, $option, $param);
         $response = $this->createResponse(new CreateUserResponse, $user, $option, $param);
 
         return $response;
