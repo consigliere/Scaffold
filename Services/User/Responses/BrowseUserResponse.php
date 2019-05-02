@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/2/19 2:06 AM
+ * Last modified 5/2/19 2:10 PM
  */
 
 /**
@@ -62,7 +62,6 @@ class BrowseUserResponse
             'total'        => $data->total(),
             'copyright'    => 'copyrightⒸ ' . date('Y') . ' ' . Config::get('app.name'),
             'author'       => Config::get('scaffold.api.meta.author'),
-            // 'email'     => Config::get('scaffold.api.meta.email'),
         ];
 
         return $users;
