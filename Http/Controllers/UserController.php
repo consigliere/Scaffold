@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/2/19 3:19 AM
+ * Last modified 5/2/19 5:35 PM
  */
 
 /**
@@ -50,13 +50,13 @@ class UserController extends Controller
      */
     public function browse(Request $request): \Illuminate\Http\JsonResponse
     {
-        $data          = [
+        $data   = [
             'header' => [
                 'paging' => $request->header('Page-Paging') ?? Config::get('scaffold.api.page_paging'),
             ],
         ];
-        $opt['option'] = [];
-        $par['param']  = [
+        $option = [];
+        $param  = [
             'type' => $this->type,
             'link' => [
                 'fullUrl' => $request->fullUrl(),
@@ -65,7 +65,7 @@ class UserController extends Controller
         ];
 
         try {
-            $response = $this->userService->browse($data, $par, $opt);
+            $response = $this->userService->browse($data, $option, $param);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error]);
 
