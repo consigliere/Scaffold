@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/2/19 3:10 AM
+ * Last modified 5/2/19 5:35 PM
  */
 
 /**
@@ -46,24 +46,13 @@ class UserService extends Service
 
     /**
      * @param array $data
-     * @param array $params
+     * @param array $option
+     * @param array $param
      *
      * @return mixed
-     * @internal param array $option
-     * @internal param array $param
-     *
      */
-    public function browse(array $data = [], ...$params)
+    public function browse(array $data = [], array $option = [], array $param = [])
     {
-        foreach ($params as $val) {
-            if (isset($val['param'])) {
-                $param = $val['param'];
-            }
-            if (isset($val['option'])) {
-                $option = $val['option'];
-            }
-        }
-
         $users    = $this->userRepository->browse($data, $option, $param);
         $response = $this->browseResponse(new BrowseUserResponse, $users, $option, $param);
 
