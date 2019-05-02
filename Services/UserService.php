@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/3/19 3:47 AM
+ * Last modified 5/3/19 4:36 AM
  */
 
 /**
@@ -94,7 +94,7 @@ class UserService extends Service
     {
         $updateData = $this->updateData(new UpdateFromUserRequest, $uuid, $data['input'], $option, $param);
         $id         = $this->userRepository->getIdBy($uuid) ?? $uuid;
-        $user       = $this->userRepository->update($id, $updateData);
+        $user       = $this->userRepository->update($id, $updateData, $option, $param);
         $response   = $this->updateResponse(new UpdateUserResponse, $uuid, $user, $option, $param);
 
         return $response;
