@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/27/19 5:17 AM
+ * Last modified 5/3/19 2:32 PM
  */
 
 /**
@@ -17,11 +17,13 @@ class CreateFromUserRequest
 {
     public function __invoke(array $data = [], array $option = [], array $param = [])
     {
-        $user = [];
+        $user   = [];
+        $inList = [1, 2];
+        $roleId = (int)$data['roleId'];
 
         if (!empty($data)) {
             $user = [
-                'role_id'           => ($data['roleId'] === 1) ? $data['roleId'] : 2,
+                'role_id'           => in_array($roleId, $inList, true) ? $roleId : 2,
                 'uuid'              => (string)Uuid::generate(5, $data['username'], Uuid::NS_DNS),
                 'username'          => strtolower($data['username']),
                 'name'              => $data['name'],
