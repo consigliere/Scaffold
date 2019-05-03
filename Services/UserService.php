@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/4/19 1:49 AM
+ * Last modified 5/4/19 1:58 AM
  */
 
 /**
@@ -53,7 +53,7 @@ class UserService extends Service
      */
     public function browse(array $data = [], array $option = [], array $param = [])
     {
-        $users    = $this->userRepository->browse($data, $option, $param);
+        $users    = $this->userRepository->browse($data);
         $response = $this->browseResponse(new BrowseUserResponse, $users, $option, $param);
 
         return $response;
