@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/4/19 3:58 AM
+ * Last modified 5/4/19 4:10 AM
  */
 
 /**
@@ -56,6 +56,15 @@ trait UserCallable
         return $response($dataObj, $option, $param);
     }
 
+    /**
+     * @param callable $response
+     * @param          $uuid
+     * @param          $dataObj
+     * @param array    $option
+     * @param array    $param
+     *
+     * @return mixed
+     */
     public function readResponse(Callable $response, $uuid, $dataObj, array $option = [], array $param = [])
     {
         return $response($uuid, $dataObj, $option, $param);
