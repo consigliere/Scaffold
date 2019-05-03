@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/2/19 2:10 PM
+ * Last modified 5/3/19 2:40 PM
  */
 
 /**
@@ -39,6 +39,8 @@ class BrowseUserResponse
                         'username' => $value->username,
                         'name'     => $value->name,
                         'email'    => $value->email,
+                        'avatar'   => $value->avatar,
+                        'settings' => $value->settings,
                     ],
                 ];
             });
