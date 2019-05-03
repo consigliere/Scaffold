@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/3/19 7:39 PM
+ * Last modified 5/4/19 1:23 AM
  */
 
 /**
@@ -92,10 +92,10 @@ class UserService extends Service
      */
     public function update($uuid, array $data, array $option = [], array $param = [])
     {
-        $updateData = $this->updateData(new UpdateFromUserRequest, $uuid, $data['input'], $option, $param);
-        $id         = $this->userRepository->getIdBy($uuid) ?? $uuid;
-        $user       = $this->userRepository->update($id, $updateData, $option, $param);
-        $response   = $this->updateResponse(new UpdateUserResponse, $uuid, $user, $option, $param);
+        $newUser  = $this->updateData(new UpdateFromUserRequest, $uuid, $data, $option, $param);
+        $id       = $this->userRepository->getIdBy($uuid) ?? $uuid;
+        $user     = $this->userRepository->update($id, $newUser, $option, $param);
+        $response = $this->updateResponse(new UpdateUserResponse, $uuid, $user, $option, $param);
 
         return $response;
     }
