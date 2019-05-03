@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/2/19 12:31 AM
+ * Last modified 5/4/19 3:58 AM
  */
 
 /**
@@ -54,6 +54,11 @@ trait UserCallable
     public function createResponse(Callable $response, $dataObj, array $option = [], array $param = []): array
     {
         return $response($dataObj, $option, $param);
+    }
+
+    public function readResponse(Callable $response, $uuid, $dataObj, array $option = [], array $param = [])
+    {
+        return $response($uuid, $dataObj, $option, $param);
     }
 
     /**

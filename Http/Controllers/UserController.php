@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/4/19 1:58 AM
+ * Last modified 5/4/19 3:58 AM
  */
 
 /**
@@ -97,14 +97,23 @@ class UserController extends Controller
         return $this->response($response, 201);
     }
 
-    /**
-     * @param null                     $uuid
-     * @param null                     $relationship
-     * @param \Illuminate\Http\Request $request
-     */
-    public function read($uuid = null, $relationship = null, Request $request)
+    public function read($uuid = null, Request $request)
     {
+        $data   = [];
+        $option = $this->getOption($request);
+        $param  = $this->getParam($request, ['type' => $this->type]);
 
+        try {
+            $response = $this->userService->read($uuid, $data, $option, $param);
+        } catch (\Exception $error) {
+            $this->fireLog('error', $error->getMessage(), ['error' => $error]);
+
+            return response()
+                ->error($error->getMessage(), $error->getCode())
+                ->setStatusCode(500);
+        }
+
+        return $this->response($response, 200);
     }
 
     /**

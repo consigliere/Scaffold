@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/4/19 1:58 AM
+ * Last modified 5/4/19 4:07 AM
  */
 
 /**
@@ -16,6 +16,7 @@ use App\Components\Scaffold\Services\User\Requests\CreateFromUserRequest;
 use App\Components\Scaffold\Services\User\Requests\UpdateFromUserRequest;
 use App\Components\Scaffold\Services\User\Responses\BrowseUserResponse;
 use App\Components\Scaffold\Services\User\Responses\CreateUserResponse;
+use App\Components\Scaffold\Services\User\Responses\ReadUserResponse;
 use App\Components\Scaffold\Services\User\Responses\UpdateUserResponse;
 use App\Components\Scaffold\Services\User\Shared\UserCallable;
 use Illuminate\Foundation\Application;
@@ -75,11 +76,13 @@ class UserService extends Service
         return $response;
     }
 
-    /**
-     *
-     */
-    public function read()
+    public function read($uuid, array $data, array $option = [], array $param = [])
     {
+        $id       = $this->userRepository->getIdBy($uuid) ?? $uuid;
+        $user     = $this->userRepository->getById($id);
+        $response = $this->readResponse(new ReadUserResponse, $uuid, $user, $option, $param);
+
+        return $response;
     }
 
     /**
