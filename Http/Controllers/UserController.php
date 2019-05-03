@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/4/19 1:49 AM
+ * Last modified 5/4/19 1:58 AM
  */
 
 /**
@@ -55,14 +55,8 @@ class UserController extends Controller
                 'paging' => $request->header('Page-Paging') ?? Config::get('scaffold.api.page_paging'),
             ],
         ];
-        $option = [];
-        $param  = [
-            'type' => $this->type,
-            'link' => [
-                'fullUrl' => $request->fullUrl(),
-                'url'     => $request->url(),
-            ],
-        ];
+        $option = $this->getOption($request);
+        $param  = $this->getParam($request, ['type' => $this->type]);
 
         try {
             $response = $this->userService->browse($data, $option, $param);
