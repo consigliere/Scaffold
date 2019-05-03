@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/27/19 5:17 AM
+ * Last modified 5/3/19 2:40 PM
  */
 
 /**
@@ -15,14 +15,16 @@ class UpdateFromUserRequest
 {
     public function __invoke($uuid, array $data = [], array $option = [], array $param = [])
     {
-        $user = [];
+        $user   = [];
+        $inList = [1, 2];
+        $roleId = (int)$data['roleId'];
 
         if (!empty($data)) {
             $user = [
-                'role_id'           => $data['roleId'],
+                'role_id'           => in_array($roleId, $inList, true) ? $roleId : 2,
                 'username'          => strtolower($data['username']),
                 'name'              => $data['name'],
-                'email'             => $data['email'],
+                'email'             => strtolower($data['email']),
                 'avatar'            => $data['avatar'],
                 'email_verified_at' => $data['emailVerifiedAt'],
                 'remember_token'    => $data['rememberToken'],
