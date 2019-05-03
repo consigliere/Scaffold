@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/2/19 2:06 AM
+ * Last modified 5/3/19 2:40 PM
  */
 
 /**
@@ -27,6 +27,8 @@ class CreateUserResponse
                     'username' => $data->username,
                     'name'     => $data->name,
                     'email'    => $data->email,
+                    'avatar'   => $data->avatar,
+                    'settings' => $data->settings,
                 ],
             ];
             $user['link'] = [
