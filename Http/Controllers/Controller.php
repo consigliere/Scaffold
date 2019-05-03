@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/25/19 7:10 PM
+ * Last modified 5/4/19 12:57 AM
  */
 
 /**
@@ -20,6 +20,8 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Config;
 use JsonSerializable;
 
 /**
@@ -46,5 +48,58 @@ abstract class Controller extends BaseController
         }
 
         return new JsonResponse($data, $statusCode, $headers);
+    }
+
+    /**
+     * @param       $req
+     * @param array $param
+     *
+     * @return array
+     */
+    protected function getOption($req, array $param = []): array
+    {
+        $option = [
+            'api' => [
+                'hasLink' => true,
+                'hasMeta' => true,
+            ],
+        ];
+
+        return Arr::dot($option);
+    }
+
+    /**
+     * @param       $req
+     * @param array $param
+     *
+     * @return array
+     */
+    protected function getParam($req, array $param = []): array
+    {
+        $type = $param['type'] ?? '';
+
+        $param = [
+            'app'  => [
+                'name' => Config::get('app.name'),
+            ],
+            'api'  => [
+                'meta' => [
+                    'author' => [],
+                    'email'  => Config::get('scaffold.api.meta.email'),
+                ],
+            ],
+            'type' => $type,
+            'auth' => [
+                'user' => [
+                    'id' => $req->user()->id,
+                ],
+            ],
+            'link' => [
+                'fullUrl' => $req->fullUrl(),
+                'url'     => $req->url(),
+            ],
+        ];
+
+        return Arr::dot($param);
     }
 }
