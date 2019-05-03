@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/4/19 12:57 AM
+ * Last modified 5/4/19 1:10 AM
  */
 
 /**
@@ -100,6 +100,10 @@ abstract class Controller extends BaseController
             ],
         ];
 
-        return Arr::dot($param);
+        $newParam = Arr::dot($param);
+
+        $newParam['api.meta.author'] = Config::get('scaffold.api.meta.author');
+
+        return $newParam;
     }
 }
