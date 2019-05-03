@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/4/19 3:58 AM
+ * Last modified 5/4/19 4:10 AM
  */
 
 /**
@@ -97,6 +97,12 @@ class UserController extends Controller
         return $this->response($response, 201);
     }
 
+    /**
+     * @param null                     $uuid
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function read($uuid = null, Request $request)
     {
         $data   = [];
