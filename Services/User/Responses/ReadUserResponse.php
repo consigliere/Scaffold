@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/4/19 3:58 AM
+ * Last modified 5/4/19 4:10 AM
  */
 
 /**
@@ -12,8 +12,20 @@
 namespace App\Components\Scaffold\Services\User\Responses;
 
 
+/**
+ * Class ReadUserResponse
+ * @package App\Components\Scaffold\Services\User\Responses
+ */
 class ReadUserResponse
 {
+    /**
+     * @param       $uuid
+     * @param       $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return array
+     */
     public function __invoke($uuid, $data, array $option = [], array $param = [])
     {
         $user = [];
