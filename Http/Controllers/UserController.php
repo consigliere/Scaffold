@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/4/19 1:23 AM
+ * Last modified 5/4/19 1:49 AM
  */
 
 /**
@@ -149,7 +149,7 @@ class UserController extends Controller
     public function delete($uuid, Request $request): \Illuminate\Http\JsonResponse
     {
         try {
-            $response = $this->userService->delete($uuid);
+            $this->userService->delete($uuid);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error]);
 
