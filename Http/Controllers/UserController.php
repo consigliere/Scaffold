@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/3/19 4:36 AM
+ * Last modified 5/4/19 12:59 AM
  */
 
 /**
@@ -87,16 +87,10 @@ class UserController extends Controller
         $data   = [
             'input' => $request->all(),
         ];
-        $option = [];
-        $param  = [
-            'type' => $this->type,
-            'link' => [
-                'fullUrl' => $request->fullUrl(),
-            ],
-            'user' => [
-                'id' => $request->user()->id,
-            ],
-        ];
+        $option = $this->getOption($request);
+        $param  = $this->getParam($request, ['type' => $this->type]);
+
+        $param['api.meta.author'] = Config::get('scaffold.api.meta.author');
 
         try {
             $response = $this->userService->create($data, $option, $param);
