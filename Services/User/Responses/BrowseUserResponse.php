@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/3/19 2:40 PM
+ * Last modified 5/4/19 3:43 AM
  */
 
 /**
@@ -10,8 +10,6 @@
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
-
-use Illuminate\Support\Facades\Config;
 
 /**
  * Class BrowseUserResponse
@@ -48,7 +46,7 @@ class BrowseUserResponse
 
         $users['data'] = $newData;
         $users['link'] = [
-            'self'  => $param['link']['fullUrl'],
+            'self'  => $param['link.fullUrl'],
             'first' => $data->url(1),
             'last'  => $data->url($data->lastPage()),
             'prev'  => $data->previousPageUrl(),
@@ -58,12 +56,12 @@ class BrowseUserResponse
             "current_page" => $data->currentPage(),
             'from'         => $data->firstItem(),
             'last_page'    => $data->lastPage(),
-            'path'         => $param['link']['url'],
+            'path'         => $param['link.url'],
             'per_page'     => $data->perPage(),
             'to'           => $data->lastItem(),
             'total'        => $data->total(),
-            'copyright'    => 'copyrightⒸ ' . date('Y') . ' ' . Config::get('app.name'),
-            'author'       => Config::get('scaffold.api.meta.author'),
+            'copyright'    => 'copyrightⒸ ' . date('Y') . ' ' . $param['app.name'],
+            'author'       => $param['api.meta.author'],
         ];
 
         return $users;
