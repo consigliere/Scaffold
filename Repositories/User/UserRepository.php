@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/4/19 12:51 AM
+ * Last modified 5/4/19 1:23 AM
  */
 
 /**
@@ -125,7 +125,7 @@ class UserRepository extends Repository implements UserRepositoryInterface
         if (isset($data['email_verified_at']) && !empty($data['email_verified_at']) && ($data['email_verified_at'] !== null)) {
             $user->email_verified_at = $data['email_verified_at'];
         }
-        $user->updated_by = $param['user']['id'] ?? 0;
+        $user->updated_by = $param['auth.user.id'] ?? 0;
 
         $user->save();
 
