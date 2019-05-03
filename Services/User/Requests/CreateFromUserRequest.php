@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/3/19 2:32 PM
+ * Last modified 5/3/19 7:33 PM
  */
 
 /**
@@ -17,22 +17,23 @@ class CreateFromUserRequest
 {
     public function __invoke(array $data = [], array $option = [], array $param = [])
     {
+        $dataIn = $data['input'];
         $user   = [];
         $inList = [1, 2];
-        $roleId = (int)$data['roleId'];
+        $roleId = (int)$dataIn['roleId'];
 
-        if (!empty($data)) {
+        if (!empty($dataIn)) {
             $user = [
                 'role_id'           => in_array($roleId, $inList, true) ? $roleId : 2,
-                'uuid'              => (string)Uuid::generate(5, $data['username'], Uuid::NS_DNS),
-                'username'          => strtolower($data['username']),
-                'name'              => $data['name'],
-                'email'             => $data['email'],
-                'avatar'            => $data['avatar'],
-                'email_verified_at' => $data['emailVerifiedAt'],
-                'password'          => password_hash($data['password'], PASSWORD_BCRYPT),
-                'remember_token'    => $data['rememberToken'],
-                'settings'          => $data['settings'],
+                'uuid'              => (string)Uuid::generate(5, $dataIn['username'], Uuid::NS_DNS),
+                'username'          => strtolower($dataIn['username']),
+                'name'              => $dataIn['name'],
+                'email'             => strtolower($dataIn['email']),
+                'avatar'            => $dataIn['avatar'],
+                'email_verified_at' => $dataIn['emailVerifiedAt'],
+                'password'          => password_hash($dataIn['password'], PASSWORD_BCRYPT),
+                'remember_token'    => $dataIn['rememberToken'],
+                'settings'          => $dataIn['settings'],
             ];
         }
 
