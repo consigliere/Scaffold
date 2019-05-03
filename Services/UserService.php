@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/4/19 4:07 AM
+ * Last modified 5/4/19 4:10 AM
  */
 
 /**
@@ -76,6 +76,14 @@ class UserService extends Service
         return $response;
     }
 
+    /**
+     * @param       $uuid
+     * @param array $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return mixed
+     */
     public function read($uuid, array $data, array $option = [], array $param = [])
     {
         $id       = $this->userRepository->getIdBy($uuid) ?? $uuid;
