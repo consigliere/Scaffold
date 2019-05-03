@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/4/19 1:23 AM
+ * Last modified 5/4/19 1:49 AM
  */
 
 /**
@@ -104,7 +104,7 @@ class UserService extends Service
      * @param       $uuid
      * @param array $param
      */
-    public function delete($uuid, array $param = [])
+    public function delete($uuid, array $param = []): void
     {
         $ids = explode(",", $uuid);
 
