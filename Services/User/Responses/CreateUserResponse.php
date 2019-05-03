@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/3/19 2:40 PM
+ * Last modified 5/4/19 1:01 AM
  */
 
 /**
@@ -11,10 +11,19 @@
 
 namespace App\Components\Scaffold\Services\User\Responses;
 
-use Illuminate\Support\Facades\Config;
-
+/**
+ * Class CreateUserResponse
+ * @package App\Components\Scaffold\Services\User\Responses
+ */
 class CreateUserResponse
 {
+    /**
+     * @param       $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return array
+     */
     public function __invoke($data, array $option = [], array $param = [])
     {
         $user = [];
@@ -31,13 +40,19 @@ class CreateUserResponse
                     'settings' => $data->settings,
                 ],
             ];
-            $user['link'] = [
-                'self' => $param['link']['fullUrl'],
-            ];
-            $user['meta'] = [
-                'copyright' => 'copyrightⒸ ' . date('Y') . ' ' . Config::get('app.name'),
-                'author'    => Config::get('scaffold.api.meta.author'),
-            ];
+
+            if ($option['api.hasLink']) {
+                $user['link'] = [
+                    'self' => $param['link.fullUrl'],
+                ];
+            }
+
+            if ($option['api.hasMeta']) {
+                $user['meta'] = [
+                    'copyright' => 'copyrightⒸ ' . date('Y') . ' ' . $param['app.name'],
+                    'author'    => $param['api.meta.author'],
+                ];
+            }
         }
 
         return $user;
