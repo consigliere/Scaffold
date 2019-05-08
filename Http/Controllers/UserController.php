@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/4/19 4:10 AM
+ * Last modified 5/9/19 12:45 AM
  */
 
 /**
@@ -35,11 +35,11 @@ class UserController extends Controller
     /**
      * UserController constructor.
      *
-     * @param \App\Components\Scaffold\Services\UserService $userService
+     * @param \App\Components\Scaffold\Services\UserService $UserService
      */
-    public function __construct(UserService $userService)
+    public function __construct(UserService $UserService)
     {
-        $this->userService = $userService;
+        $this->userService = $UserService;
         $this->type        = 'users';
     }
 
@@ -103,7 +103,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function read($uuid = null, Request $request)
+    public function read($uuid = null, Request $request): \Illuminate\Http\JsonResponse
     {
         $data   = [];
         $option = $this->getOption($request);
