@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/4/19 4:10 AM
+ * Last modified 5/9/19 8:05 PM
  */
 
 /**
@@ -12,12 +12,10 @@
 namespace App\Components\Scaffold\Services;
 
 use App\Components\Scaffold\Repositories\UserRepositoryInterface;
-use App\Components\Scaffold\Services\User\Requests\CreateFromUserRequest;
-use App\Components\Scaffold\Services\User\Requests\UpdateFromUserRequest;
-use App\Components\Scaffold\Services\User\Responses\BrowseUserResponse;
-use App\Components\Scaffold\Services\User\Responses\CreateUserResponse;
-use App\Components\Scaffold\Services\User\Responses\ReadUserResponse;
-use App\Components\Scaffold\Services\User\Responses\UpdateUserResponse;
+use App\Components\Scaffold\Services\User\Requests\CreateUser;
+use App\Components\Scaffold\Services\User\Requests\UpdateUser;
+use App\Components\Scaffold\Services\User\Responses\UserCollection;
+use App\Components\Scaffold\Services\User\Responses\UserResource;
 use App\Components\Scaffold\Services\User\Shared\UserCallable;
 use Illuminate\Foundation\Application;
 
@@ -55,9 +53,8 @@ class UserService extends Service
     public function browse(array $data = [], array $option = [], array $param = [])
     {
         $users    = $this->userRepository->browse($data);
-        $response = $this->browseResponse(new BrowseUserResponse, $users, $option, $param);
 
-        return $response;
+        return $this->transform(new UserCollection, $users, $option, $param);
     }
 
     /**
@@ -69,11 +66,10 @@ class UserService extends Service
      */
     public function create(array $data, array $option = [], array $param = []): array
     {
-        $newUser  = $this->createData(new CreateFromUserRequest, $data);
-        $user     = $this->userRepository->create($newUser, $option, $param);
-        $response = $this->createResponse(new CreateUserResponse, $user, $option, $param);
+        $newUser = $this->reform(new CreateUser, $data);
+        $user    = $this->userRepository->create($newUser, $option, $param);
 
-        return $response;
+        return $this->transform(new UserResource, $user, $option, $param);
     }
 
     /**
@@ -86,11 +82,10 @@ class UserService extends Service
      */
     public function read($uuid, array $data, array $option = [], array $param = [])
     {
-        $id       = $this->userRepository->getIdBy($uuid) ?? $uuid;
-        $user     = $this->userRepository->getById($id);
-        $response = $this->readResponse(new ReadUserResponse, $uuid, $user, $option, $param);
+        $id   = $this->userRepository->getId($uuid) ?? $uuid;
+        $user = $this->userRepository->getById($id);
 
-        return $response;
+        return $this->transform(new UserResource, $user, $option, $param);
     }
 
     /**
@@ -103,12 +98,11 @@ class UserService extends Service
      */
     public function update($uuid, array $data, array $option = [], array $param = [])
     {
-        $newUser  = $this->updateData(new UpdateFromUserRequest, $uuid, $data, $option, $param);
-        $id       = $this->userRepository->getIdBy($uuid) ?? $uuid;
-        $user     = $this->userRepository->update($id, $newUser, $option, $param);
-        $response = $this->updateResponse(new UpdateUserResponse, $uuid, $user, $option, $param);
+        $id      = $this->userRepository->getId($uuid) ?? $uuid;
+        $newUser = $this->reform(new UpdateUser, $data, $option, $param);
+        $user    = $this->userRepository->update($id, $newUser, $option, $param);
 
-        return $response;
+        return $this->transform(new UserResource, $user, $option, $param);
     }
 
     /**
@@ -120,7 +114,7 @@ class UserService extends Service
         $ids = explode(",", $uuid);
 
         foreach ($ids as $id) {
-            $id = $this->userRepository->getIdBy($id) ?? $id;
+            $id = $this->userRepository->getId($id) ?? $id;
 
             $this->userRepository->delete($id);
         }
