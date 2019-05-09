@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/9/19 7:32 PM
+ * Last modified 5/10/19 4:49 AM
  */
 
 /**
@@ -45,7 +45,7 @@ class UserRepository extends Repository implements UserRepositoryInterface
      */
     public function browse(array $data = [], array $option = [], array $param = [])
     {
-        $paging = (int)$data['header']['paging'];
+        $paging = (int)data_get($data, 'header.paging');
         $users  = $this->getModel();
 
         return $users->paginate($paging);
@@ -138,7 +138,7 @@ class UserRepository extends Repository implements UserRepositoryInterface
      *
      * @return mixed
      */
-    public function getId($uuid, array $param = [])
+    public function getIdFromUuid($uuid, array $param = [])
     {
         $users = $this->getModel()::where('uuid', '=', $uuid)->orWhere('id', '=', $uuid)->get();
 
