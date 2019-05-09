@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/9/19 12:45 AM
+ * Last modified 5/9/19 7:28 PM
  */
 
 /**
@@ -79,7 +79,7 @@ class UserController extends Controller
     public function create(UserCreateFormRequest $request): \Illuminate\Http\JsonResponse
     {
         $data   = [
-            'input' => $request->all(),
+            'form' => $request->all(),
         ];
         $option = $this->getOption($request);
         $param  = $this->getParam($request, ['type' => $this->type]);
@@ -131,7 +131,7 @@ class UserController extends Controller
     public function update($uuid, UserUpdateFormRequest $request): \Illuminate\Http\JsonResponse
     {
         $data   = [
-            'input' => $request->all(),
+            'form' => $request->all(),
         ];
         $option = $this->getOption($request);
         $param  = $this->getParam($request, ['type' => $this->type]);
