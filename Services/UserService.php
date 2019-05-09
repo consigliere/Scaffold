@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/9/19 8:05 PM
+ * Last modified 5/10/19 4:55 AM
  */
 
 /**
@@ -52,7 +52,7 @@ class UserService extends Service
      */
     public function browse(array $data = [], array $option = [], array $param = [])
     {
-        $users    = $this->userRepository->browse($data);
+        $users = $this->userRepository->browse($data);
 
         return $this->transform(new UserCollection, $users, $option, $param);
     }
@@ -82,7 +82,7 @@ class UserService extends Service
      */
     public function read($uuid, array $data, array $option = [], array $param = [])
     {
-        $id   = $this->userRepository->getId($uuid) ?? $uuid;
+        $id   = $this->userRepository->getIdFromUuid($uuid) ?? $uuid;
         $user = $this->userRepository->getById($id);
 
         return $this->transform(new UserResource, $user, $option, $param);
@@ -98,7 +98,7 @@ class UserService extends Service
      */
     public function update($uuid, array $data, array $option = [], array $param = [])
     {
-        $id      = $this->userRepository->getId($uuid) ?? $uuid;
+        $id      = $this->userRepository->getIdFromUuid($uuid) ?? $uuid;
         $newUser = $this->reform(new UpdateUser, $data, $option, $param);
         $user    = $this->userRepository->update($id, $newUser, $option, $param);
 
@@ -114,7 +114,7 @@ class UserService extends Service
         $ids = explode(",", $uuid);
 
         foreach ($ids as $id) {
-            $id = $this->userRepository->getId($id) ?? $id;
+            $id = $this->userRepository->getIdFromUuid($id) ?? $id;
 
             $this->userRepository->delete($id);
         }
