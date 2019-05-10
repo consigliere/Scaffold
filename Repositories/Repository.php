@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/10/19 7:20 PM
+ * Last modified 5/10/19 7:23 PM
  */
 
 /**
@@ -11,9 +11,10 @@
 
 namespace App\Components\Scaffold\Repositories;
 
-# @formatter:off
-use App\Components\Signal\Shared\{ErrorLog,Signal};use App\Components\Signature\Repositories\SignatureRepository as BaseRepository;
-# @formatter:on
+use App\Components\Signal\Shared\{
+    ErrorLog, Signal
+};
+use App\Components\Signature\Repositories\SignatureRepository as BaseRepository;
 
 /**
  * Class Repository
