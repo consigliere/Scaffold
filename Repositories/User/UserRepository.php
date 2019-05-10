@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/10/19 7:19 PM
+ * Last modified 5/10/19 7:22 PM
  */
 
 /**
@@ -12,8 +12,7 @@
 namespace App\Components\Scaffold\Repositories\User;
 
 # @formatter:off
-use App\Components\Scaffold\Repositories\{Repository,UserRepositoryInterface};use Illuminate\Support\Facades\Config;
-# @formatter:on
+use App\Components\Scaffold\Repositories\{Repository,UserRepositoryInterface};use Illuminate\Support\Facades\Config;# @formatter:on
 
 /**
  * Class UserRepository
