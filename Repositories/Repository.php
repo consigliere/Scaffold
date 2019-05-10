@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/9/19 1:40 PM
+ * Last modified 5/10/19 7:20 PM
  */
 
 /**
@@ -11,9 +11,9 @@
 
 namespace App\Components\Scaffold\Repositories;
 
-use App\Components\Signal\Shared\ErrorLog;
-use App\Components\Signal\Shared\Signal;
-use App\Components\Signature\Repositories\SignatureRepository as BaseRepository;
+# @formatter:off
+use App\Components\Signal\Shared\{ErrorLog,Signal};use App\Components\Signature\Repositories\SignatureRepository as BaseRepository;
+# @formatter:on
 
 /**
  * Class Repository
@@ -22,4 +22,32 @@ use App\Components\Signature\Repositories\SignatureRepository as BaseRepository;
 abstract class Repository extends BaseRepository
 {
     use Signal, ErrorLog;
+
+    /**
+     * @param       $uuid
+     * @param array $param
+     *
+     * @return mixed
+     */
+    public function getIdFromUuid($uuid, array $param = [])
+    {
+        $users = $this->getModel()::where('uuid', '=', $uuid)->orWhere('id', '=', $uuid)->get();
+
+        $uid = [];
+        $i   = 0;
+        foreach ($users as $user) {
+            $uid[$i] = $this->getModel()::where([
+                ['id', $user->id],
+                ['uuid', $uuid],
+            ])->first();
+
+            if (null === $uid[$i]) {
+                unset($uid[$i]);
+            } else {
+                return $uid[$i]->id;
+            }
+
+            $i++;
+        }
+    }
 }
