@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/12/19 2:38 AM
+ * Last modified 5/12/19 7:44 AM
  */
 
 /**
@@ -18,15 +18,35 @@ use App\Components\Scaffold\Services\Role\Responses\RoleCollection;
 use App\Components\Scaffold\Services\Role\Responses\RoleResource;
 use Illuminate\Foundation\Application;
 
+/**
+ * Class RoleService
+ * @package App\Components\Scaffold\Services
+ */
 class RoleService extends Service
 {
+    /**
+     * @var \App\Components\Scaffold\Repositories\RoleRepositoryInterface
+     */
     private $roleRepository;
 
+    /**
+     * RoleService constructor.
+     *
+     * @param \Illuminate\Foundation\Application                            $app
+     * @param \App\Components\Scaffold\Repositories\RoleRepositoryInterface $RoleRepository
+     */
     public function __construct(Application $app, RoleRepositoryInterface $RoleRepository)
     {
         $this->roleRepository = $RoleRepository;
     }
 
+    /**
+     * @param array $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return array
+     */
     public function browse(array $data = [], array $option = [], array $param = []): array
     {
         $roles = $this->roleRepository->browse($data);
@@ -34,6 +54,13 @@ class RoleService extends Service
         return $this->transform(new RoleCollection, $roles, $option, $param);
     }
 
+    /**
+     * @param array $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return array
+     */
     public function create(array $data, array $option = [], array $param = []): array
     {
         $newRole = $this->reform(new CreateRole, $data);
@@ -42,6 +69,14 @@ class RoleService extends Service
         return $this->transform(new RoleResource, $role, $option, $param);
     }
 
+    /**
+     * @param       $uuid
+     * @param array $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return array
+     */
     public function read($uuid, array $data, array $option = [], array $param = [])
     {
         $id   = $this->roleRepository->getIdFromUuid($uuid) ?? $uuid;
@@ -50,6 +85,14 @@ class RoleService extends Service
         return $this->transform(new RoleResource, $role, $option, $param);
     }
 
+    /**
+     * @param       $uuid
+     * @param array $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return array
+     */
     public function update($uuid, array $data, array $option = [], array $param = []): array
     {
         $id      = $this->roleRepository->getIdFromUuid($uuid) ?? $uuid;
@@ -59,6 +102,10 @@ class RoleService extends Service
         return $this->transform(new RoleResource, $role, $option, $param);
     }
 
+    /**
+     * @param       $uuid
+     * @param array $param
+     */
     public function delete($uuid, array $param = []): void
     {
         $ids = explode(",", $uuid);
