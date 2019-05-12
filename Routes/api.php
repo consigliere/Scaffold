@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/12/19 2:49 AM
+ * Last modified 5/12/19 8:36 AM
  */
 
 /**
@@ -28,7 +28,7 @@ Route::group(['prefix' => 'v1'], function() {
             'namespace'  => '\App\Components\Scaffold\Http\Controllers',
         ],
         function() {
-            // Route::get('/profile', 'UserController@profile');
+            Route::get('/profile', 'UserController@profile');
             Route::get('/', 'UserController@browse');
             Route::get('/{uuid}', 'UserController@read');
             Route::post('/', 'UserController@create');

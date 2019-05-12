@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/10/19 4:55 AM
+ * Last modified 5/12/19 8:43 AM
  */
 
 /**
@@ -41,6 +41,20 @@ class UserService extends Service
     public function __construct(Application $app, UserRepositoryInterface $userRepository)
     {
         $this->userRepository = $userRepository;
+    }
+
+    /**
+     * @param array $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return array
+     */
+    public function profile(array $data = [], array $option = [], array $param = []): array
+    {
+        $user = $this->userRepository->getById($param['auth.user.id']);
+
+        return $this->transform(new UserResource, $user, $option, $param);
     }
 
     /**

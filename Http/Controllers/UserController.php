@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/9/19 7:28 PM
+ * Last modified 5/12/19 8:43 AM
  */
 
 /**
@@ -41,6 +41,30 @@ class UserController extends Controller
     {
         $this->userService = $UserService;
         $this->type        = 'users';
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function profile(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $data   = [];
+        $option = $this->getOption($request);
+        $param  = $this->getParam($request, ['type' => $this->type]);
+
+        try {
+            $response = $this->userService->profile($data, $option, $param);
+        } catch (\Exception $error) {
+            $this->fireLog('error', $error->getMessage(), ['error' => $error]);
+
+            return response()
+                ->error($error->getMessage(), $error->getCode())
+                ->setStatusCode(500);
+        }
+
+        return $this->response($response, 200);
     }
 
     /**

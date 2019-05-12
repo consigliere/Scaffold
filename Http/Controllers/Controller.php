@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/4/19 1:10 AM
+ * Last modified 5/12/19 8:06 AM
  */
 
 /**
@@ -90,9 +90,7 @@ abstract class Controller extends BaseController
             ],
             'type' => $type,
             'auth' => [
-                'user' => [
-                    'id' => $req->user()->id,
-                ],
+                'user' => $req->user()->toArray(),
             ],
             'link' => [
                 'fullUrl' => $req->fullUrl(),
