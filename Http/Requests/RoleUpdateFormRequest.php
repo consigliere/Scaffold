@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/7/19 5:55 PM
+ * Last modified 5/12/19 7:27 AM
  */
 
 /**
@@ -13,13 +13,23 @@ namespace App\Components\Scaffold\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Class RoleUpdateFormRequest
+ * @package App\Components\Scaffold\Http\Requests
+ */
 class RoleUpdateFormRequest extends FormRequest
 {
+    /**
+     * @return bool
+     */
     public function authorize()
     {
         return true;
     }
 
+    /**
+     * @return array
+     */
     public function rules()
     {
         return [
