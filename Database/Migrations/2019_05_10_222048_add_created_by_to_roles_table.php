@@ -1,0 +1,36 @@
+<?php
+/**
+ * Copyright(c) 2019. All rights reserved.
+ * Last modified 5/12/19 7:22 AM
+ */
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class AddCreatedByToRolesTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::table('roles', function(Blueprint $table) {
+            $table->integer('created_by')->after('display_name')->nullable();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('roles', function(Blueprint $table) {
+            $table->dropColumn('created_by');
+        });
+    }
+}

@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/9/19 12:59 PM
+ * Last modified 5/12/19 7:22 AM
  */
 
 /**
@@ -11,9 +11,14 @@
 
 namespace App\Components\Scaffold\Entities;
 
-use TCG\Voyager\Models\Role as AppRole;
+use App\Components\Signature\Traits\UuidsTrait;
+use TCG\Voyager\Models\Role as BaseRole;
 
-class Role extends AppRole
+/**
+ * Class Role
+ * @package App\Components\Scaffold\Entities
+ */
+class Role extends BaseRole
 {
-
+    use UuidsTrait;
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/1/19 5:08 PM
+ * Last modified 5/12/19 2:49 AM
  */
 
 /**
@@ -34,6 +34,21 @@ Route::group(['prefix' => 'v1'], function() {
             Route::post('/', 'UserController@create');
             Route::patch('/{uuid}', 'UserController@update');
             Route::delete('/{uuid}', 'UserController@delete');
+        }
+    );
+
+    Route::group(
+        [
+            'middleware' => 'auth:api',
+            'prefix'     => 'roles',
+            'namespace'  => '\App\Components\Scaffold\Http\Controllers',
+        ],
+        function() {
+            Route::get('/', 'RoleController@browse');
+            Route::get('/{uuid}', 'RoleController@read');
+            Route::post('/', 'RoleController@create');
+            Route::patch('/{uuid}', 'RoleController@update');
+            Route::delete('/{uuid}', 'RoleController@delete');
         }
     );
 });
