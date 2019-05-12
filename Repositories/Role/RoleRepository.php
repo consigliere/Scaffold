@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/12/19 7:22 AM
+ * Last modified 5/12/19 7:30 AM
  */
 
 /**
@@ -15,16 +15,33 @@ use App\Components\Scaffold\Entities\Role;
 use App\Components\Scaffold\Repositories\Repository;
 use App\Components\Scaffold\Repositories\RoleRepositoryInterface;
 
+/**
+ * Class RoleRepository
+ * @package App\Components\Scaffold\Repositories\Role
+ */
 class RoleRepository extends Repository implements RoleRepositoryInterface
 {
 
+    /**
+     * @var $role
+     */
     protected $role;
 
+    /**
+     * @return \App\Components\Scaffold\Entities\Role
+     */
     protected function getModel()
     {
         return new Role;
     }
 
+    /**
+     * @param array $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return mixed
+     */
     public function browse(array $data = [], array $option = [], array $param = [])
     {
         $paging = (int)data_get($data, 'header.paging');
@@ -33,6 +50,13 @@ class RoleRepository extends Repository implements RoleRepositoryInterface
         return $roles->paginate($paging);
     }
 
+    /**
+     * @param array $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return \App\Components\Scaffold\Entities\Role
+     */
     public function create(array $data = [], array $option = [], array $param = [])
     {
         $role = $this->getModel();
@@ -47,6 +71,14 @@ class RoleRepository extends Repository implements RoleRepositoryInterface
         return $role;
     }
 
+    /**
+     * @param       $id
+     * @param array $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return mixed
+     */
     public function update($id, array $data = [], array $option = [], array $param = [])
     {
         $role = $this->getModel()::where('id', '=', $id)->firstOrFail();
