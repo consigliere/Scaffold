@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/10/19 6:38 AM
+ * Last modified 5/12/19 7:24 AM
  */
 
 /**
@@ -17,18 +17,38 @@ use App\Components\Scaffold\Services\RoleService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 
+/**
+ * Class RoleController
+ * @package App\Components\Scaffold\Http\Controllers
+ */
 class RoleController extends Controller
 {
+    /**
+     * @var string
+     */
     public $type;
 
+    /**
+     * @var \App\Components\Scaffold\Services\RoleService
+     */
     public $roleService;
 
+    /**
+     * RoleController constructor.
+     *
+     * @param \App\Components\Scaffold\Services\RoleService $RoleService
+     */
     public function __construct(RoleService $RoleService)
     {
         $this->roleService = $RoleService;
         $this->type        = 'roles';
     }
 
+    /**
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function browse(Request $request): \Illuminate\Http\JsonResponse
     {
         $data   = [
@@ -52,6 +72,11 @@ class RoleController extends Controller
         return $this->response($response, 200);
     }
 
+    /**
+     * @param \App\Components\Scaffold\Http\Requests\RoleCreateFormRequest $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function create(RoleCreateFormRequest $request): \Illuminate\Http\JsonResponse
     {
         $data   = [
@@ -73,6 +98,12 @@ class RoleController extends Controller
         return $this->response($response, 201);
     }
 
+    /**
+     * @param null                     $uuid
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function read($uuid = null, Request $request): \Illuminate\Http\JsonResponse
     {
         $data   = [];
@@ -92,6 +123,12 @@ class RoleController extends Controller
         return $this->response($response, 200);
     }
 
+    /**
+     * @param                                                              $uuid
+     * @param \App\Components\Scaffold\Http\Requests\RoleUpdateFormRequest $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update($uuid, RoleUpdateFormRequest $request): \Illuminate\Http\JsonResponse
     {
         $data   = [
@@ -113,6 +150,12 @@ class RoleController extends Controller
         return $this->response($response, 200);
     }
 
+    /**
+     * @param                          $uuid
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function delete($uuid, Request $request): \Illuminate\Http\JsonResponse
     {
         try {
