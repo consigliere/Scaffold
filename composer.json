@@ -22,8 +22,10 @@
     }
   },
   "require"    : {
-    "illuminate/support"  : "5.8.*",
-    "illuminate/contracts": "5.8.*",
-    "tcg/voyager"         : "^1.2"
+    "illuminate/support"   : "5.8.*",
+    "illuminate/contracts" : "5.8.*",
+    "tcg/voyager"          : "^1.2",
+    "consigliere/signature": "0.9.*",
+    "consigliere/signal"   : "^0.10"
   }
 }
