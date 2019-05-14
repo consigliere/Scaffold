@@ -1,8 +1,8 @@
 # Scaffold
 
-## API
-
 - [Postman API Doc](https://documenter.getpostman.com/view/1015471/S1LyVTUs)
+
+## API
 
 ### Get All Users
 
