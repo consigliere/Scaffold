@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/12/19 7:22 AM
+ * Last modified 5/14/19 11:36 AM
  */
 
 /**
@@ -31,7 +31,7 @@ class CreateRole
 
         if (!empty($dataIn)) {
             $role = [
-                'name'         => $dataIn['name'],
+                'name'         => strtolower($dataIn['name']),
                 'display_name' => $dataIn['displayName'],
             ];
         }
