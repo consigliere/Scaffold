@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/13/19 7:31 AM
+ * Last modified 5/14/19 11:36 AM
  */
 
 /**
@@ -31,7 +31,7 @@ class CreatePermission
 
         if (!empty($dataIn)) {
             $permission = [
-                'key'        => $dataIn['key'],
+                'key'        => strtolower($dataIn['key']),
                 'table_name' => $dataIn['entity'],
             ];
         }
