@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/12/19 8:06 AM
+ * Last modified 5/14/19 12:05 PM
  */
 
 /**
@@ -11,9 +11,8 @@
 
 namespace App\Components\Scaffold\Http\Controllers;
 
-use App\Components\Signal\Shared\{
-    ErrorLog, Signal
-};
+use App\Components\Signal\Shared\ErrorLog;
+use App\Components\Signal\Shared\Signal;
 use App\Components\Signature\Http\Controllers\SignatureController as BaseController;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -51,12 +50,12 @@ abstract class Controller extends BaseController
     }
 
     /**
-     * @param       $req
+     * @param       $request
      * @param array $param
      *
      * @return array
      */
-    protected function getOption($req, array $param = []): array
+    protected function getOption($request, array $param = []): array
     {
         $option = [
             'api' => [
@@ -69,12 +68,12 @@ abstract class Controller extends BaseController
     }
 
     /**
-     * @param       $req
+     * @param       $request
      * @param array $param
      *
      * @return array
      */
-    protected function getParam($req, array $param = []): array
+    protected function getParam($request, array $param = []): array
     {
         $type = $param['type'] ?? '';
 
@@ -90,11 +89,11 @@ abstract class Controller extends BaseController
             ],
             'type' => $type,
             'auth' => [
-                'user' => $req->user()->toArray(),
+                'user' => $request->user()->toArray(),
             ],
             'link' => [
-                'fullUrl' => $req->fullUrl(),
-                'url'     => $req->url(),
+                'fullUrl' => $request->fullUrl(),
+                'url'     => $request->url(),
             ],
         ];
 
