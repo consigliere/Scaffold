@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 4/9/19 1:10 PM
+ * Last modified 5/14/19 8:24 AM
  */
 
 /**
@@ -9,7 +9,7 @@
  * Created by @anonymoussc on 04/06/2019 12:32 PM.
  */
 
-namespace App\Components\Passerby\Entities;
+namespace App\Components\Scaffold\Entities;
 
 use App\User as AppUser;
 use Illuminate\Notifications\Notifiable;
