@@ -291,7 +291,7 @@ Example Response
 
 Example request
 
-```curl
+```http
 GET /api/v1/roles/4b166dbe-d99d-5091-abdd-95b83330ed3a HTTP/1.1
 Host: localhost:8000
 Accept: application/vnd.api+json
@@ -370,7 +370,7 @@ Notes:
 
 Example request
 
-```curl
+```http
 PATCH /api/v1/roles/ddcc8546-fe34-478c-b098-289c1240cfea HTTP/1.1
 Host: localhost:8000
 Accept: application/vnd.api+json
@@ -410,7 +410,7 @@ Example Response
 
 Example request
 
-```curl
+```http
 DELETE /api/v1/roles/ddcc8546-fe34-478c-b098-289c1240cfea HTTP/1.1
 Host: localhost:8000
 Accept: application/vnd.api+json
@@ -608,7 +608,7 @@ Example Response
 
 Example request
 
-```curl
+```http
 DELETE /api/v1/permissions/1f30f13f-363e-47fc-9695-e7eca585e330 HTTP/1.1
 Host: localhost:8000
 Accept: application/vnd.api+json
