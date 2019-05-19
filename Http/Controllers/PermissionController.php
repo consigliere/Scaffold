@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/13/19 7:26 AM
+ * Last modified 5/19/19 12:01 PM
  */
 
 /**
@@ -24,14 +24,9 @@ use Illuminate\Support\Facades\Config;
 class PermissionController extends Controller
 {
     /**
-     * @var string
-     */
-    public $type;
-
-    /**
      * @var \App\Components\Scaffold\Services\PermissionService
      */
-    public $permissionService;
+    private $permissionService;
 
     /**
      * PermissionController constructor.
@@ -41,6 +36,7 @@ class PermissionController extends Controller
     public function __construct(PermissionService $PermissionService)
     {
         $this->permissionService = $PermissionService;
+        $this->euuid             = $this->getUuid();
         $this->type              = 'permissions';
     }
 
@@ -62,11 +58,9 @@ class PermissionController extends Controller
         try {
             $response = $this->permissionService->browse($data, $option, $param);
         } catch (\Exception $error) {
-            $this->fireLog('error', $error->getMessage(), ['error' => $error]);
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return response()
-                ->error($error->getMessage(), $error->getCode())
-                ->setStatusCode(500);
+            return $this->response($this->getErrorResponse($this->euuid, $error), 500);
         }
 
         return $this->response($response, 200);
@@ -88,11 +82,9 @@ class PermissionController extends Controller
         try {
             $response = $this->permissionService->create($data, $option, $param);
         } catch (\Exception $error) {
-            $this->fireLog('error', $error->getMessage(), ['error' => $error]);
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return response()
-                ->error($error->getMessage(), $error->getCode())
-                ->setStatusCode(500);
+            return $this->response($this->getErrorResponse($this->euuid, $error), 500);
         }
 
         return $this->response($response, 201);
@@ -113,11 +105,9 @@ class PermissionController extends Controller
         try {
             $response = $this->permissionService->read($uuid, $data, $option, $param);
         } catch (\Exception $error) {
-            $this->fireLog('error', $error->getMessage(), ['error' => $error]);
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return response()
-                ->error($error->getMessage(), $error->getCode())
-                ->setStatusCode(500);
+            return $this->response($this->getErrorResponse($this->euuid, $error), 500);
         }
 
         return $this->response($response, 200);
@@ -140,11 +130,9 @@ class PermissionController extends Controller
         try {
             $response = $this->permissionService->update($uuid, $data, $option, $param);
         } catch (\Exception $error) {
-            $this->fireLog('error', $error->getMessage(), ['error' => $error]);
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return response()
-                ->error($error->getMessage(), $error->getCode())
-                ->setStatusCode(500);
+            return $this->response($this->getErrorResponse($this->euuid, $error), 500);
         }
 
         return $this->response($response, 200);
@@ -161,11 +149,9 @@ class PermissionController extends Controller
         try {
             $this->permissionService->delete($uuid);
         } catch (\Exception $error) {
-            $this->fireLog('error', $error->getMessage(), ['error' => $error]);
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return response()
-                ->error($error->getMessage(), $error->getCode())
-                ->setStatusCode(500);
+            return $this->response($this->getErrorResponse($this->euuid, $error), 500);
         }
 
         return $this->response(null, 204);
