@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/9/19 7:28 PM
+ * Last modified 5/19/19 2:51 PM
  */
 
 /**
@@ -50,7 +50,7 @@ class UserResource
             if ($option['api.hasMeta']) {
                 $user['meta'] = [
                     'copyright' => 'copyrightⒸ ' . date('Y') . ' ' . $param['app.name'],
-                    'author'    => $param['api.meta.author'],
+                    'author'    => $param['api.authors'],
                 ];
             }
         }
