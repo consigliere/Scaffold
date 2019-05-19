@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/19/19 9:06 AM
+ * Last modified 5/19/19 2:51 PM
  */
 
 /**
@@ -14,11 +14,9 @@ return [
     'api'  => [
         'meta'        => [
             'author' => [
-                [
-                    'name'  => 'anonymoussc',
-                    'email' => '50c5ac69@opayq.com',
-                ],
+                'anonymoussc',
             ],
+            'email'  => '50c5ac69@opayq.com',
         ],
         'authors'     => [
             [
