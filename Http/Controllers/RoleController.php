@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/12/19 7:24 AM
+ * Last modified 5/19/19 12:26 PM
  */
 
 /**
@@ -24,14 +24,9 @@ use Illuminate\Support\Facades\Config;
 class RoleController extends Controller
 {
     /**
-     * @var string
-     */
-    public $type;
-
-    /**
      * @var \App\Components\Scaffold\Services\RoleService
      */
-    public $roleService;
+    private $roleService;
 
     /**
      * RoleController constructor.
@@ -41,6 +36,7 @@ class RoleController extends Controller
     public function __construct(RoleService $RoleService)
     {
         $this->roleService = $RoleService;
+        $this->euuid       = $this->getUuid();
         $this->type        = 'roles';
     }
 
@@ -62,11 +58,9 @@ class RoleController extends Controller
         try {
             $response = $this->roleService->browse($data, $option, $param);
         } catch (\Exception $error) {
-            $this->fireLog('error', $error->getMessage(), ['error' => $error]);
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return response()
-                ->error($error->getMessage(), $error->getCode())
-                ->setStatusCode(500);
+            return $this->response($this->getErrorResponse($this->euuid, $error), 500);
         }
 
         return $this->response($response, 200);
@@ -88,11 +82,9 @@ class RoleController extends Controller
         try {
             $response = $this->roleService->create($data, $option, $param);
         } catch (\Exception $error) {
-            $this->fireLog('error', $error->getMessage(), ['error' => $error]);
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return response()
-                ->error($error->getMessage(), $error->getCode())
-                ->setStatusCode(500);
+            return $this->response($this->getErrorResponse($this->euuid, $error), 500);
         }
 
         return $this->response($response, 201);
@@ -113,11 +105,9 @@ class RoleController extends Controller
         try {
             $response = $this->roleService->read($uuid, $data, $option, $param);
         } catch (\Exception $error) {
-            $this->fireLog('error', $error->getMessage(), ['error' => $error]);
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return response()
-                ->error($error->getMessage(), $error->getCode())
-                ->setStatusCode(500);
+            return $this->response($this->getErrorResponse($this->euuid, $error), 500);
         }
 
         return $this->response($response, 200);
@@ -140,11 +130,9 @@ class RoleController extends Controller
         try {
             $response = $this->roleService->update($uuid, $data, $option, $param);
         } catch (\Exception $error) {
-            $this->fireLog('error', $error->getMessage(), ['error' => $error]);
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return response()
-                ->error($error->getMessage(), $error->getCode())
-                ->setStatusCode(500);
+            return $this->response($this->getErrorResponse($this->euuid, $error), 500);
         }
 
         return $this->response($response, 200);
@@ -161,11 +149,9 @@ class RoleController extends Controller
         try {
             $this->roleService->delete($uuid);
         } catch (\Exception $error) {
-            $this->fireLog('error', $error->getMessage(), ['error' => $error]);
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return response()
-                ->error($error->getMessage(), $error->getCode())
-                ->setStatusCode(500);
+            return $this->response($this->getErrorResponse($this->euuid, $error), 500);
         }
 
         return $this->response(null, 204);
