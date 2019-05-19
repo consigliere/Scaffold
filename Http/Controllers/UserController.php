@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/12/19 8:43 AM
+ * Last modified 5/19/19 11:46 AM
  */
 
 /**
@@ -33,6 +33,11 @@ class UserController extends Controller
     public $userService;
 
     /**
+     * @var string
+     */
+    public $euuid;
+
+    /**
      * UserController constructor.
      *
      * @param \App\Components\Scaffold\Services\UserService $UserService
@@ -40,6 +45,7 @@ class UserController extends Controller
     public function __construct(UserService $UserService)
     {
         $this->userService = $UserService;
+        $this->euuid       = $this->getUuid();
         $this->type        = 'users';
     }
 
@@ -51,17 +57,15 @@ class UserController extends Controller
     public function profile(Request $request): \Illuminate\Http\JsonResponse
     {
         $data   = [];
-        $option = $this->getOption($request);
-        $param  = $this->getParam($request, ['type' => $this->type]);
+        $option = $this->getOption();
+        $param  = $this->getParam($this->type);
 
         try {
             $response = $this->userService->profile($data, $option, $param);
         } catch (\Exception $error) {
-            $this->fireLog('error', $error->getMessage(), ['error' => $error]);
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return response()
-                ->error($error->getMessage(), $error->getCode())
-                ->setStatusCode(500);
+            return $this->response($this->getErrorResponse($this->euuid, $error), 500);
         }
 
         return $this->response($response, 200);
@@ -79,17 +83,15 @@ class UserController extends Controller
                 'paging' => $request->header('Page-Paging') ?? Config::get('scaffold.api.page_paging'),
             ],
         ];
-        $option = $this->getOption($request);
-        $param  = $this->getParam($request, ['type' => $this->type]);
+        $option = $this->getOption();
+        $param  = $this->getParam($this->type);
 
         try {
             $response = $this->userService->browse($data, $option, $param);
         } catch (\Exception $error) {
-            $this->fireLog('error', $error->getMessage(), ['error' => $error]);
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return response()
-                ->error($error->getMessage(), $error->getCode())
-                ->setStatusCode(500);
+            return $this->response($this->getErrorResponse($this->euuid, $error), 500);
         }
 
         return $this->response($response, 200);
@@ -105,17 +107,15 @@ class UserController extends Controller
         $data   = [
             'form' => $request->all(),
         ];
-        $option = $this->getOption($request);
-        $param  = $this->getParam($request, ['type' => $this->type]);
+        $option = $this->getOption();
+        $param  = $this->getParam($this->type);
 
         try {
             $response = $this->userService->create($data, $option, $param);
         } catch (\Exception $error) {
-            $this->fireLog('error', $error->getMessage(), ['error' => $error]);
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return response()
-                ->error($error->getMessage(), $error->getCode())
-                ->setStatusCode(500);
+            return $this->response($this->getErrorResponse($this->euuid, $error), 500);
         }
 
         return $this->response($response, 201);
@@ -130,17 +130,15 @@ class UserController extends Controller
     public function read($uuid = null, Request $request): \Illuminate\Http\JsonResponse
     {
         $data   = [];
-        $option = $this->getOption($request);
-        $param  = $this->getParam($request, ['type' => $this->type]);
+        $option = $this->getOption();
+        $param  = $this->getParam($this->type);
 
         try {
             $response = $this->userService->read($uuid, $data, $option, $param);
         } catch (\Exception $error) {
-            $this->fireLog('error', $error->getMessage(), ['error' => $error]);
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return response()
-                ->error($error->getMessage(), $error->getCode())
-                ->setStatusCode(500);
+            return $this->response($this->getErrorResponse($this->euuid, $error), 500);
         }
 
         return $this->response($response, 200);
@@ -157,17 +155,15 @@ class UserController extends Controller
         $data   = [
             'form' => $request->all(),
         ];
-        $option = $this->getOption($request);
-        $param  = $this->getParam($request, ['type' => $this->type]);
+        $option = $this->getOption();
+        $param  = $this->getParam($this->type);
 
         try {
             $response = $this->userService->update($uuid, $data, $option, $param);
         } catch (\Exception $error) {
-            $this->fireLog('error', $error->getMessage(), ['error' => $error]);
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return response()
-                ->error($error->getMessage(), $error->getCode())
-                ->setStatusCode(500);
+            return $this->response($this->getErrorResponse($this->euuid, $error), 500);
         }
 
         return $this->response($response, 200);
@@ -184,11 +180,9 @@ class UserController extends Controller
         try {
             $this->userService->delete($uuid);
         } catch (\Exception $error) {
-            $this->fireLog('error', $error->getMessage(), ['error' => $error]);
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return response()
-                ->error($error->getMessage(), $error->getCode())
-                ->setStatusCode(500);
+            return $this->response($this->getErrorResponse($this->euuid, $error), 500);
         }
 
         return $this->response(null, 204);
