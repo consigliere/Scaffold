@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/17/19 8:19 AM
+ * Last modified 5/19/19 2:51 PM
  */
 
 /**
@@ -103,7 +103,7 @@ class UserCollection
         }
 
         $meta['copyright'] = 'copyrightⒸ ' . date('Y') . ' ' . $param['app.name'];
-        $meta['author']    = $param['api.meta.author'];
+        $meta['author']    = $param['api.authors'];
 
         return $meta;
     }
