@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/19/19 11:46 AM
+ * Last modified 5/19/19 12:01 PM
  */
 
 /**
@@ -24,18 +24,9 @@ use Illuminate\Support\Facades\Config;
 class UserController extends Controller
 {
     /**
-     * @var string
-     */
-    public $type;
-    /**
      * @var \App\Components\Scaffold\Services\UserService
      */
-    public $userService;
-
-    /**
-     * @var string
-     */
-    public $euuid;
+    private $userService;
 
     /**
      * UserController constructor.
