@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/19/19 12:26 PM
+ * Last modified 5/19/19 1:52 PM
  */
 
 /**
@@ -52,8 +52,8 @@ class RoleController extends Controller
                 'paging' => $request->header('Page-Paging') ?? Config::get('scaffold.api.page_paging'),
             ],
         ];
-        $option = $this->getOption($request);
-        $param  = $this->getParam($request, ['type' => $this->type]);
+        $option = $this->getOption();
+        $param  = $this->getParam($this->type);
 
         try {
             $response = $this->roleService->browse($data, $option, $param);
@@ -76,8 +76,8 @@ class RoleController extends Controller
         $data   = [
             'form' => $request->all(),
         ];
-        $option = $this->getOption($request);
-        $param  = $this->getParam($request, ['type' => $this->type]);
+        $option = $this->getOption();
+        $param  = $this->getParam($this->type);
 
         try {
             $response = $this->roleService->create($data, $option, $param);
@@ -99,8 +99,8 @@ class RoleController extends Controller
     public function read($uuid = null, Request $request): \Illuminate\Http\JsonResponse
     {
         $data   = [];
-        $option = $this->getOption($request);
-        $param  = $this->getParam($request, ['type' => $this->type]);
+        $option = $this->getOption();
+        $param  = $this->getParam($this->type);
 
         try {
             $response = $this->roleService->read($uuid, $data, $option, $param);
@@ -124,8 +124,8 @@ class RoleController extends Controller
         $data   = [
             'form' => $request->all(),
         ];
-        $option = $this->getOption($request);
-        $param  = $this->getParam($request, ['type' => $this->type]);
+        $option = $this->getOption();
+        $param  = $this->getParam($this->type);
 
         try {
             $response = $this->roleService->update($uuid, $data, $option, $param);
