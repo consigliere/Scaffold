@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/14/19 12:05 PM
+ * Last modified 5/19/19 11:51 AM
  */
 
 /**
@@ -20,8 +20,11 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use JsonSerializable;
+use Webpatser\Uuid\Uuid;
 
 /**
  * Class Controller
@@ -50,13 +53,14 @@ abstract class Controller extends BaseController
     }
 
     /**
-     * @param       $request
      * @param array $param
      *
      * @return array
      */
-    protected function getOption($request, array $param = []): array
+    protected function getOption(array $param = []): array
     {
+        $request = App::get('request');
+
         $option = [
             'api' => [
                 'hasLink' => true,
@@ -68,16 +72,16 @@ abstract class Controller extends BaseController
     }
 
     /**
-     * @param       $request
-     * @param array $param
+     * @param string $type
+     * @param array  $param
      *
      * @return array
      */
-    protected function getParam($request, array $param = []): array
+    protected function getParam(string $type = '', array $param = []): array
     {
-        $type = $param['type'] ?? '';
+        $request = App::get('request');
 
-        $param = [
+        $par = [
             'app'  => [
                 'name' => Config::get('app.name'),
             ],
@@ -89,7 +93,7 @@ abstract class Controller extends BaseController
             ],
             'type' => $type,
             'auth' => [
-                'user' => $request->user()->toArray(),
+                'user' => Auth::user()->toArray(),
             ],
             'link' => [
                 'fullUrl' => $request->fullUrl(),
@@ -97,10 +101,51 @@ abstract class Controller extends BaseController
             ],
         ];
 
-        $newParam = Arr::dot($param);
+        $newParam = Arr::dot($par);
 
         $newParam['api.meta.author'] = Config::get('scaffold.api.meta.author');
+        $newParam['api.authors']     = Config::get('scaffold.api.authors');
 
         return $newParam;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getUuid(): string
+    {
+        return (string)Uuid::generate(4);
+    }
+
+    /**
+     * @param       $id
+     * @param       $errorObj
+     * @param array $param
+     *
+     * @return array
+     */
+    protected function getErrorResponse($id, $errorObj, array $param = []): array
+    {
+        $request       = App::get('request');
+        $errorResponse = [];
+
+        data_set($errorResponse, 'error.id', $id);
+
+        if ($errorObj instanceof \Exception) {
+            data_set($errorResponse, 'error.code', $errorObj->getCode());
+            data_set($errorResponse, 'error.title', $errorObj->getMessage());
+
+            if (Config::get('app.env') !== 'production') {
+                data_set($errorResponse, 'error.source.file', $errorObj->getFile());
+                data_set($errorResponse, 'error.source.line', $errorObj->getLine());
+                data_set($errorResponse, 'error.detail', $errorObj->getTraceAsString());
+            }
+        }
+
+        data_set($errorResponse, 'link.self', $request->fullUrl());
+        data_set($errorResponse, 'meta.copyright', 'copyrightⒸ ' . date('Y') . ' ' . Config::get('app.name'));
+        data_set($errorResponse, 'meta.authors', Config::get('scaffold.api.authors'));
+
+        return $errorResponse;
     }
 }
