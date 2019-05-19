@@ -6,7 +6,7 @@
 
 ### Get All Users
 
-Example request
+#### Example request
 
 ```http
 GET /api/v1/users HTTP/1.1
@@ -16,7 +16,7 @@ Content-Type: application/vnd.api+json
 Page-Paging: 2
 ```
 
-Example Response
+#### Example Response
 
 ```json
 {
@@ -61,7 +61,10 @@ Example Response
         "total": 33,
         "copyright": "copyrightⒸ 2019 Onsigbaar",
         "author": [
-            "anonymoussc"
+          {
+            "name": "anonymoussc",
+            "email": "50c5ac69@opayq.com"
+          }
         ]
     }
 }
@@ -69,7 +72,7 @@ Example Response
 
 ### Get Users
 
-Example request
+#### Example request
 
 ```http
 GET /api/v1/users/9e556479-7003-5916-9cd6-33f4227cec9b HTTP/1.1
@@ -78,7 +81,7 @@ Accept: application/vnd.api+json
 Content-Type: application/vnd.api+json
 ```
 
-Example Response
+#### Example Response
 
 ```json
 {
@@ -99,7 +102,10 @@ Example Response
     "meta": {
         "copyright": "copyrightⒸ 2019 Onsigbaar",
         "author": [
-            "anonymoussc"
+          {
+            "name": "anonymoussc",
+            "email": "50c5ac69@opayq.com"
+          }
         ]
     }
 }
@@ -107,7 +113,7 @@ Example Response
 
 ### Create Users
 
-Example request
+#### Example request
 
 ```http
 POST /api/v1/users HTTP/1.1
@@ -128,7 +134,7 @@ Content-Type: application/vnd.api+json
 }
 ```
 
-Example Response
+#### Example Response
 
 ```json
 {
@@ -149,7 +155,10 @@ Example Response
     "meta": {
         "copyright": "copyrightⒸ 2019 Onsigbaar",
         "author": [
-            "anonymoussc"
+          {
+            "name": "anonymoussc",
+            "email": "50c5ac69@opayq.com"
+          }
         ]
     }
 }
@@ -160,7 +169,7 @@ Notes:
 
 ### Update Users
 
-Example request
+#### Example request
 
 ```http
 PATCH /api/v1/users/e2e74bb0-59e9-51ae-ab83-6e2621f4e8f3 HTTP/1.1
@@ -181,7 +190,7 @@ Content-Type: application/vnd.api+json
 }
 ```
 
-Example Response
+#### Example Response
 
 ```json
 {
@@ -202,7 +211,10 @@ Example Response
     "meta": {
         "copyright": "copyrightⒸ 2019 Onsigbaar",
         "author": [
-            "anonymoussc"
+          {
+            "name": "anonymoussc",
+            "email": "50c5ac69@opayq.com"
+          }
         ]
     }
 }
@@ -210,7 +222,7 @@ Example Response
 
 ### Delete Users
 
-Example request
+#### Example request
 
 ```http
 DELETE /api/v1/users/e2e74bb0-59e9-51ae-ab83-6e2621f4e8f3 HTTP/1.1
@@ -220,7 +232,7 @@ Content-Type: application/vnd.api+json
 
 ```
 
-Example Response
+#### Example Response
 
 ```json
 
@@ -231,7 +243,7 @@ Notes:
 
 ### Get All Roles
 
-Example request
+#### Example request
 
 ```http
 GET /api/v1/roles HTTP/1.1
@@ -242,7 +254,7 @@ Page-Paging: 2
 
 ```
 
-Example Response
+#### Example Response
 
 ```json
 {
@@ -281,7 +293,10 @@ Example Response
         "total": 5,
         "copyright": "copyrightⒸ 2019 Onsigbaar",
         "author": [
-            "anonymoussc"
+          {
+            "name": "anonymoussc",
+            "email": "50c5ac69@opayq.com"
+          }
         ]
     }
 }
@@ -289,7 +304,7 @@ Example Response
 
 ### Get Roles
 
-Example request
+#### Example request
 
 ```http
 GET /api/v1/roles/4b166dbe-d99d-5091-abdd-95b83330ed3a HTTP/1.1
@@ -299,7 +314,7 @@ Content-Type: application/vnd.api+json
 
 ```
 
-Example Response
+#### Example Response
 
 ```json
 {
@@ -317,7 +332,10 @@ Example Response
     "meta": {
         "copyright": "copyrightⒸ 2019 Onsigbaar",
         "author": [
-            "anonymoussc"
+          {
+            "name": "anonymoussc",
+            "email": "50c5ac69@opayq.com"
+          }
         ]
     }
 }
@@ -325,7 +343,7 @@ Example Response
 
 ### Create Roles
 
-Example request
+#### Example request
 
 ```http
 POST /api/v1/roles HTTP/1.1
@@ -339,7 +357,7 @@ Content-Type: application/vnd.api+json
 }
 ```
 
-Example Response
+#### Example Response
 
 ```json
 {
@@ -357,7 +375,10 @@ Example Response
     "meta": {
         "copyright": "copyrightⒸ 2019 Onsigbaar",
         "author": [
-            "anonymoussc"
+          {
+            "name": "anonymoussc",
+            "email": "50c5ac69@opayq.com"
+          }
         ]
     }
 }
@@ -368,7 +389,7 @@ Notes:
 
 ### Update Roles
 
-Example request
+#### Example request
 
 ```http
 PATCH /api/v1/roles/ddcc8546-fe34-478c-b098-289c1240cfea HTTP/1.1
@@ -382,7 +403,7 @@ Content-Type: application/vnd.api+json
 }
 ```
 
-Example Response
+#### Example Response
 
 ```json
 {
@@ -400,7 +421,10 @@ Example Response
     "meta": {
         "copyright": "copyrightⒸ 2019 Onsigbaar",
         "author": [
-            "anonymoussc"
+          {
+            "name": "anonymoussc",
+            "email": "50c5ac69@opayq.com"
+          }
         ]
     }
 }
@@ -408,7 +432,7 @@ Example Response
 
 ### Delete Roles
 
-Example request
+#### Example request
 
 ```http
 DELETE /api/v1/roles/ddcc8546-fe34-478c-b098-289c1240cfea HTTP/1.1
@@ -418,7 +442,7 @@ Content-Type: application/vnd.api+json
 
 ```
 
-Example Response
+#### Example Response
 
 ```json
 
@@ -429,7 +453,7 @@ Notes:
 
 ### Get All Permissions
 
-Example request
+#### Example request
 
 ```http
 GET /api/v1/permissions HTTP/1.1
@@ -440,7 +464,7 @@ Page-Paging: 2
 
 ```
 
-Example Response
+#### Example Response
 
 ```json
 {
@@ -479,7 +503,10 @@ Example Response
         "total": 41,
         "copyright": "copyrightⒸ 2019 Onsigbaar",
         "author": [
-            "anonymoussc"
+          {
+            "name": "anonymoussc",
+            "email": "50c5ac69@opayq.com"
+          }
         ]
     }
 }
@@ -487,7 +514,7 @@ Example Response
 
 ### Get Permissions
 
-Example request
+#### Example request
 
 ```http
 GET /api/v1/permissions/e99caacd-6c45-5906-bd9f-b79e62f25963 HTTP/1.1
@@ -497,7 +524,7 @@ Content-Type: application/vnd.api+json
 
 ```
 
-Example Response
+#### Example Response
 
 ```json
 {
@@ -515,7 +542,10 @@ Example Response
     "meta": {
         "copyright": "copyrightⒸ 2019 Onsigbaar",
         "author": [
-            "anonymoussc"
+          {
+            "name": "anonymoussc",
+            "email": "50c5ac69@opayq.com"
+          }
         ]
     }
 }
@@ -523,7 +553,7 @@ Example Response
 
 ### Create Permissions
 
-Example request
+#### Example request
 
 ```http
 POST /api/v1/permissions HTTP/1.1
@@ -537,7 +567,7 @@ Content-Type: application/vnd.api+json
 }
 ```
 
-Example Response
+#### Example Response
 
 ```json
 {
@@ -555,7 +585,10 @@ Example Response
     "meta": {
         "copyright": "copyrightⒸ 2019 Onsigbaar",
         "author": [
-            "anonymoussc"
+          {
+            "name": "anonymoussc",
+            "email": "50c5ac69@opayq.com"
+          }
         ]
     }
 }
@@ -566,7 +599,7 @@ Notes:
 
 ### Update Permissions
 
-Example request
+#### Example request
 
 ```http
 PATCH /api/v1/permissions/1f30f13f-363e-47fc-9695-e7eca585e330 HTTP/1.1
@@ -580,7 +613,7 @@ Content-Type: application/vnd.api+json
 }
 ```
 
-Example Response
+#### Example Response
 
 ```json
 {
@@ -598,7 +631,10 @@ Example Response
     "meta": {
         "copyright": "copyrightⒸ 2019 Onsigbaar",
         "author": [
-            "anonymoussc"
+          {
+            "name": "anonymoussc",
+            "email": "50c5ac69@opayq.com"
+          }
         ]
     }
 }
@@ -606,7 +642,7 @@ Example Response
 
 ### Delete Permissions
 
-Example request
+#### Example request
 
 ```http
 DELETE /api/v1/permissions/1f30f13f-363e-47fc-9695-e7eca585e330 HTTP/1.1
@@ -616,7 +652,7 @@ Content-Type: application/vnd.api+json
 
 ```
 
-Example Response
+#### Example Response
 
 ```json
 
@@ -627,7 +663,7 @@ Notes:
 
 ### Example error response in `production` environment
 
-Example request
+#### Example request
 
 ```http
 GET /api/v1/users HTTP/1.1
@@ -638,7 +674,7 @@ Page-Paging: 2
 
 ```
 
-Example Response
+#### Example Response
 
 ```json
 {
@@ -664,7 +700,7 @@ Example Response
 
 ### Example error response in __not__ `production` environment
 
-Example request
+#### Example request
 
 ```http
 GET /api/v1/users HTTP/1.1
@@ -675,7 +711,7 @@ Page-Paging: 2
 
 ```
 
-Example Response
+#### Example Response
 
 ```json
 {
