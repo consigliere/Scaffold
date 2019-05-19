@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/19/19 11:51 AM
+ * Last modified 5/19/19 12:01 PM
  */
 
 /**
@@ -33,6 +33,16 @@ use Webpatser\Uuid\Uuid;
 abstract class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests, Signal, ErrorLog;
+
+    /**
+     * @var string
+     */
+    protected $type;
+
+    /**
+     * @var string
+     */
+    protected $euuid;
 
     /**
      * Create a json response
