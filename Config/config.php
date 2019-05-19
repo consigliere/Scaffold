@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/1/19 6:02 AM
+ * Last modified 5/19/19 9:06 AM
  */
 
 /**
@@ -13,8 +13,18 @@ return [
     'name' => 'Scaffold',
     'api'  => [
         'meta'        => [
-            'author' => ['anonymoussc'],
-            'email'  => '50c5ac69@opayq.com',
+            'author' => [
+                [
+                    'name'  => 'anonymoussc',
+                    'email' => '50c5ac69@opayq.com',
+                ],
+            ],
+        ],
+        'authors'     => [
+            [
+                'name'  => 'anonymoussc',
+                'email' => '50c5ac69@opayq.com',
+            ],
         ],
         'page_paging' => 5,
     ],
