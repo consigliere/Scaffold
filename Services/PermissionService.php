@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/13/19 7:35 AM
+ * Last modified 5/19/19 11:51 PM
  */
 
 /**
@@ -77,7 +77,7 @@ class PermissionService extends Service
      *
      * @return array
      */
-    public function read($uuid, array $data, array $option = [], array $param = [])
+    public function read($uuid, array $data, array $option = [], array $param = []): array
     {
         $id   = $this->permissionRepository->getIdFromUuid($uuid) ?? $uuid;
         $role = $this->permissionRepository->getById($id);
