@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/19/19 12:01 PM
+ * Last modified 5/20/19 5:43 PM
  */
 
 /**
@@ -21,7 +21,6 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use JsonSerializable;
 use Webpatser\Uuid\Uuid;
@@ -70,15 +69,12 @@ abstract class Controller extends BaseController
     protected function getOption(array $param = []): array
     {
         $request = App::get('request');
+        $opt     = [];
 
-        $option = [
-            'api' => [
-                'hasLink' => true,
-                'hasMeta' => true,
-            ],
-        ];
+        data_set($opt, 'api.hasLink', true);
+        data_set($opt, 'api.hasMeta', true);
 
-        return Arr::dot($option);
+        return Arr::dot($opt);
     }
 
     /**
@@ -103,7 +99,7 @@ abstract class Controller extends BaseController
             ],
             'type' => $type,
             'auth' => [
-                'user' => Auth::user()->toArray(),
+                'user' => $request->user() ? $request->user()->toArray() : '',
             ],
             'link' => [
                 'fullUrl' => $request->fullUrl(),
