@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/21/19 12:35 PM
+ * Last modified 5/21/19 11:01 PM
  */
 
 /**
@@ -63,7 +63,7 @@ class RoleService extends Service
      */
     public function create(array $data, array $option = [], array $param = []): array
     {
-        $newRole = $this->reform(new CreateRole, $data);
+        $newRole = (new CreateRole)($data);
         $role    = $this->roleRepository->create($newRole, $option, $param);
 
         return (new RoleResource)($role, $option, $param);
