@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/21/19 11:01 PM
+ * Last modified 5/22/19 1:52 AM
  */
 
 /**
@@ -79,7 +79,7 @@ class RoleService extends Service
      */
     public function read($uuid, array $data, array $option = [], array $param = [])
     {
-        $id   = $this->roleRepository->getIdFromUuid($uuid) ?? $uuid;
+        $id   = $this->roleRepository->getIdbyUuid($uuid) ?? $uuid;
         $role = $this->roleRepository->getById($id);
 
         return (new RoleResource)($role, $option, $param);
@@ -95,7 +95,7 @@ class RoleService extends Service
      */
     public function update($uuid, array $data, array $option = [], array $param = []): array
     {
-        $id      = $this->roleRepository->getIdFromUuid($uuid) ?? $uuid;
+        $id      = $this->roleRepository->getIdbyUuid($uuid) ?? $uuid;
         $newRole = (new UpdateRole)($data, $option, $param);
         $role    = $this->roleRepository->update($id, $newRole, $option, $param);
 
@@ -108,10 +108,10 @@ class RoleService extends Service
      */
     public function delete($uuid, array $param = []): void
     {
-        $ids = explode(",", $uuid);
+        $ids = explode(',', $uuid);
 
         foreach ($ids as $id) {
-            $id = $this->roleRepository->getIdFromUuid($id) ?? $id;
+            $id = $this->roleRepository->getIdbyUuid($id) ?? $id;
 
             $this->roleRepository->delete($id);
         }
