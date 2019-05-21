@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/20/19 5:43 PM
+ * Last modified 5/21/19 2:43 PM
  */
 
 /**
@@ -23,7 +23,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use JsonSerializable;
-use Webpatser\Uuid\Uuid;
 
 /**
  * Class Controller
@@ -113,45 +112,5 @@ abstract class Controller extends BaseController
         $newParam['api.authors']     = Config::get('scaffold.api.authors');
 
         return $newParam;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getUuid(): string
-    {
-        return (string)Uuid::generate(4);
-    }
-
-    /**
-     * @param       $id
-     * @param       $errorObj
-     * @param array $param
-     *
-     * @return array
-     */
-    protected function getErrorResponse($id, $errorObj, array $param = []): array
-    {
-        $request       = App::get('request');
-        $errorResponse = [];
-
-        data_set($errorResponse, 'error.id', $id);
-
-        if ($errorObj instanceof \Exception) {
-            data_set($errorResponse, 'error.code', $errorObj->getCode());
-            data_set($errorResponse, 'error.title', $errorObj->getMessage());
-
-            if (Config::get('app.env') !== 'production') {
-                data_set($errorResponse, 'error.source.file', $errorObj->getFile());
-                data_set($errorResponse, 'error.source.line', $errorObj->getLine());
-                data_set($errorResponse, 'error.detail', $errorObj->getTraceAsString());
-            }
-        }
-
-        data_set($errorResponse, 'link.self', $request->fullUrl());
-        data_set($errorResponse, 'meta.copyright', 'copyrightⒸ ' . date('Y') . ' ' . Config::get('app.name'));
-        data_set($errorResponse, 'meta.authors', Config::get('scaffold.api.authors'));
-
-        return $errorResponse;
     }
 }
