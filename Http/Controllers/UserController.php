@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/19/19 12:01 PM
+ * Last modified 5/21/19 1:03 PM
  */
 
 /**
@@ -36,7 +36,7 @@ class UserController extends Controller
     public function __construct(UserService $UserService)
     {
         $this->userService = $UserService;
-        $this->euuid       = $this->getUuid();
+        $this->euuid       = randomUuid();
         $this->type        = 'users';
     }
 
