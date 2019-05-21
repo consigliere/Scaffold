@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/22/19 1:39 AM
+ * Last modified 5/22/19 1:52 AM
  */
 
 /**
@@ -99,7 +99,7 @@ class UserService extends Service
      */
     public function read($uuid, array $data, array $option = [], array $param = [])
     {
-        $id   = $this->userRepository->getIdFromUuid($uuid) ?? $uuid;
+        $id   = $this->userRepository->getIdbyUuid($uuid) ?? $uuid;
         $user = $this->userRepository->getById($id);
 
         return (new UserResource)($user, $option, $param);
@@ -115,7 +115,7 @@ class UserService extends Service
      */
     public function update($uuid, array $data, array $option = [], array $param = [])
     {
-        $id             = $this->userRepository->getIdFromUuid($uuid) ?? $uuid;
+        $id             = $this->userRepository->getIdbyUuid($uuid) ?? $uuid;
         $data['inList'] = $this->roleRepository->getIds();
         $newUser        = (new UpdateUser)($data, $option, $param);
         $user           = $this->userRepository->update($id, $newUser, $option, $param);
@@ -129,10 +129,10 @@ class UserService extends Service
      */
     public function delete($uuid, array $param = []): void
     {
-        $ids = explode(",", $uuid);
+        $ids = explode(',', $uuid);
 
         foreach ($ids as $id) {
-            $id = $this->userRepository->getIdFromUuid($id) ?? $id;
+            $id = $this->userRepository->getIdbyUuid($id) ?? $id;
 
             $this->userRepository->delete($id);
         }
