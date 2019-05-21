@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/9/19 7:28 PM
+ * Last modified 5/22/19 1:26 AM
  */
 
 /**
@@ -28,7 +28,7 @@ class UpdateUser
     {
         $dataIn = $data['form'];
         $user   = [];
-        $inList = [1, 2];
+        $inList = $data['inList'];
         $roleId = (int)$dataIn['roleId'];
 
         if (!empty($dataIn)) {
