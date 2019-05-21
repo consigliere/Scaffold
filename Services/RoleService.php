@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/12/19 7:44 AM
+ * Last modified 5/21/19 12:35 PM
  */
 
 /**
@@ -51,7 +51,7 @@ class RoleService extends Service
     {
         $roles = $this->roleRepository->browse($data);
 
-        return $this->transform(new RoleCollection, $roles, $option, $param);
+        return (new RoleCollection)($roles, $option, $param);
     }
 
     /**
@@ -66,7 +66,7 @@ class RoleService extends Service
         $newRole = $this->reform(new CreateRole, $data);
         $role    = $this->roleRepository->create($newRole, $option, $param);
 
-        return $this->transform(new RoleResource, $role, $option, $param);
+        return (new RoleResource)($role, $option, $param);
     }
 
     /**
@@ -82,7 +82,7 @@ class RoleService extends Service
         $id   = $this->roleRepository->getIdFromUuid($uuid) ?? $uuid;
         $role = $this->roleRepository->getById($id);
 
-        return $this->transform(new RoleResource, $role, $option, $param);
+        return (new RoleResource)($role, $option, $param);
     }
 
     /**
@@ -96,10 +96,10 @@ class RoleService extends Service
     public function update($uuid, array $data, array $option = [], array $param = []): array
     {
         $id      = $this->roleRepository->getIdFromUuid($uuid) ?? $uuid;
-        $newRole = $this->reform(new UpdateRole, $data, $option, $param);
+        $newRole = (new UpdateRole)($data, $option, $param);
         $role    = $this->roleRepository->update($id, $newRole, $option, $param);
 
-        return $this->transform(new RoleResource, $role, $option, $param);
+        return (new RoleResource)($role, $option, $param);
     }
 
     /**
