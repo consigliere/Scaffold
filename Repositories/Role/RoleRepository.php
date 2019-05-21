@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/12/19 7:30 AM
+ * Last modified 5/22/19 1:40 AM
  */
 
 /**
@@ -96,5 +96,13 @@ class RoleRepository extends Repository implements RoleRepositoryInterface
         $role->save();
 
         return $role;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIds()
+    {
+        return $this->getModel()::where('id', '>', 0)->pluck('id')->toArray();
     }
 }
