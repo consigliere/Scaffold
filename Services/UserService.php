@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/21/19 12:35 PM
+ * Last modified 5/22/19 1:39 AM
  */
 
 /**
@@ -11,12 +11,12 @@
 
 namespace App\Components\Scaffold\Services;
 
+use App\Components\Scaffold\Repositories\RoleRepositoryInterface;
 use App\Components\Scaffold\Repositories\UserRepositoryInterface;
 use App\Components\Scaffold\Services\User\Requests\CreateUser;
 use App\Components\Scaffold\Services\User\Requests\UpdateUser;
 use App\Components\Scaffold\Services\User\Responses\UserCollection;
 use App\Components\Scaffold\Services\User\Responses\UserResource;
-use App\Components\Scaffold\Services\User\Shared\UserCallable;
 use Illuminate\Foundation\Application;
 
 /**
@@ -25,22 +25,24 @@ use Illuminate\Foundation\Application;
  */
 class UserService extends Service
 {
-    use UserCallable;
-
     /**
      * @var \App\Components\Scaffold\Repositories\UserRepositoryInterface
      */
     private $userRepository;
+
+    private $roleRepository;
 
     /**
      * UserService constructor.
      *
      * @param \Illuminate\Foundation\Application                            $app
      * @param \App\Components\Scaffold\Repositories\UserRepositoryInterface $userRepository
+     * @param \App\Components\Scaffold\Repositories\RoleRepositoryInterface $roleRepository
      */
-    public function __construct(Application $app, UserRepositoryInterface $userRepository)
+    public function __construct(Application $app, UserRepositoryInterface $userRepository, RoleRepositoryInterface $roleRepository)
     {
         $this->userRepository = $userRepository;
+        $this->roleRepository = $roleRepository;
     }
 
     /**
@@ -80,8 +82,9 @@ class UserService extends Service
      */
     public function create(array $data, array $option = [], array $param = []): array
     {
-        $newUser = (new CreateUser)($data);
-        $user    = $this->userRepository->create($newUser, $option, $param);
+        $data['inList'] = $this->roleRepository->getIds();
+        $newUser        = (new CreateUser)($data);
+        $user           = $this->userRepository->create($newUser, $option, $param);
 
         return (new UserResource)($user, $option, $param);
     }
@@ -112,9 +115,10 @@ class UserService extends Service
      */
     public function update($uuid, array $data, array $option = [], array $param = [])
     {
-        $id      = $this->userRepository->getIdFromUuid($uuid) ?? $uuid;
-        $newUser = (new UpdateUser)($data, $option, $param);
-        $user    = $this->userRepository->update($id, $newUser, $option, $param);
+        $id             = $this->userRepository->getIdFromUuid($uuid) ?? $uuid;
+        $data['inList'] = $this->roleRepository->getIds();
+        $newUser        = (new UpdateUser)($data, $option, $param);
+        $user           = $this->userRepository->update($id, $newUser, $option, $param);
 
         return (new UserResource)($user, $option, $param);
     }
