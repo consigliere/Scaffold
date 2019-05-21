@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/12/19 8:43 AM
+ * Last modified 5/21/19 12:35 PM
  */
 
 /**
@@ -54,7 +54,7 @@ class UserService extends Service
     {
         $user = $this->userRepository->getById($param['auth.user.id']);
 
-        return $this->transform(new UserResource, $user, $option, $param);
+        return (new UserResource)($user, $option, $param);
     }
 
     /**
@@ -68,7 +68,7 @@ class UserService extends Service
     {
         $users = $this->userRepository->browse($data);
 
-        return $this->transform(new UserCollection, $users, $option, $param);
+        return (new UserCollection)($users, $option, $param);
     }
 
     /**
@@ -80,10 +80,10 @@ class UserService extends Service
      */
     public function create(array $data, array $option = [], array $param = []): array
     {
-        $newUser = $this->reform(new CreateUser, $data);
+        $newUser = (new CreateUser)($data);
         $user    = $this->userRepository->create($newUser, $option, $param);
 
-        return $this->transform(new UserResource, $user, $option, $param);
+        return (new UserResource)($user, $option, $param);
     }
 
     /**
@@ -99,7 +99,7 @@ class UserService extends Service
         $id   = $this->userRepository->getIdFromUuid($uuid) ?? $uuid;
         $user = $this->userRepository->getById($id);
 
-        return $this->transform(new UserResource, $user, $option, $param);
+        return (new UserResource)($user, $option, $param);
     }
 
     /**
@@ -113,10 +113,10 @@ class UserService extends Service
     public function update($uuid, array $data, array $option = [], array $param = [])
     {
         $id      = $this->userRepository->getIdFromUuid($uuid) ?? $uuid;
-        $newUser = $this->reform(new UpdateUser, $data, $option, $param);
+        $newUser = (new UpdateUser)($data, $option, $param);
         $user    = $this->userRepository->update($id, $newUser, $option, $param);
 
-        return $this->transform(new UserResource, $user, $option, $param);
+        return (new UserResource)($user, $option, $param);
     }
 
     /**
