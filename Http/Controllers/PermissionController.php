@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/19/19 1:52 PM
+ * Last modified 5/21/19 1:03 PM
  */
 
 /**
@@ -36,7 +36,7 @@ class PermissionController extends Controller
     public function __construct(PermissionService $PermissionService)
     {
         $this->permissionService = $PermissionService;
-        $this->euuid             = $this->getUuid();
+        $this->euuid             = randomUuid();
         $this->type              = 'permissions';
     }
 
