@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/19/19 11:51 PM
+ * Last modified 5/21/19 11:59 AM
  */
 
 /**
@@ -51,7 +51,7 @@ class PermissionService extends Service
     {
         $roles = $this->permissionRepository->browse($data);
 
-        return $this->transform(new PermissionCollection, $roles, $option, $param);
+        return (new PermissionCollection)($roles, $option, $param);
     }
 
     /**
@@ -63,10 +63,10 @@ class PermissionService extends Service
      */
     public function create(array $data, array $option = [], array $param = []): array
     {
-        $newRole = $this->reform(new CreatePermission, $data);
+        $newRole = (new CreatePermission)($data);
         $role    = $this->permissionRepository->create($newRole, $option, $param);
 
-        return $this->transform(new PermissionResource, $role, $option, $param);
+        return (new PermissionResource)($role, $option, $param);
     }
 
     /**
@@ -82,7 +82,7 @@ class PermissionService extends Service
         $id   = $this->permissionRepository->getIdFromUuid($uuid) ?? $uuid;
         $role = $this->permissionRepository->getById($id);
 
-        return $this->transform(new PermissionResource, $role, $option, $param);
+        return (new PermissionResource)($role, $option, $param);
     }
 
     /**
@@ -96,10 +96,10 @@ class PermissionService extends Service
     public function update($uuid, array $data, array $option = [], array $param = []): array
     {
         $id      = $this->permissionRepository->getIdFromUuid($uuid) ?? $uuid;
-        $newRole = $this->reform(new UpdatePermission, $data, $option, $param);
+        $newRole = (new UpdatePermission)($data, $option, $param);
         $role    = $this->permissionRepository->update($id, $newRole, $option, $param);
 
-        return $this->transform(new PermissionResource, $role, $option, $param);
+        return (new PermissionResource)($role, $option, $param);
     }
 
     /**
@@ -108,7 +108,7 @@ class PermissionService extends Service
      */
     public function delete($uuid, array $param = []): void
     {
-        $ids = explode(",", $uuid);
+        $ids = explode(',', $uuid);
 
         foreach ($ids as $id) {
             $id = $this->permissionRepository->getIdFromUuid($id) ?? $id;
