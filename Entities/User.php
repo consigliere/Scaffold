@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 5/14/19 8:24 AM
+ * Last modified 5/22/19 8:34 AM
  */
 
 /**
@@ -12,8 +12,6 @@
 namespace App\Components\Scaffold\Entities;
 
 use App\User as AppUser;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Passport\HasApiTokens;
 
 /**
  * Class User
@@ -21,29 +19,15 @@ use Laravel\Passport\HasApiTokens;
  */
 class User extends AppUser
 {
-    use HasApiTokens, Notifiable;
-
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
+     * Boot function from laravel.
      */
-    protected $fillable = [
-        'role_id',
-        'uuid',
-        'username',
-        'name',
-        'email',
-        'avatar',
-        'email_verified_at',
-        'password',
-        'settings',
-    ];
+    protected static function boot()
+    {
+        parent::boot();
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = ['password', 'remember_token',];
+        static::creating(function($model) {
+            $model->uuid = (string)\Webpatser\Uuid\Uuid::generate(4);
+        });
+    }
 }
