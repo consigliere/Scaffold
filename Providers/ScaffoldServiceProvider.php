@@ -1,12 +1,12 @@
 <?php
 /**
- * Copyright(c) 2019. All rights reserved.
- * Last modified 4/20/19 5:09 PM
+ * ScaffoldServiceProvider.php
+ * Created by @anonymoussc on 03/11/2019 7:30 PM.
  */
 
 /**
- * ScaffoldServiceProvider.php
- * Created by @anonymoussc on 03/11/2019 7:30 PM.
+ * Copyright(c) 2019. All rights reserved.
+ * Last modified 6/11/19 7:11 PM
  */
 
 namespace App\Components\Scaffold\Providers;
@@ -41,6 +41,10 @@ class ScaffoldServiceProvider extends ServiceProvider
         $dispatcher->subscribe(\App\Components\Scaffold\Listeners\UserEventSubscriber::class);
         $dispatcher->subscribe(\App\Components\Scaffold\Listeners\RoleEventSubscriber::class);
         $dispatcher->subscribe(\App\Components\Scaffold\Listeners\PermissionEventSubscriber::class);
+
+        $this->publishes([
+            __DIR__ . '/../Resources/views/vendor' => base_path() . '/resources/views/vendor',
+        ], 'vendor_views');
     }
 
     /**
