@@ -1,17 +1,18 @@
 <?php
 /**
- * Copyright(c) 2019. All rights reserved.
- * Last modified 5/19/19 2:51 PM
- */
-
-/**
  * config.php
  * Created by @anonymoussc on 03/11/2019 7:30 PM.
  */
 
+/**
+ * Copyright(c) 2019. All rights reserved.
+ * Last modified 6/11/19 5:15 PM
+ */
+
 return [
-    'name' => 'Scaffold',
-    'api'  => [
+    'name'    => 'Scaffold',
+    'version' => 'v0.2.0',
+    'api'     => [
         'meta'        => [
             'author' => [
                 'anonymoussc',
