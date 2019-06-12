@@ -1,12 +1,12 @@
 <?php
 /**
- * Copyright(c) 2019. All rights reserved.
- * Last modified 5/22/19 1:48 AM
+ * Repository.php
+ * Created by @anonymoussc on 04/08/2019 11:50 PM.
  */
 
 /**
- * Repository.php
- * Created by @anonymoussc on 04/08/2019 11:50 PM.
+ * Copyright(c) 2019. All rights reserved.
+ * Last modified 6/13/19 1:01 AM
  */
 
 namespace App\Components\Scaffold\Repositories;
@@ -54,30 +54,22 @@ abstract class Repository extends BaseRepository
     }
 
     /**
-     * @param       $uuid
-     * @param array $arg
+     * @param $idOrUuid
      *
      * @return mixed
      */
-    public function getIdbyUuid($uuid, array $arg = [])
+    public function getIdbyUuid($idOrUuid, array $arg = [])
     {
-        $users = $this->getModel()::where('uuid', '=', $uuid)->orWhere('id', '=', $uuid)->get();
+        if (substr_count($idOrUuid, '-') >= 1) {
+            $role = $this->getModel()::where('uuid', '=', $idOrUuid)->first();
 
-        $uid = [];
-        $i   = 0;
-        foreach ($users as $user) {
-            $uid[$i] = $this->getModel()::where([
-                ['id', $user->id],
-                ['uuid', $uuid],
-            ])->first();
-
-            if (null === $uid[$i]) {
-                unset($uid[$i]);
-            } else {
-                return $uid[$i]->id;
+            if ($role === null) {
+                return $role;
             }
 
-            $i++;
+            return $role->id;
         }
+
+        return $idOrUuid;
     }
 }
