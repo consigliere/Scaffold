@@ -1,12 +1,12 @@
 <?php
 /**
- * Copyright(c) 2019. All rights reserved.
- * Last modified 5/21/19 2:43 PM
+ * Controller.php
+ * Created by @anonymoussc on 04/08/2019 11:29 PM.
  */
 
 /**
- * Controller.php
- * Created by @anonymoussc on 04/08/2019 11:29 PM.
+ * Copyright(c) 2019. All rights reserved.
+ * Last modified 6/13/19 2:16 AM
  */
 
 namespace App\Components\Scaffold\Http\Controllers;
@@ -88,13 +88,7 @@ abstract class Controller extends BaseController
 
         $par = [
             'app'  => [
-                'name' => Config::get('app.name'),
-            ],
-            'api'  => [
-                'meta' => [
-                    'author' => [],
-                    'email'  => Config::get('scaffold.api.meta.email'),
-                ],
+                'name' => Config::get('app.name') ?? Config::get('scaffold.name'),
             ],
             'type' => $type,
             'auth' => [
@@ -108,7 +102,6 @@ abstract class Controller extends BaseController
 
         $newParam = Arr::dot($par);
 
-        $newParam['api.meta.author'] = Config::get('scaffold.api.meta.author');
         $newParam['api.authors']     = Config::get('scaffold.api.authors');
 
         return $newParam;
