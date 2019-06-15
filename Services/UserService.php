@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/15/19 6:13 PM
+ * Last modified 6/15/19 11:26 PM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -18,6 +18,7 @@ use App\Components\Scaffold\Services\User\Requests\UpdateUser;
 use App\Components\Scaffold\Services\User\Responses\UserCollection;
 use App\Components\Scaffold\Services\User\Responses\UserResource;
 use App\Components\Signature\Exceptions\BadRequestHttpException;
+use App\Components\Signature\Exceptions\NotAcceptableHttpException;
 use App\Components\Signature\Exceptions\NotFoundHttpException;
 use Illuminate\Foundation\Application;
 
@@ -41,6 +42,7 @@ class UserService extends Service
      * @var \Illuminate\Auth\AuthManager|mixed
      */
     private $auth;
+
     /**
      * @var mixed
      */
@@ -100,13 +102,30 @@ class UserService extends Service
     public function create(array $data, array $option = [], array $param = []): array
     {
         $data['inList'] = $this->roleRepository->getIds();
+        $username       = $this->userRepository->getWhere('username', data_get($data, 'form.username'));
 
-        if (data_get($data, 'form.roleId') !== null) {
+        if ($username->isNotEmpty()) {
+            throw new BadRequestHttpException('Username already exists, please try another');
+        }
+
+        $useremail = $this->userRepository->getWhere('email', data_get($data, 'form.email'));
+
+        if ($useremail->isNotEmpty()) {
+            throw new BadRequestHttpException('Email already exists, please try another');
+        }
+
+        if (null !== data_get($data, 'form.roleId')) {
             data_set($data, 'form.roleId', $this->roleRepository->getIdbyUuid(data_get($data, 'form.roleId')));
         }
 
-        $newUser = (new CreateUser)($data);
-        $user    = $this->userRepository->create($newUser);
+        $newUser  = (new CreateUser)($data);
+        $useruuid = $this->userRepository->getWhere('uuid', $newUser['uuid']);
+
+        if ($useruuid->isNotEmpty()) {
+            throw new NotAcceptableHttpException('Please try again');
+        }
+
+        $user = $this->userRepository->create($newUser);
 
         return (new UserResource)($user);
     }
@@ -124,13 +143,13 @@ class UserService extends Service
         $id = $this->userRepository->getIdbyUuid($uuid);
 
         if (null === $id) {
-            throw new BadRequestHttpException('400 Bad Request: Can\'t find User with ID #' . $uuid);
+            throw new BadRequestHttpException('Can\'t find User with ID #' . $uuid);
         }
 
         $user = $this->userRepository->getById($id);
 
         if (null === $user) {
-            throw new NotFoundHttpException('404 Not Found: User can\'t be found in system');
+            throw new NotFoundHttpException('User not found');
         }
 
         return (new UserResource)($user);
@@ -150,10 +169,26 @@ class UserService extends Service
         $id             = $this->userRepository->getIdbyUuid($uuid);
 
         if (null === $id) {
-            throw new BadRequestHttpException('400 Bad Request: Can\'t find User with ID #' . $uuid);
+            throw new BadRequestHttpException('Can\'t find User with ID #' . $uuid);
         }
 
-        if (data_get($data, 'form.roleId') !== null) {
+        if (null !== data_get($data, 'form.username')) {
+            $username = $this->userRepository->getWhere('username', data_get($data, 'form.username'));
+
+            if ($username->isNotEmpty()) {
+                throw new BadRequestHttpException('Username already exists, please try another');
+            }
+        }
+
+        if (null !== data_get($data, 'form.email')) {
+            $useremail = $this->userRepository->getWhere('email', data_get($data, 'form.email'));
+
+            if ($useremail->isNotEmpty()) {
+                throw new BadRequestHttpException('Email already exists, please try another');
+            }
+        }
+
+        if (null !== data_get($data, 'form.roleId')) {
             data_set($data, 'form.roleId', $this->roleRepository->getIdbyUuid(data_get($data, 'form.roleId')));
         }
 
@@ -175,7 +210,7 @@ class UserService extends Service
             $id = $this->userRepository->getIdbyUuid($id);
 
             if (null === $id) {
-                throw new BadRequestHttpException('400 Bad Request: Can\'t find User with ID #' . $uuid);
+                throw new BadRequestHttpException('Can\'t find User with ID #' . $uuid);
             }
 
             $this->userRepository->delete($id);
