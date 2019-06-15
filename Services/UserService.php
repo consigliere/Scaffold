@@ -1,12 +1,12 @@
 <?php
 /**
- * Copyright(c) 2019. All rights reserved.
- * Last modified 5/22/19 1:52 AM
+ * UserService.php
+ * Created by @anonymoussc on 04/08/2019 11:44 PM.
  */
 
 /**
- * UserService.php
- * Created by @anonymoussc on 04/08/2019 11:44 PM.
+ * Copyright(c) 2019. All rights reserved.
+ * Last modified 6/15/19 6:13 PM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -17,6 +17,8 @@ use App\Components\Scaffold\Services\User\Requests\CreateUser;
 use App\Components\Scaffold\Services\User\Requests\UpdateUser;
 use App\Components\Scaffold\Services\User\Responses\UserCollection;
 use App\Components\Scaffold\Services\User\Responses\UserResource;
+use App\Components\Signature\Exceptions\BadRequestHttpException;
+use App\Components\Signature\Exceptions\NotFoundHttpException;
 use Illuminate\Foundation\Application;
 
 /**
@@ -30,7 +32,19 @@ class UserService extends Service
      */
     private $userRepository;
 
+    /**
+     * @var \App\Components\Scaffold\Repositories\RoleRepositoryInterface
+     */
     private $roleRepository;
+
+    /**
+     * @var \Illuminate\Auth\AuthManager|mixed
+     */
+    private $auth;
+    /**
+     * @var mixed
+     */
+    private $request;
 
     /**
      * UserService constructor.
@@ -43,6 +57,9 @@ class UserService extends Service
     {
         $this->userRepository = $userRepository;
         $this->roleRepository = $roleRepository;
+
+        $this->auth    = $app->make('auth');
+        $this->request = $app->make('request');
     }
 
     /**
@@ -54,9 +71,9 @@ class UserService extends Service
      */
     public function profile(array $data = [], array $option = [], array $param = []): array
     {
-        $user = $this->userRepository->getById($param['auth.user.id']);
+        $user = $this->userRepository->getById($this->auth->user()->id);
 
-        return (new UserResource)($user, $option, $param);
+        return (new UserResource)($user);
     }
 
     /**
@@ -70,7 +87,7 @@ class UserService extends Service
     {
         $users = $this->userRepository->browse($data);
 
-        return (new UserCollection)($users, $option, $param);
+        return (new UserCollection)($users);
     }
 
     /**
@@ -83,10 +100,15 @@ class UserService extends Service
     public function create(array $data, array $option = [], array $param = []): array
     {
         $data['inList'] = $this->roleRepository->getIds();
-        $newUser        = (new CreateUser)($data);
-        $user           = $this->userRepository->create($newUser, $option, $param);
 
-        return (new UserResource)($user, $option, $param);
+        if (data_get($data, 'form.roleId') !== null) {
+            data_set($data, 'form.roleId', $this->roleRepository->getIdbyUuid(data_get($data, 'form.roleId')));
+        }
+
+        $newUser = (new CreateUser)($data);
+        $user    = $this->userRepository->create($newUser);
+
+        return (new UserResource)($user);
     }
 
     /**
@@ -97,12 +119,21 @@ class UserService extends Service
      *
      * @return mixed
      */
-    public function read($uuid, array $data, array $option = [], array $param = [])
+    public function read($uuid, array $data = [], array $option = [], array $param = [])
     {
-        $id   = $this->userRepository->getIdbyUuid($uuid) ?? $uuid;
+        $id = $this->userRepository->getIdbyUuid($uuid);
+
+        if (null === $id) {
+            throw new BadRequestHttpException('400 Bad Request: Can\'t find User with ID #' . $uuid);
+        }
+
         $user = $this->userRepository->getById($id);
 
-        return (new UserResource)($user, $option, $param);
+        if (null === $user) {
+            throw new NotFoundHttpException('404 Not Found: User can\'t be found in system');
+        }
+
+        return (new UserResource)($user);
     }
 
     /**
@@ -115,12 +146,21 @@ class UserService extends Service
      */
     public function update($uuid, array $data, array $option = [], array $param = [])
     {
-        $id             = $this->userRepository->getIdbyUuid($uuid) ?? $uuid;
         $data['inList'] = $this->roleRepository->getIds();
-        $newUser        = (new UpdateUser)($data, $option, $param);
-        $user           = $this->userRepository->update($id, $newUser, $option, $param);
+        $id             = $this->userRepository->getIdbyUuid($uuid);
 
-        return (new UserResource)($user, $option, $param);
+        if (null === $id) {
+            throw new BadRequestHttpException('400 Bad Request: Can\'t find User with ID #' . $uuid);
+        }
+
+        if (data_get($data, 'form.roleId') !== null) {
+            data_set($data, 'form.roleId', $this->roleRepository->getIdbyUuid(data_get($data, 'form.roleId')));
+        }
+
+        $newUser = (new UpdateUser)($data);
+        $user    = $this->userRepository->update($id, $newUser);
+
+        return (new UserResource)($user);
     }
 
     /**
@@ -132,7 +172,11 @@ class UserService extends Service
         $ids = explode(',', $uuid);
 
         foreach ($ids as $id) {
-            $id = $this->userRepository->getIdbyUuid($id) ?? $id;
+            $id = $this->userRepository->getIdbyUuid($id);
+
+            if (null === $id) {
+                throw new BadRequestHttpException('400 Bad Request: Can\'t find User with ID #' . $uuid);
+            }
 
             $this->userRepository->delete($id);
         }
