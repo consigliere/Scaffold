@@ -6,19 +6,13 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/11/19 5:15 PM
+ * Last modified 6/13/19 3:49 AM
  */
 
 return [
     'name'    => 'Scaffold',
     'version' => 'v0.2.0',
     'api'     => [
-        'meta'        => [
-            'author' => [
-                'anonymoussc',
-            ],
-            'email'  => '50c5ac69@opayq.com',
-        ],
         'authors'     => [
             [
                 'name'  => 'anonymoussc',
@@ -26,5 +20,38 @@ return [
             ],
         ],
         'page_paging' => 5,
+        'users'       => [
+            'type'    => 'users',
+            'hasLink' => true,
+            'hasMeta' => true,
+            'authors' => [
+                [
+                    'name'  => 'anonymoussc',
+                    'email' => '50c5ac69@opayq.com',
+                ],
+            ],
+        ],
+        'permissions' => [
+            'type'    => 'permissions',
+            'hasLink' => true,
+            'hasMeta' => true,
+            'authors' => [
+                [
+                    'name'  => 'anonymoussc',
+                    'email' => '50c5ac69@opayq.com',
+                ],
+            ],
+        ],
+        'roles'       => [
+            'type'    => 'roles',
+            'hasLink' => true,
+            'hasMeta' => true,
+            'authors' => [
+                [
+                    'name'  => 'anonymoussc',
+                    'email' => '50c5ac69@opayq.com',
+                ],
+            ],
+        ],
     ],
 ];
