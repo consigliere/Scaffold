@@ -1,19 +1,19 @@
 <?php
 /**
- * Copyright(c) 2019. All rights reserved.
- * Last modified 5/10/19 7:23 PM
- */
-
-/**
  * UserRepository.php
  * Created by @anonymoussc on 04/09/2019 8:32 AM.
  */
 
+/**
+ * Copyright(c) 2019. All rights reserved.
+ * Last modified 6/15/19 6:17 PM
+ */
+
 namespace App\Components\Scaffold\Repositories\User;
 
-use App\Components\Scaffold\Repositories\{
-    Repository, UserRepositoryInterface
-};
+use App\Components\Scaffold\Repositories\Repository;
+use App\Components\Scaffold\Repositories\UserRepositoryInterface;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 
 /**
@@ -71,8 +71,8 @@ class UserRepository extends Repository implements UserRepositoryInterface
         $user->password       = $data['password'];
         $user->remember_token = $data['remember_token'];
         $user->settings       = $data['settings'];
-        $user->created_by     = $param['auth.user.id'] ?? 0;
-        $user->updated_by     = $param['auth.user.id'] ?? 0;
+        $user->created_by     = Auth::id() ?? 0;
+        $user->updated_by     = Auth::id() ?? 0;
 
         if (isset($data['avatar']) && !empty($data['avatar']) && ($data['avatar'] !== null)) {
             $user->avatar = $data['avatar'];
@@ -126,7 +126,7 @@ class UserRepository extends Repository implements UserRepositoryInterface
         if (isset($data['email_verified_at']) && !empty($data['email_verified_at']) && ($data['email_verified_at'] !== null)) {
             $user->email_verified_at = $data['email_verified_at'];
         }
-        $user->updated_by = $param['auth.user.id'] ?? 0;
+        $user->updated_by = Auth::id() ?? 0;
 
         $user->save();
 
