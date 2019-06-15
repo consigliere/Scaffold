@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/13/19 1:01 AM
+ * Last modified 6/15/19 11:21 PM
  */
 
 namespace App\Components\Scaffold\Repositories;
@@ -24,36 +24,6 @@ abstract class Repository extends BaseRepository
     use Signal, ErrorLog;
 
     /**
-     * @deprecated
-     *
-     * @param       $uuid
-     * @param array $arg
-     *
-     * @return mixed
-     */
-    public function getIdFromUuid($uuid, array $arg = [])
-    {
-        $users = $this->getModel()::where('uuid', '=', $uuid)->orWhere('id', '=', $uuid)->get();
-
-        $uid = [];
-        $i   = 0;
-        foreach ($users as $user) {
-            $uid[$i] = $this->getModel()::where([
-                ['id', $user->id],
-                ['uuid', $uuid],
-            ])->first();
-
-            if (null === $uid[$i]) {
-                unset($uid[$i]);
-            } else {
-                return $uid[$i]->id;
-            }
-
-            $i++;
-        }
-    }
-
-    /**
      * @param $idOrUuid
      *
      * @return mixed
@@ -63,7 +33,7 @@ abstract class Repository extends BaseRepository
         if (substr_count($idOrUuid, '-') >= 1) {
             $role = $this->getModel()::where('uuid', '=', $idOrUuid)->first();
 
-            if ($role === null) {
+            if (null === $role) {
                 return $role;
             }
 
