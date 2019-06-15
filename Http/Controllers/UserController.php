@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/15/19 6:08 PM
+ * Last modified 6/15/19 11:21 PM
  */
 
 namespace App\Components\Scaffold\Http\Controllers;
@@ -47,7 +47,7 @@ class UserController extends Controller
      */
     public function profile(Request $request): \Illuminate\Http\JsonResponse
     {
-        $data   = [];
+        $data = [];
 
         try {
             $response = $this->userService->profile($data);
@@ -67,7 +67,7 @@ class UserController extends Controller
      */
     public function browse(Request $request): \Illuminate\Http\JsonResponse
     {
-        $data   = [
+        $data = [
             'header' => [
                 'paging' => $request->header('Page-Paging') ?? Config::get('scaffold.api.page_paging'),
             ],
@@ -91,7 +91,7 @@ class UserController extends Controller
      */
     public function create(UserCreateFormRequest $request): \Illuminate\Http\JsonResponse
     {
-        $data   = [
+        $data = [
             'form' => $request->all(),
         ];
 
@@ -133,7 +133,7 @@ class UserController extends Controller
      */
     public function update($uuid, UserUpdateFormRequest $request): \Illuminate\Http\JsonResponse
     {
-        $data   = [
+        $data = [
             'form' => $request->all(),
         ];
 
