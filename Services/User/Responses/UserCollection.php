@@ -1,15 +1,18 @@
 <?php
 /**
- * Copyright(c) 2019. All rights reserved.
- * Last modified 5/19/19 2:51 PM
- */
-
-/**
  * UserCollection.php
  * Created by @anonymoussc on 05/09/2019 6:44 PM.
  */
 
+/**
+ * Copyright(c) 2019. All rights reserved.
+ * Last modified 6/15/19 6:14 PM
+ */
+
 namespace App\Components\Scaffold\Services\User\Responses;
+
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Config;
 
 /**
  * Class UserCollection
@@ -17,6 +20,31 @@ namespace App\Components\Scaffold\Services\User\Responses;
  */
 class UserCollection
 {
+    /**
+     * @var \Illuminate\Auth\AuthManager|mixed
+     */
+    private $auth;
+
+    /**
+     * @var mixed
+     */
+    private $request;
+
+    /**
+     * @var mixed
+     */
+    private $appName;
+
+    /**
+     * UserCollection constructor.
+     */
+    public function __construct()
+    {
+        $this->auth    = App::get('auth');
+        $this->request = App::get('request');
+        $this->appName = Config::get('app.name') ?? Config::get('scaffold.name');
+    }
+
     /**
      * @param       $data
      * @param array $option
@@ -32,7 +60,7 @@ class UserCollection
         if ($data->isNotEmpty()) {
             $newData = $data->map(function($value, $key) use ($param) {
                 return [
-                    'type'       => $param['type'],
+                    'type'       => Config::get('scaffold.api.users.type'),
                     'id'         => $value->uuid,
                     'attributes' => [
                         'username' => $value->username,
@@ -74,7 +102,7 @@ class UserCollection
                 'next'  => $data->nextPageUrl(),
             ];
         } else {
-            $link['self'] = $param['link.fullUrl'];
+            $link['self'] = $this->request->fullUrl();
         }
 
         return $link;
@@ -95,15 +123,15 @@ class UserCollection
                 "current_page" => $data->currentPage(),
                 'from'         => $data->firstItem(),
                 'last_page'    => $data->lastPage(),
-                'path'         => $param['link.url'],
+                'path'         => $this->request->url(),
                 'per_page'     => $data->perPage(),
                 'to'           => $data->lastItem(),
                 'total'        => $data->total(),
             ];
         }
 
-        $meta['copyright'] = 'copyrightⒸ ' . date('Y') . ' ' . $param['app.name'];
-        $meta['author']    = $param['api.authors'];
+        $meta['copyright'] = 'copyrightⒸ ' . date('Y') . ' ' . $this->appName;
+        $meta['author']    = Config::get('scaffold.api.users.authors');
 
         return $meta;
     }
