@@ -1,12 +1,12 @@
 <?php
 /**
- * Copyright(c) 2019. All rights reserved.
- * Last modified 5/13/19 7:27 AM
+ * PermissionCreateFormRequest.php
+ * Created by @anonymoussc on 05/12/2019 9:00 AM.
  */
 
 /**
- * PermissionCreateFormRequest.php
- * Created by @anonymoussc on 05/12/2019 9:00 AM.
+ * Copyright(c) 2019. All rights reserved.
+ * Last modified 6/17/19 12:08 AM
  */
 
 namespace App\Components\Scaffold\Http\Requests;
@@ -34,7 +34,7 @@ class PermissionCreateFormRequest extends FormRequest
     {
         return [
             'key'    => 'required',
-            'entity' => '',
+            'entity' => 'required',
         ];
     }
 }
