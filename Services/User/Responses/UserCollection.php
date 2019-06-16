@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/15/19 6:14 PM
+ * Last modified 6/16/19 5:52 PM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
@@ -73,12 +73,12 @@ class UserCollection
             });
 
             $records['data'] = $newData;
-            $records['link'] = $this->getLink($data, $param);
-            $records['meta'] = $this->getMeta($data, $param);
+            $records['link'] = $this->getLink($data);
+            $records['meta'] = $this->getMeta($data);
         } else {
             $records['data'] = [];
-            $records['link'] = $this->getLink($data, $param);
-            $records['meta'] = $this->getMeta($data, $param);
+            $records['link'] = $this->getLink($data);
+            $records['meta'] = $this->getMeta($data);
         }
 
         return $records;
