@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/16/19 7:00 PM
+ * Last modified 6/16/19 11:41 PM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -17,6 +17,7 @@ use App\Components\Scaffold\Services\Permission\Requests\UpdatePermission;
 use App\Components\Scaffold\Services\Permission\Responses\PermissionCollection;
 use App\Components\Scaffold\Services\Permission\Responses\PermissionResource;
 use App\Components\Signature\Exceptions\BadRequestHttpException;
+use App\Components\Signature\Exceptions\NotFoundHttpException;
 use Illuminate\Foundation\Application;
 
 /**
@@ -99,10 +100,16 @@ class PermissionService extends Service
      */
     public function read($uuid, array $data, array $option = [], array $param = []): array
     {
-        $permission = $this->permissionRepository->getWhere('uuid', $uuid);
+        $id = $this->permissionRepository->getIdbyUuid($uuid);
 
-        if ($permission->isEmpty()) {
+        if (null === $id) {
             throw new BadRequestHttpException('Can\'t find Permission with ID #' . $uuid);
+        }
+
+        $permission = $this->permissionRepository->getById($id);
+
+        if (null === $permission) {
+            throw new NotFoundHttpException('Permission not found');
         }
 
         return (new PermissionResource)($permission);
