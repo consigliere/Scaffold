@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/13/19 5:56 PM
+ * Last modified 6/16/19 6:42 PM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
@@ -35,6 +35,9 @@ class UserResource
      */
     private $appName;
 
+    /**
+     * UserResource constructor.
+     */
     public function __construct()
     {
         $this->auth    = App::get('auth');
