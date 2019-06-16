@@ -1,12 +1,12 @@
 <?php
 /**
- * Copyright(c) 2019. All rights reserved.
- * Last modified 5/22/19 1:52 AM
+ * PermissionService.php
+ * Created by @anonymoussc on 04/08/2019 11:44 PM.
  */
 
 /**
- * PermissionService.php
- * Created by @anonymoussc on 04/08/2019 11:44 PM.
+ * Copyright(c) 2019. All rights reserved.
+ * Last modified 6/16/19 7:00 PM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -16,6 +16,7 @@ use App\Components\Scaffold\Services\Permission\Requests\CreatePermission;
 use App\Components\Scaffold\Services\Permission\Requests\UpdatePermission;
 use App\Components\Scaffold\Services\Permission\Responses\PermissionCollection;
 use App\Components\Scaffold\Services\Permission\Responses\PermissionResource;
+use App\Components\Signature\Exceptions\BadRequestHttpException;
 use Illuminate\Foundation\Application;
 
 /**
@@ -30,6 +31,16 @@ class PermissionService extends Service
     private $permissionRepository;
 
     /**
+     * @var \Illuminate\Auth\AuthManager|mixed
+     */
+    private $auth;
+
+    /**
+     * @var mixed
+     */
+    private $request;
+
+    /**
      * PermissionService constructor.
      *
      * @param \Illuminate\Foundation\Application                                  $app
@@ -38,6 +49,9 @@ class PermissionService extends Service
     public function __construct(Application $app, PermissionRepositoryInterface $PermissionRepository)
     {
         $this->permissionRepository = $PermissionRepository;
+
+        $this->auth    = $app->make('auth');
+        $this->request = $app->make('request');
     }
 
     /**
@@ -51,7 +65,7 @@ class PermissionService extends Service
     {
         $roles = $this->permissionRepository->browse($data);
 
-        return (new PermissionCollection)($roles, $option, $param);
+        return (new PermissionCollection)($roles);
     }
 
     /**
@@ -63,10 +77,16 @@ class PermissionService extends Service
      */
     public function create(array $data, array $option = [], array $param = []): array
     {
-        $newRole = (new CreatePermission)($data);
-        $role    = $this->permissionRepository->create($newRole, $option, $param);
+        $permissionKey = $this->permissionRepository->getWhere('key', data_get($data, 'form.key'));
 
-        return (new PermissionResource)($role, $option, $param);
+        if ($permissionKey->isNotEmpty()) {
+            throw new BadRequestHttpException('Permission name key already exists, please try another');
+        }
+
+        $newPermission = (new CreatePermission)($data);
+        $permission    = $this->permissionRepository->create($newPermission);
+
+        return (new PermissionResource)($permission);
     }
 
     /**
@@ -79,10 +99,13 @@ class PermissionService extends Service
      */
     public function read($uuid, array $data, array $option = [], array $param = []): array
     {
-        $id   = $this->permissionRepository->getIdbyUuid($uuid) ?? $uuid;
-        $role = $this->permissionRepository->getById($id);
+        $permission = $this->permissionRepository->getWhere('uuid', $uuid);
 
-        return (new PermissionResource)($role, $option, $param);
+        if ($permission->isEmpty()) {
+            throw new BadRequestHttpException('Can\'t find Permission with ID #' . $uuid);
+        }
+
+        return (new PermissionResource)($permission);
     }
 
     /**
@@ -95,11 +118,24 @@ class PermissionService extends Service
      */
     public function update($uuid, array $data, array $option = [], array $param = []): array
     {
-        $id      = $this->permissionRepository->getIdbyUuid($uuid) ?? $uuid;
-        $newRole = (new UpdatePermission)($data, $option, $param);
-        $role    = $this->permissionRepository->update($id, $newRole, $option, $param);
+        $id = $this->permissionRepository->getIdbyUuid($uuid);
 
-        return (new PermissionResource)($role, $option, $param);
+        if (null === $id) {
+            throw new BadRequestHttpException('Can\'t find Permission with ID #' . $uuid);
+        }
+
+        if (null !== data_get($data, 'form.key')) {
+            $roleName = $this->permissionRepository->getWhere('key', data_get($data, 'form.key'));
+
+            if ($roleName->isNotEmpty()) {
+                throw new BadRequestHttpException('Permission name key already exists, please try another');
+            }
+        }
+
+        $newPermission = (new UpdatePermission)($data);
+        $permission    = $this->permissionRepository->update($id, $newPermission);
+
+        return (new PermissionResource)($permission);
     }
 
     /**
@@ -111,7 +147,11 @@ class PermissionService extends Service
         $ids = explode(',', $uuid);
 
         foreach ($ids as $id) {
-            $id = $this->permissionRepository->getIdbyUuid($id) ?? $id;
+            $id = $this->permissionRepository->getIdbyUuid($id);
+
+            if (null === $id) {
+                throw new BadRequestHttpException('Can\'t find Permission with ID #' . $uuid);
+            }
 
             $this->permissionRepository->delete($id);
         }
