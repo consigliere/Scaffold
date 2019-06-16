@@ -1,12 +1,12 @@
 <?php
 /**
- * Copyright(c) 2019. All rights reserved.
- * Last modified 5/22/19 1:40 AM
+ * RoleRepository.php
+ * Created by @anonymoussc on 04/09/2019 8:32 AM.
  */
 
 /**
- * RoleRepository.php
- * Created by @anonymoussc on 04/09/2019 8:32 AM.
+ * Copyright(c) 2019. All rights reserved.
+ * Last modified 6/16/19 6:22 PM
  */
 
 namespace App\Components\Scaffold\Repositories\Role;
@@ -14,6 +14,7 @@ namespace App\Components\Scaffold\Repositories\Role;
 use App\Components\Scaffold\Entities\Role;
 use App\Components\Scaffold\Repositories\Repository;
 use App\Components\Scaffold\Repositories\RoleRepositoryInterface;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class RoleRepository
@@ -21,7 +22,6 @@ use App\Components\Scaffold\Repositories\RoleRepositoryInterface;
  */
 class RoleRepository extends Repository implements RoleRepositoryInterface
 {
-
     /**
      * @var $role
      */
@@ -63,8 +63,8 @@ class RoleRepository extends Repository implements RoleRepositoryInterface
 
         $role->name         = $data['name'];
         $role->display_name = $data['display_name'];
-        $role->created_by   = $param['auth.user.id'] ?? 0;
-        $role->updated_by   = $param['auth.user.id'] ?? 0;
+        $role->created_by   = Auth::id() ?? 0;
+        $role->updated_by   = Auth::id() ?? 0;
 
         $role->save();
 
@@ -91,7 +91,7 @@ class RoleRepository extends Repository implements RoleRepositoryInterface
             $role->display_name = $data['display_name'];
         }
 
-        $role->updated_by = $param['auth.user.id'] ?? 0;
+        $role->updated_by = Auth::id() ?? 0;
 
         $role->save();
 
