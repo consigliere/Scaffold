@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/16/19 5:52 PM
+ * Last modified 6/16/19 6:42 PM
  */
 
 namespace App\Components\Scaffold\Services\Role\Responses;
@@ -35,6 +35,9 @@ class RoleResource
      */
     private $appName;
 
+    /**
+     * RoleResource constructor.
+     */
     public function __construct()
     {
         $this->auth    = App::get('auth');
@@ -51,10 +54,10 @@ class RoleResource
      */
     public function __invoke($data, array $option = [], array $param = [])
     {
-        $user = [];
+        $role = [];
 
         if (!empty($data)) {
-            $user['data'] = [
+            $role['data'] = [
                 'type'       => Config::get('scaffold.api.roles.type'),
                 'id'         => $data->uuid,
                 'attributes' => [
@@ -64,19 +67,19 @@ class RoleResource
             ];
 
             if (Config::get('scaffold.api.roles.hasLink')) {
-                $user['link'] = [
+                $role['link'] = [
                     'self' => $this->request->fullUrl(),
                 ];
             }
 
             if (Config::get('scaffold.api.roles.hasMeta')) {
-                $user['meta'] = [
+                $role['meta'] = [
                     'copyright' => 'copyrightⒸ ' . date('Y') . ' ' . $this->appName,
                     'author'    => Config::get('scaffold.api.roles.authors'),
                 ];
             }
         }
 
-        return $user;
+        return $role;
     }
 }
