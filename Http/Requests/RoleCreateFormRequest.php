@@ -1,12 +1,12 @@
 <?php
 /**
- * Copyright(c) 2019. All rights reserved.
- * Last modified 5/12/19 7:27 AM
+ * RoleCreateFormRequest.php
+ * Created by @anonymoussc on 05/07/2019 4:34 PM.
  */
 
 /**
- * RoleCreateFormRequest.php
- * Created by @anonymoussc on 05/07/2019 4:34 PM.
+ * Copyright(c) 2019. All rights reserved.
+ * Last modified 6/17/19 12:08 AM
  */
 
 namespace App\Components\Scaffold\Http\Requests;
@@ -34,7 +34,7 @@ class RoleCreateFormRequest extends FormRequest
     {
         return [
             'name'        => 'required',
-            'displayName' => '',
+            'displayName' => 'required',
         ];
     }
 }
