@@ -1,12 +1,12 @@
 <?php
 /**
- * Copyright(c) 2019. All rights reserved.
- * Last modified 5/21/19 1:03 PM
+ * RoleController.php
+ * Created by @anonymoussc on 04/08/2019 11:36 PM.
  */
 
 /**
- * RoleController.php
- * Created by @anonymoussc on 04/08/2019 11:36 PM.
+ * Copyright(c) 2019. All rights reserved.
+ * Last modified 6/16/19 5:52 PM
  */
 
 namespace App\Components\Scaffold\Http\Controllers;
@@ -37,7 +37,7 @@ class RoleController extends Controller
     {
         $this->roleService = $RoleService;
         $this->euuid       = randomUuid();
-        $this->type        = 'roles';
+        $this->type        = Config::get('scaffold.api.roles.type');
     }
 
     /**
@@ -52,18 +52,16 @@ class RoleController extends Controller
                 'paging' => $request->header('Page-Paging') ?? Config::get('scaffold.api.page_paging'),
             ],
         ];
-        $option = $this->getOption();
-        $param  = $this->getParam($this->type);
 
         try {
-            $response = $this->roleService->browse($data, $option, $param);
+            $response = $this->roleService->browse($data);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), 500);
+            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
         }
 
-        return $this->response($response, 200);
+        return $this->response($response);
     }
 
     /**
@@ -76,15 +74,13 @@ class RoleController extends Controller
         $data   = [
             'form' => $request->all(),
         ];
-        $option = $this->getOption();
-        $param  = $this->getParam($this->type);
 
         try {
-            $response = $this->roleService->create($data, $option, $param);
+            $response = $this->roleService->create($data);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), 500);
+            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
         }
 
         return $this->response($response, 201);
@@ -99,18 +95,16 @@ class RoleController extends Controller
     public function read($uuid = null, Request $request): \Illuminate\Http\JsonResponse
     {
         $data   = [];
-        $option = $this->getOption();
-        $param  = $this->getParam($this->type);
 
         try {
-            $response = $this->roleService->read($uuid, $data, $option, $param);
+            $response = $this->roleService->read($uuid, $data);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), 500);
+            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
         }
 
-        return $this->response($response, 200);
+        return $this->response($response);
     }
 
     /**
@@ -124,18 +118,16 @@ class RoleController extends Controller
         $data   = [
             'form' => $request->all(),
         ];
-        $option = $this->getOption();
-        $param  = $this->getParam($this->type);
 
         try {
-            $response = $this->roleService->update($uuid, $data, $option, $param);
+            $response = $this->roleService->update($uuid, $data);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), 500);
+            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
         }
 
-        return $this->response($response, 200);
+        return $this->response($response);
     }
 
     /**
@@ -151,7 +143,7 @@ class RoleController extends Controller
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), 500);
+            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
         }
 
         return $this->response(null, 204);
