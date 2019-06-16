@@ -1,12 +1,12 @@
 <?php
 /**
- * Copyright(c) 2019. All rights reserved.
- * Last modified 4/27/19 4:07 AM
+ * UserCreateFormRequest.php
+ * Created by @anonymoussc on 04/20/2019 6:21 PM.
  */
 
 /**
- * UserCreateFormRequest.php
- * Created by @anonymoussc on 04/20/2019 6:21 PM.
+ * Copyright(c) 2019. All rights reserved.
+ * Last modified 6/17/19 12:08 AM
  */
 
 namespace App\Components\Scaffold\Http\Requests;
@@ -24,7 +24,7 @@ class UserCreateFormRequest extends FormRequest
     {
         return [
             'roleId'          => '',
-            'uuid'            => '',
+            // 'uuid'            => '',
             'username'        => 'required',
             'name'            => 'required',
             'email'           => 'required',
