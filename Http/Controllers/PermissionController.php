@@ -1,12 +1,12 @@
 <?php
 /**
- * Copyright(c) 2019. All rights reserved.
- * Last modified 5/21/19 1:03 PM
+ * PermissionController.php
+ * Created by @anonymoussc on 04/08/2019 11:37 PM.
  */
 
 /**
- * PermissionController.php
- * Created by @anonymoussc on 04/08/2019 11:37 PM.
+ * Copyright(c) 2019. All rights reserved.
+ * Last modified 6/16/19 7:00 PM
  */
 
 namespace App\Components\Scaffold\Http\Controllers;
@@ -37,7 +37,7 @@ class PermissionController extends Controller
     {
         $this->permissionService = $PermissionService;
         $this->euuid             = randomUuid();
-        $this->type              = 'permissions';
+        $this->type              = Config::get('scaffold.api.permissions.type');
     }
 
     /**
@@ -52,18 +52,16 @@ class PermissionController extends Controller
                 'paging' => $request->header('Page-Paging') ?? Config::get('scaffold.api.page_paging'),
             ],
         ];
-        $option = $this->getOption();
-        $param  = $this->getParam($this->type);
 
         try {
-            $response = $this->permissionService->browse($data, $option, $param);
+            $response = $this->permissionService->browse($data);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), 500);
+            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
         }
 
-        return $this->response($response, 200);
+        return $this->response($response);
     }
 
     /**
@@ -76,15 +74,13 @@ class PermissionController extends Controller
         $data   = [
             'form' => $request->all(),
         ];
-        $option = $this->getOption();
-        $param  = $this->getParam($this->type);
 
         try {
-            $response = $this->permissionService->create($data, $option, $param);
+            $response = $this->permissionService->create($data);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), 500);
+            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
         }
 
         return $this->response($response, 201);
@@ -99,18 +95,16 @@ class PermissionController extends Controller
     public function read($uuid = null, Request $request): \Illuminate\Http\JsonResponse
     {
         $data   = [];
-        $option = $this->getOption();
-        $param  = $this->getParam($this->type);
 
         try {
-            $response = $this->permissionService->read($uuid, $data, $option, $param);
+            $response = $this->permissionService->read($uuid, $data);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), 500);
+            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
         }
 
-        return $this->response($response, 200);
+        return $this->response($response);
     }
 
     /**
@@ -124,18 +118,16 @@ class PermissionController extends Controller
         $data   = [
             'form' => $request->all(),
         ];
-        $option = $this->getOption();
-        $param  = $this->getParam($this->type);
 
         try {
-            $response = $this->permissionService->update($uuid, $data, $option, $param);
+            $response = $this->permissionService->update($uuid, $data);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), 500);
+            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
         }
 
-        return $this->response($response, 200);
+        return $this->response($response);
     }
 
     /**
@@ -151,7 +143,7 @@ class PermissionController extends Controller
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), 500);
+            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
         }
 
         return $this->response(null, 204);
