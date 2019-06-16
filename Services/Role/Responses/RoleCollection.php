@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/16/19 5:52 PM
+ * Last modified 6/16/19 6:42 PM
  */
 
 namespace App\Components\Scaffold\Services\Role\Responses;
@@ -36,7 +36,7 @@ class RoleCollection
     private $appName;
 
     /**
-     * UserCollection constructor.
+     * RoleCollection constructor.
      */
     public function __construct()
     {
