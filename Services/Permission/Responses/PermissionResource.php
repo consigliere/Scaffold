@@ -1,15 +1,18 @@
 <?php
 /**
- * Copyright(c) 2019. All rights reserved.
- * Last modified 5/19/19 2:51 PM
- */
-
-/**
  * PermissionResource.php
  * Created by @anonymoussc on 05/12/2019 9:27 AM.
  */
 
+/**
+ * Copyright(c) 2019. All rights reserved.
+ * Last modified 6/16/19 6:42 PM
+ */
+
 namespace App\Components\Scaffold\Services\Permission\Responses;
+
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Config;
 
 /**
  * Class PermissionResource
@@ -17,6 +20,31 @@ namespace App\Components\Scaffold\Services\Permission\Responses;
  */
 class PermissionResource
 {
+    /**
+     * @var \Illuminate\Auth\AuthManager|mixed
+     */
+    private $auth;
+
+    /**
+     * @var mixed
+     */
+    private $request;
+
+    /**
+     * @var mixed
+     */
+    private $appName;
+
+    /**
+     * PermissionResource constructor.
+     */
+    public function __construct()
+    {
+        $this->auth    = App::get('auth');
+        $this->request = App::get('request');
+        $this->appName = Config::get('app.name') ?? Config::get('scaffold.name');
+    }
+
     /**
      * @param       $data
      * @param array $option
@@ -26,11 +54,11 @@ class PermissionResource
      */
     public function __invoke($data, array $option = [], array $param = [])
     {
-        $user = [];
+        $permission = [];
 
         if (!empty($data)) {
-            $user['data'] = [
-                'type'       => $param['type'],
+            $permission['data'] = [
+                'type'       => Config::get('scaffold.api.permissions.type'),
                 'id'         => $data->uuid,
                 'attributes' => [
                     'key'    => $data->key,
@@ -38,20 +66,20 @@ class PermissionResource
                 ],
             ];
 
-            if ($option['api.hasLink']) {
-                $user['link'] = [
-                    'self' => $param['link.fullUrl'],
+            if (Config::get('scaffold.api.permissions.hasLink')) {
+                $permission['link'] = [
+                    'self' => $this->request->fullUrl(),
                 ];
             }
 
-            if ($option['api.hasMeta']) {
-                $user['meta'] = [
-                    'copyright' => 'copyrightⒸ ' . date('Y') . ' ' . $param['app.name'],
-                    'author'    => $param['api.authors'],
+            if (Config::get('scaffold.api.permissions.hasMeta')) {
+                $permission['meta'] = [
+                    'copyright' => 'copyrightⒸ ' . date('Y') . ' ' . $this->appName,
+                    'author'    => Config::get('scaffold.api.permissions.authors'),
                 ];
             }
         }
 
-        return $user;
+        return $permission;
     }
 }
