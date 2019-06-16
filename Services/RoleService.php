@@ -1,12 +1,12 @@
 <?php
 /**
- * Copyright(c) 2019. All rights reserved.
- * Last modified 5/22/19 1:52 AM
+ * RoleService.php
+ * Created by @anonymoussc on 04/08/2019 11:44 PM.
  */
 
 /**
- * RoleService.php
- * Created by @anonymoussc on 04/08/2019 11:44 PM.
+ * Copyright(c) 2019. All rights reserved.
+ * Last modified 6/16/19 5:57 PM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -16,6 +16,8 @@ use App\Components\Scaffold\Services\Role\Requests\CreateRole;
 use App\Components\Scaffold\Services\Role\Requests\UpdateRole;
 use App\Components\Scaffold\Services\Role\Responses\RoleCollection;
 use App\Components\Scaffold\Services\Role\Responses\RoleResource;
+use App\Components\Signature\Exceptions\BadRequestHttpException;
+use App\Components\Signature\Exceptions\NotFoundHttpException;
 use Illuminate\Foundation\Application;
 
 /**
@@ -30,6 +32,16 @@ class RoleService extends Service
     private $roleRepository;
 
     /**
+     * @var \Illuminate\Auth\AuthManager|mixed
+     */
+    private $auth;
+
+    /**
+     * @var mixed
+     */
+    private $request;
+
+    /**
      * RoleService constructor.
      *
      * @param \Illuminate\Foundation\Application                            $app
@@ -38,6 +50,9 @@ class RoleService extends Service
     public function __construct(Application $app, RoleRepositoryInterface $RoleRepository)
     {
         $this->roleRepository = $RoleRepository;
+
+        $this->auth    = $app->make('auth');
+        $this->request = $app->make('request');
     }
 
     /**
@@ -51,7 +66,7 @@ class RoleService extends Service
     {
         $roles = $this->roleRepository->browse($data);
 
-        return (new RoleCollection)($roles, $option, $param);
+        return (new RoleCollection)($roles);
     }
 
     /**
@@ -63,10 +78,16 @@ class RoleService extends Service
      */
     public function create(array $data, array $option = [], array $param = []): array
     {
-        $newRole = (new CreateRole)($data);
-        $role    = $this->roleRepository->create($newRole, $option, $param);
+        $roleName = $this->roleRepository->getWhere('name', data_get($data, 'form.name'));
 
-        return (new RoleResource)($role, $option, $param);
+        if ($roleName->isNotEmpty()) {
+            throw new BadRequestHttpException('Role name already exists, please try another');
+        }
+
+        $newRole = (new CreateRole)($data);
+        $role    = $this->roleRepository->create($newRole);
+
+        return (new RoleResource)($role);
     }
 
     /**
@@ -77,12 +98,21 @@ class RoleService extends Service
      *
      * @return array
      */
-    public function read($uuid, array $data, array $option = [], array $param = [])
+    public function read($uuid, array $data, array $option = [], array $param = []): array
     {
-        $id   = $this->roleRepository->getIdbyUuid($uuid) ?? $uuid;
+        $id = $this->roleRepository->getIdbyUuid($uuid);
+
+        if (null === $id) {
+            throw new BadRequestHttpException('Can\'t find Role with ID #' . $uuid);
+        }
+
         $role = $this->roleRepository->getById($id);
 
-        return (new RoleResource)($role, $option, $param);
+        if (null === $role) {
+            throw new NotFoundHttpException('Role not found');
+        }
+
+        return (new RoleResource)($role);
     }
 
     /**
@@ -95,11 +125,24 @@ class RoleService extends Service
      */
     public function update($uuid, array $data, array $option = [], array $param = []): array
     {
-        $id      = $this->roleRepository->getIdbyUuid($uuid) ?? $uuid;
-        $newRole = (new UpdateRole)($data, $option, $param);
-        $role    = $this->roleRepository->update($id, $newRole, $option, $param);
+        $id = $this->roleRepository->getIdbyUuid($uuid);
 
-        return (new RoleResource)($role, $option, $param);
+        if (null === $id) {
+            throw new BadRequestHttpException('Can\'t find Role with ID #' . $uuid);
+        }
+
+        if (null !== data_get($data, 'form.name')) {
+            $roleName = $this->roleRepository->getWhere('name', data_get($data, 'form.name'));
+
+            if ($roleName->isNotEmpty()) {
+                throw new BadRequestHttpException('Role name already exists, please try another');
+            }
+        }
+
+        $newRole = (new UpdateRole)($data);
+        $role    = $this->roleRepository->update($id, $newRole);
+
+        return (new RoleResource)($role);
     }
 
     /**
@@ -111,7 +154,11 @@ class RoleService extends Service
         $ids = explode(',', $uuid);
 
         foreach ($ids as $id) {
-            $id = $this->roleRepository->getIdbyUuid($id) ?? $id;
+            $id = $this->roleRepository->getIdbyUuid($id);
+
+            if (null === $id) {
+                throw new BadRequestHttpException('Can\'t find Role with ID #' . $uuid);
+            }
 
             $this->roleRepository->delete($id);
         }
