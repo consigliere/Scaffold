@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/17/19 11:28 AM
+ * Last modified 6/17/19 2:46 PM
  */
 
 namespace App\Components\Scaffold\Services\User\Requests;
@@ -26,7 +26,7 @@ class UpdateUser
      */
     public function __invoke(array $data = [], array $option = [], array $param = [])
     {
-        $dataIn = $data['form'];
+        $dataIn = $data['input'];
         $user   = [];
         $inList = $data['inList'];
         $roleId = (int)$dataIn['roleId'];
@@ -36,7 +36,7 @@ class UpdateUser
                 'role_id'           => in_array($roleId, $inList, true) ? $roleId : 2,
                 'username'          => $dataIn['username'] ? strtolower($dataIn['username']) : null,
                 'name'              => $dataIn['name'],
-                'email'             => $dataIn['email'] ? strtolower($dataIn['email']) : null,
+                'email'             => $dataIn['email'] ?? null,
                 'avatar'            => $dataIn['avatar'],
                 'email_verified_at' => $dataIn['emailVerifiedAt'],
                 'remember_token'    => $dataIn['rememberToken'],
