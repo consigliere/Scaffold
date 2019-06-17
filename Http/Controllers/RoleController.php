@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/16/19 5:52 PM
+ * Last modified 6/17/19 11:29 AM
  */
 
 namespace App\Components\Scaffold\Http\Controllers;
@@ -72,7 +72,7 @@ class RoleController extends Controller
     public function create(RoleCreateFormRequest $request): \Illuminate\Http\JsonResponse
     {
         $data   = [
-            'form' => $request->all(),
+            'input' => $request->all(),
         ];
 
         try {
@@ -116,7 +116,7 @@ class RoleController extends Controller
     public function update($uuid, RoleUpdateFormRequest $request): \Illuminate\Http\JsonResponse
     {
         $data   = [
-            'form' => $request->all(),
+            'input' => $request->all(),
         ];
 
         try {
