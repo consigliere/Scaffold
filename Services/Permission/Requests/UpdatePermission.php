@@ -1,12 +1,12 @@
 <?php
 /**
- * Copyright(c) 2019. All rights reserved.
- * Last modified 5/14/19 11:36 AM
+ * UpdatePermission.php
+ * Created by @anonymoussc on 05/12/2019 9:26 AM.
  */
 
 /**
- * UpdatePermission.php
- * Created by @anonymoussc on 05/12/2019 9:26 AM.
+ * Copyright(c) 2019. All rights reserved.
+ * Last modified 6/17/19 11:28 AM
  */
 
 namespace App\Components\Scaffold\Services\Permission\Requests;
@@ -31,7 +31,7 @@ class UpdatePermission
 
         if (!empty($dataIn)) {
             $permission = [
-                'key'        => strtolower($dataIn['key']),
+                'key'        => $dataIn['key'] ? strtolower($dataIn['key']) : null,
                 'table_name' => $dataIn['entity'],
             ];
         }
