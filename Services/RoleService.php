@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/17/19 3:35 PM
+ * Last modified 6/17/19 4:44 PM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -158,16 +158,17 @@ class RoleService extends Service
      */
     public function delete($uuid, array $param = []): void
     {
-        $ids = explode(',', $uuid);
+        $trimmed = rtrim(trim(preg_replace('/\s+/', '', $uuid)), ',');
+        $ids     = explode(',', $trimmed);
 
         foreach ($ids as $id) {
-            $id = $this->roleRepository->getIdbyUuid($id);
+            $rid = $this->roleRepository->getIdbyUuid($id);
 
-            if (null === $id) {
-                throw new BadRequestHttpException('Cannot find Role with ID #' . $uuid);
+            if (null === $rid) {
+                throw new BadRequestHttpException('Cannot find Role with ID #' . $id);
             }
 
-            $this->roleRepository->delete($id);
+            $this->roleRepository->delete($rid);
         }
     }
 }
