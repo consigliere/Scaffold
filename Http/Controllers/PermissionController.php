@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/16/19 7:00 PM
+ * Last modified 6/17/19 2:46 PM
  */
 
 namespace App\Components\Scaffold\Http\Controllers;
@@ -72,7 +72,7 @@ class PermissionController extends Controller
     public function create(PermissionCreateFormRequest $request): \Illuminate\Http\JsonResponse
     {
         $data   = [
-            'form' => $request->all(),
+            'input' => $request->all(),
         ];
 
         try {
@@ -116,7 +116,7 @@ class PermissionController extends Controller
     public function update($uuid, PermissionUpdateFormRequest $request): \Illuminate\Http\JsonResponse
     {
         $data   = [
-            'form' => $request->all(),
+            'input' => $request->all(),
         ];
 
         try {
