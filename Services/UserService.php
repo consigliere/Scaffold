@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/15/19 11:26 PM
+ * Last modified 6/17/19 3:40 PM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -18,8 +18,8 @@ use App\Components\Scaffold\Services\User\Requests\UpdateUser;
 use App\Components\Scaffold\Services\User\Responses\UserCollection;
 use App\Components\Scaffold\Services\User\Responses\UserResource;
 use App\Components\Signature\Exceptions\BadRequestHttpException;
-use App\Components\Signature\Exceptions\NotAcceptableHttpException;
 use App\Components\Signature\Exceptions\NotFoundHttpException;
+use App\Components\Signature\Exceptions\UnprocessableEntityHttpException;
 use Illuminate\Foundation\Application;
 
 /**
@@ -102,27 +102,29 @@ class UserService extends Service
     public function create(array $data, array $option = [], array $param = []): array
     {
         $data['inList'] = $this->roleRepository->getIds();
-        $username       = $this->userRepository->getWhere('username', data_get($data, 'form.username'));
+        $username       = data_get($data, 'input.username');
+        $userusername   = $this->userRepository->getWhere('username', strtolower($username));
 
-        if ($username->isNotEmpty()) {
-            throw new BadRequestHttpException('Username already exists, please try another');
+        if ($userusername->isNotEmpty()) {
+            throw new UnprocessableEntityHttpException("Username $username already exists, please try another");
         }
 
-        $useremail = $this->userRepository->getWhere('email', data_get($data, 'form.email'));
+        $email     = data_get($data, 'input.email');
+        $useremail = $this->userRepository->getWhere('email', $email);
 
         if ($useremail->isNotEmpty()) {
-            throw new BadRequestHttpException('Email already exists, please try another');
+            throw new UnprocessableEntityHttpException("Email $email already exists, please try another");
         }
 
-        if (null !== data_get($data, 'form.roleId')) {
-            data_set($data, 'form.roleId', $this->roleRepository->getIdbyUuid(data_get($data, 'form.roleId')));
+        if (null !== data_get($data, 'input.roleId')) {
+            data_set($data, 'input.roleId', $this->roleRepository->getIdbyUuid(data_get($data, 'input.roleId')));
         }
 
         $newUser  = (new CreateUser)($data);
         $useruuid = $this->userRepository->getWhere('uuid', $newUser['uuid']);
 
         if ($useruuid->isNotEmpty()) {
-            throw new NotAcceptableHttpException('Please try again');
+            throw new UnprocessableEntityHttpException('Please try again');
         }
 
         $user = $this->userRepository->create($newUser);
@@ -143,13 +145,13 @@ class UserService extends Service
         $id = $this->userRepository->getIdbyUuid($uuid);
 
         if (null === $id) {
-            throw new BadRequestHttpException('Can\'t find User with ID #' . $uuid);
+            throw new NotFoundHttpException('Cannot find Users resources in URI query parameter /' . $uuid);
         }
 
         $user = $this->userRepository->getById($id);
 
         if (null === $user) {
-            throw new NotFoundHttpException('User not found');
+            throw new BadRequestHttpException('Cannot find User with ID #' . $uuid);
         }
 
         return (new UserResource)($user);
@@ -169,27 +171,37 @@ class UserService extends Service
         $id             = $this->userRepository->getIdbyUuid($uuid);
 
         if (null === $id) {
-            throw new BadRequestHttpException('Can\'t find User with ID #' . $uuid);
+            throw new NotFoundHttpException('Cannot find Users resources in URI query parameter /' . $uuid);
         }
 
-        if (null !== data_get($data, 'form.username')) {
-            $username = $this->userRepository->getWhere('username', data_get($data, 'form.username'));
+        if (null !== data_get($data, 'input.username')) {
+            $username = data_get($data, 'input.username');
+            $users    = $this->userRepository->getWhere('username', strtolower($username));
 
-            if ($username->isNotEmpty()) {
-                throw new BadRequestHttpException('Username already exists, please try another');
+            if ($users->isNotEmpty()) {
+                foreach ($users as $user) {
+                    if ($user->id !== $id) {
+                        throw new UnprocessableEntityHttpException("Username $username already exists, please try another");
+                    }
+                }
             }
         }
 
-        if (null !== data_get($data, 'form.email')) {
-            $useremail = $this->userRepository->getWhere('email', data_get($data, 'form.email'));
+        if (null !== data_get($data, 'input.email')) {
+            $email = data_get($data, 'input.email');
+            $users = $this->userRepository->getWhere('email', $email);
 
-            if ($useremail->isNotEmpty()) {
-                throw new BadRequestHttpException('Email already exists, please try another');
+            if ($users->isNotEmpty()) {
+                foreach ($users as $user) {
+                    if ($user->id !== $id) {
+                        throw new UnprocessableEntityHttpException("Email address $email already exists, please try another");
+                    }
+                }
             }
         }
 
-        if (null !== data_get($data, 'form.roleId')) {
-            data_set($data, 'form.roleId', $this->roleRepository->getIdbyUuid(data_get($data, 'form.roleId')));
+        if (null !== data_get($data, 'input.roleId')) {
+            data_set($data, 'input.roleId', $this->roleRepository->getIdbyUuid(data_get($data, 'input.roleId')));
         }
 
         $newUser = (new UpdateUser)($data);
@@ -210,7 +222,7 @@ class UserService extends Service
             $id = $this->userRepository->getIdbyUuid($id);
 
             if (null === $id) {
-                throw new BadRequestHttpException('Can\'t find User with ID #' . $uuid);
+                throw new BadRequestHttpException('Cannot find User with ID #' . $uuid);
             }
 
             $this->userRepository->delete($id);
