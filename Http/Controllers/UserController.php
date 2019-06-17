@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/15/19 11:21 PM
+ * Last modified 6/17/19 2:46 PM
  */
 
 namespace App\Components\Scaffold\Http\Controllers;
@@ -92,7 +92,7 @@ class UserController extends Controller
     public function create(UserCreateFormRequest $request): \Illuminate\Http\JsonResponse
     {
         $data = [
-            'form' => $request->all(),
+            'input' => $request->all(),
         ];
 
         try {
@@ -134,7 +134,7 @@ class UserController extends Controller
     public function update($uuid, UserUpdateFormRequest $request): \Illuminate\Http\JsonResponse
     {
         $data = [
-            'form' => $request->all(),
+            'input' => $request->all(),
         ];
 
         try {
