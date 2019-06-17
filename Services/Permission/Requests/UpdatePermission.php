@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/17/19 11:28 AM
+ * Last modified 6/17/19 2:46 PM
  */
 
 namespace App\Components\Scaffold\Services\Permission\Requests;
@@ -26,7 +26,7 @@ class UpdatePermission
      */
     public function __invoke(array $data = [], array $option = [], array $param = [])
     {
-        $dataIn     = $data['form'];
+        $dataIn     = $data['input'];
         $permission = [];
 
         if (!empty($dataIn)) {
