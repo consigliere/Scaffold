@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/17/19 3:40 PM
+ * Last modified 6/17/19 4:44 PM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -216,16 +216,17 @@ class UserService extends Service
      */
     public function delete($uuid, array $param = []): void
     {
-        $ids = explode(',', $uuid);
+        $trimmed = rtrim(trim(preg_replace('/\s+/', '', $uuid)), ',');
+        $ids     = explode(',', $trimmed);
 
         foreach ($ids as $id) {
-            $id = $this->userRepository->getIdbyUuid($id);
+            $uid = $this->userRepository->getIdbyUuid($id);
 
-            if (null === $id) {
-                throw new BadRequestHttpException('Cannot find User with ID #' . $uuid);
+            if (null === $uid) {
+                throw new BadRequestHttpException('Cannot find User with ID #' . $id);
             }
 
-            $this->userRepository->delete($id);
+            $this->userRepository->delete($uid);
         }
     }
 }
