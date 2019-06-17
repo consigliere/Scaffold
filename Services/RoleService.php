@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/16/19 5:57 PM
+ * Last modified 6/17/19 3:35 PM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -18,6 +18,7 @@ use App\Components\Scaffold\Services\Role\Responses\RoleCollection;
 use App\Components\Scaffold\Services\Role\Responses\RoleResource;
 use App\Components\Signature\Exceptions\BadRequestHttpException;
 use App\Components\Signature\Exceptions\NotFoundHttpException;
+use App\Components\Signature\Exceptions\UnprocessableEntityHttpException;
 use Illuminate\Foundation\Application;
 
 /**
@@ -78,10 +79,11 @@ class RoleService extends Service
      */
     public function create(array $data, array $option = [], array $param = []): array
     {
-        $roleName = $this->roleRepository->getWhere('name', data_get($data, 'form.name'));
+        $name     = data_get($data, 'input.name');
+        $roleName = $this->roleRepository->getWhere('name', $name);
 
         if ($roleName->isNotEmpty()) {
-            throw new BadRequestHttpException('Role name already exists, please try another');
+            throw new UnprocessableEntityHttpException("Role name $name already exists, please try another");
         }
 
         $newRole = (new CreateRole)($data);
@@ -103,13 +105,13 @@ class RoleService extends Service
         $id = $this->roleRepository->getIdbyUuid($uuid);
 
         if (null === $id) {
-            throw new BadRequestHttpException('Can\'t find Role with ID #' . $uuid);
+            throw new NotFoundHttpException('Cannot find Roles resources in URI query parameter /' . $uuid);
         }
 
         $role = $this->roleRepository->getById($id);
 
         if (null === $role) {
-            throw new NotFoundHttpException('Role not found');
+            throw new BadRequestHttpException('Cannot find Role with ID #' . $uuid);
         }
 
         return (new RoleResource)($role);
@@ -125,17 +127,22 @@ class RoleService extends Service
      */
     public function update($uuid, array $data, array $option = [], array $param = []): array
     {
-        $id = $this->roleRepository->getIdbyUuid($uuid);
+        $id   = $this->roleRepository->getIdbyUuid($uuid);
+        $name = data_get($data, 'input.name');
 
         if (null === $id) {
-            throw new BadRequestHttpException('Can\'t find Role with ID #' . $uuid);
+            throw new NotFoundHttpException('Cannot find Roles resources in URI query parameter /' . $uuid);
         }
 
-        if (null !== data_get($data, 'form.name')) {
-            $roleName = $this->roleRepository->getWhere('name', data_get($data, 'form.name'));
+        if (null !== data_get($data, 'input.name')) {
+            $roles = $this->roleRepository->getWhere('name', strtolower($name));
 
-            if ($roleName->isNotEmpty()) {
-                throw new BadRequestHttpException('Role name already exists, please try another');
+            if ($roles->isNotEmpty()) {
+                foreach ($roles as $role) {
+                    if ($role->id !== $id) {
+                        throw new UnprocessableEntityHttpException("Role name $name already exists, please try another");
+                    }
+                }
             }
         }
 
@@ -157,7 +164,7 @@ class RoleService extends Service
             $id = $this->roleRepository->getIdbyUuid($id);
 
             if (null === $id) {
-                throw new BadRequestHttpException('Can\'t find Role with ID #' . $uuid);
+                throw new BadRequestHttpException('Cannot find Role with ID #' . $uuid);
             }
 
             $this->roleRepository->delete($id);
