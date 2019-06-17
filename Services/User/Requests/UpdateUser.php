@@ -1,12 +1,12 @@
 <?php
 /**
- * Copyright(c) 2019. All rights reserved.
- * Last modified 5/22/19 1:26 AM
+ * UpdateUser.php
+ * Created by @anonymoussc on 05/09/2019 7:20 PM.
  */
 
 /**
- * UpdateUser.php
- * Created by @anonymoussc on 05/09/2019 7:20 PM.
+ * Copyright(c) 2019. All rights reserved.
+ * Last modified 6/17/19 11:28 AM
  */
 
 namespace App\Components\Scaffold\Services\User\Requests;
@@ -34,9 +34,9 @@ class UpdateUser
         if (!empty($dataIn)) {
             $user = [
                 'role_id'           => in_array($roleId, $inList, true) ? $roleId : 2,
-                'username'          => strtolower($dataIn['username']),
+                'username'          => $dataIn['username'] ? strtolower($dataIn['username']) : null,
                 'name'              => $dataIn['name'],
-                'email'             => strtolower($dataIn['email']),
+                'email'             => $dataIn['email'] ? strtolower($dataIn['email']) : null,
                 'avatar'            => $dataIn['avatar'],
                 'email_verified_at' => $dataIn['emailVerifiedAt'],
                 'remember_token'    => $dataIn['rememberToken'],
