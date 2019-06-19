@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/17/19 2:46 PM
+ * Last modified 6/20/19 3:24 AM
  */
 
 namespace App\Components\Scaffold\Http\Controllers;
@@ -14,6 +14,7 @@ namespace App\Components\Scaffold\Http\Controllers;
 use App\Components\Scaffold\Http\Requests\UserCreateFormRequest;
 use App\Components\Scaffold\Http\Requests\UserUpdateFormRequest;
 use App\Components\Scaffold\Services\UserService;
+use App\Components\Signature\Exceptions\NotFoundHttpException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 
@@ -165,5 +166,34 @@ class UserController extends Controller
         }
 
         return $this->response(null, 204);
+    }
+
+    /**
+     * @param string                   $uuid
+     * @param null                     $type
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function additionalRole(string $uuid, $type = null, Request $request): \Illuminate\Http\JsonResponse
+    {
+        $data   = ['input' => $request->all(),];
+        $option = [
+            'type' => $type,
+        ];
+
+        try {
+            if ($type === 'add' || $type === 'remove' || $type === 'sync') {
+                $response = $this->userService->additionalRole($uuid, $data, $option);
+            } else {
+                throw new NotFoundHttpException("Resource requested cannot be found, type can be of 'sync', 'add', or 'remove'");
+            }
+        } catch (\Exception $error) {
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
+
+            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+        }
+
+        return $this->response($response);
     }
 }
