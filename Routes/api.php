@@ -1,10 +1,5 @@
 <?php
 /**
- * Copyright(c) 2019. All rights reserved.
- * Last modified 5/13/19 4:59 AM
- */
-
-/**
  * api.php
  * Created by @anonymoussc on 03/11/2019 7:31 PM.
  */
@@ -20,6 +15,11 @@
 |
 */
 
+/**
+ * Copyright(c) 2019. All rights reserved.
+ * Last modified 6/20/19 2:20 AM
+ */
+
 Route::group(['prefix' => 'v1'], function() {
     Route::group(
         [
@@ -34,6 +34,9 @@ Route::group(['prefix' => 'v1'], function() {
             Route::post('/', 'UserController@create');
             Route::patch('/{uuid}', 'UserController@update');
             Route::delete('/{uuid}', 'UserController@delete');
+
+            Route::get('/{uuid}/relationships/roles', 'UserController@browseRoles');
+            Route::patch('/{uuid}/relationships/additional-roles/{type}', 'UserController@additionalRole'); # type = sync, add or remove
         }
     );
 
@@ -49,6 +52,8 @@ Route::group(['prefix' => 'v1'], function() {
             Route::post('/', 'RoleController@create');
             Route::patch('/{uuid}', 'RoleController@update');
             Route::delete('/{uuid}', 'RoleController@delete');
+
+            Route::patch('/{uuid}/relationships/permissions', 'RoleController@assignPermission');
         }
     );
 
