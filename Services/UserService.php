@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/17/19 4:44 PM
+ * Last modified 6/20/19 3:35 AM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -15,6 +15,7 @@ use App\Components\Scaffold\Repositories\RoleRepositoryInterface;
 use App\Components\Scaffold\Repositories\UserRepositoryInterface;
 use App\Components\Scaffold\Services\User\Requests\CreateUser;
 use App\Components\Scaffold\Services\User\Requests\UpdateUser;
+use App\Components\Scaffold\Services\User\Responses\RoleCollection;
 use App\Components\Scaffold\Services\User\Responses\UserCollection;
 use App\Components\Scaffold\Services\User\Responses\UserResource;
 use App\Components\Signature\Exceptions\BadRequestHttpException;
@@ -142,12 +143,7 @@ class UserService extends Service
      */
     public function read($uuid, array $data = [], array $option = [], array $param = [])
     {
-        $id = $this->userRepository->getIdbyUuid($uuid);
-
-        if (null === $id) {
-            throw new NotFoundHttpException('Cannot find Users resources in URI query parameter /' . $uuid);
-        }
-
+        $id   = $this->getUserIdByUuidUriQueryParam($uuid);
         $user = $this->userRepository->getById($id);
 
         if (null === $user) {
@@ -167,12 +163,8 @@ class UserService extends Service
      */
     public function update($uuid, array $data, array $option = [], array $param = [])
     {
+        $id             = $this->getUserIdByUuidUriQueryParam($uuid);
         $data['inList'] = $this->roleRepository->getIds();
-        $id             = $this->userRepository->getIdbyUuid($uuid);
-
-        if (null === $id) {
-            throw new NotFoundHttpException('Cannot find Users resources in URI query parameter /' . $uuid);
-        }
 
         if (null !== data_get($data, 'input.username')) {
             $username = data_get($data, 'input.username');
@@ -228,5 +220,108 @@ class UserService extends Service
 
             $this->userRepository->delete($uid);
         }
+    }
+
+    /**
+     * @param       $uuid
+     * @param array $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return mixed
+     */
+    public function additionalRole($uuid, array $data, array $option = [], array $param = [])
+    {
+        $id    = $this->getUserIdByUuidUriQueryParam($uuid);
+        $roles = $this->getInputRole($data);
+        $user  = $this->userRepository->getById($id);
+
+        if (isset($roles) && !empty($roles) && (null !== $roles)) {
+            if ($option['type'] === 'sync') {
+                $this->userRepository->removeUserRole($id);
+            }
+
+            foreach ($roles as $role) {
+                $rid = $this->findRoleIdByUuid($role);
+
+                if ($option['type'] === 'add' || $option['type'] === 'remove') {
+                    $userRoles = $this->userRepository->findUserRole($id);
+
+                    foreach ($userRoles as $userRole) {
+                        if ($rid === $userRole->id) {
+                            $this->userRepository->removeUserRole($id, $rid);
+                        }
+                    }
+                }
+
+                if ($option['type'] === 'add' || $option['type'] === 'sync') {
+                    if ($user->role_id !== $rid) {
+                        $this->userRepository->addUserRole($id, $rid);
+                    }
+                }
+            }
+        }
+
+        return $this->getUserRoles($id);
+    }
+
+    /**
+     * @param $uuid
+     *
+     * @return mixed
+     */
+    private function getUserIdByUuidUriQueryParam($uuid)
+    {
+        $id = $this->userRepository->getIdbyUuid($uuid);
+
+        if (null === $id) {
+            throw new NotFoundHttpException('Cannot find Users resources in URI query parameter /' . $uuid);
+        }
+
+        return $id;
+    }
+
+    /**
+     * @param $data
+     *
+     * @return mixed
+     */
+    private function getInputRole($data)
+    {
+        $roles = data_get($data, 'input.roles');
+
+        if (is_array($roles)) {
+            return $roles;
+        }
+
+        throw new BadRequestHttpException('Roles expected to be an array');
+    }
+
+    /**
+     * @param $uuid
+     *
+     * @return mixed
+     */
+    private function findRoleIdByUuid($uuid)
+    {
+        $rid = $this->roleRepository->getIdbyUuid($uuid);
+
+        if (null === $rid) {
+            throw new BadRequestHttpException('Cannot find Role with ID #' . $uuid);
+        }
+
+        return $rid;
+    }
+
+    /**
+     * @param $id
+     *
+     * @return mixed
+     */
+    private function getUserRoles($id)
+    {
+        $userRole = $this->userRepository->findUserRole($id);
+
+        return (new RoleCollection)($userRole);
     }
 }
