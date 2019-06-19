@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/15/19 6:17 PM
+ * Last modified 6/20/19 3:28 AM
  */
 
 namespace App\Components\Scaffold\Repositories\User;
@@ -131,5 +131,51 @@ class UserRepository extends Repository implements UserRepositoryInterface
         $user->save();
 
         return $user;
+    }
+
+    /**
+     * @param $id
+     *
+     * @return mixed
+     */
+    public function findUserRole($id)
+    {
+        $user = $this->getModel()::find($id);
+
+        return $user->roles;
+    }
+
+    /**
+     * @param       $id
+     * @param null  $roleId
+     * @param array $option
+     * @param array $param
+     */
+    public function addUserRole($id, $roleId = null, array $option = [], array $param = [])
+    {
+        $user = $this->getModel()::find($id);
+
+        $user->roles()->attach($roleId);
+
+        // return $user->roles;
+    }
+
+    /**
+     * @param       $id
+     * @param null  $roleId
+     * @param array $option
+     * @param array $param
+     */
+    public function removeUserRole($id, $roleId = null, array $option = [], array $param = [])
+    {
+        $user = $this->getModel()::find($id);
+
+        if (null === $roleId) {
+            $user->roles()->detach();
+        } else {
+            $user->roles()->detach($roleId);
+        }
+
+        // return $user->roles;
     }
 }
