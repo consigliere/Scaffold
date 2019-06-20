@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/20/19 3:35 AM
+ * Last modified 6/20/19 4:24 PM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -230,6 +230,22 @@ class UserService extends Service
      *
      * @return mixed
      */
+    public function browseRoles($uuid, array $data, array $option = [], array $param = [])
+    {
+        $id = $this->getUserIdByUuidUriQueryParam($uuid);
+
+        return $this->getUserRoles($id);
+
+    }
+
+    /**
+     * @param       $uuid
+     * @param array $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return mixed
+     */
     public function additionalRole($uuid, array $data, array $option = [], array $param = [])
     {
         $id    = $this->getUserIdByUuidUriQueryParam($uuid);
@@ -238,25 +254,23 @@ class UserService extends Service
 
         if (isset($roles) && !empty($roles) && (null !== $roles)) {
             if ($option['type'] === 'sync') {
-                $this->userRepository->removeUserRole($id);
+                $this->userRepository->detachUserRole($id);
             }
 
             foreach ($roles as $role) {
-                $rid = $this->findRoleIdByUuid($role);
+                $rid = $this->getRoleIdByUuid($role);
 
                 if ($option['type'] === 'add' || $option['type'] === 'remove') {
-                    $userRoles = $this->userRepository->findUserRole($id);
-
+                    $userRoles = $this->userRepository->additionalRole($id);
                     foreach ($userRoles as $userRole) {
                         if ($rid === $userRole->id) {
-                            $this->userRepository->removeUserRole($id, $rid);
+                            $this->userRepository->detachUserRole($id, $rid);
                         }
                     }
                 }
-
                 if ($option['type'] === 'add' || $option['type'] === 'sync') {
                     if ($user->role_id !== $rid) {
-                        $this->userRepository->addUserRole($id, $rid);
+                        $this->userRepository->attachUserRole($id, $rid);
                     }
                 }
             }
@@ -302,7 +316,7 @@ class UserService extends Service
      *
      * @return mixed
      */
-    private function findRoleIdByUuid($uuid)
+    private function getRoleIdByUuid($uuid)
     {
         $rid = $this->roleRepository->getIdbyUuid($uuid);
 
@@ -314,14 +328,15 @@ class UserService extends Service
     }
 
     /**
-     * @param $id
+     * @param $userId
      *
      * @return mixed
      */
-    private function getUserRoles($id)
+    private function getUserRoles($userId)
     {
-        $userRole = $this->userRepository->findUserRole($id);
+        $primaryRole    = $this->userRepository->primaryRole($userId);
+        $additionalRole = $this->userRepository->additionalRole($userId);
 
-        return (new RoleCollection)($userRole);
+        return (new RoleCollection)($primaryRole, $additionalRole);
     }
 }
