@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/20/19 3:24 AM
+ * Last modified 6/20/19 4:19 AM
  */
 
 namespace App\Components\Scaffold\Http\Controllers;
@@ -92,9 +92,7 @@ class UserController extends Controller
      */
     public function create(UserCreateFormRequest $request): \Illuminate\Http\JsonResponse
     {
-        $data = [
-            'input' => $request->all(),
-        ];
+        $data = ['input' => $request->all(),];
 
         try {
             $response = $this->userService->create($data);
@@ -134,9 +132,7 @@ class UserController extends Controller
      */
     public function update($uuid, UserUpdateFormRequest $request): \Illuminate\Http\JsonResponse
     {
-        $data = [
-            'input' => $request->all(),
-        ];
+        $data = ['input' => $request->all(),];
 
         try {
             $response = $this->userService->update($uuid, $data);
@@ -166,6 +162,21 @@ class UserController extends Controller
         }
 
         return $this->response(null, 204);
+    }
+
+    public function browseRoles(string $uuid, Request $request)
+    {
+        $data = ['input' => $request->all(),];
+
+        try {
+            $response = $this->userService->browseRoles($uuid, $data);
+        } catch (\Exception $error) {
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
+
+            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+        }
+
+        return $this->response($response);
     }
 
     /**
