@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/20/19 3:28 AM
+ * Last modified 6/20/19 4:24 PM
  */
 
 namespace App\Components\Scaffold\Repositories\User;
@@ -138,7 +138,19 @@ class UserRepository extends Repository implements UserRepositoryInterface
      *
      * @return mixed
      */
-    public function findUserRole($id)
+    public function primaryRole($id)
+    {
+        $user = $this->getModel()::find($id);
+
+        return $user->role;
+    }
+
+    /**
+     * @param $id
+     *
+     * @return mixed
+     */
+    public function additionalRole($id)
     {
         $user = $this->getModel()::find($id);
 
@@ -151,13 +163,11 @@ class UserRepository extends Repository implements UserRepositoryInterface
      * @param array $option
      * @param array $param
      */
-    public function addUserRole($id, $roleId = null, array $option = [], array $param = [])
+    public function attachUserRole($id, $roleId = null, array $option = [], array $param = [])
     {
         $user = $this->getModel()::find($id);
 
         $user->roles()->attach($roleId);
-
-        // return $user->roles;
     }
 
     /**
@@ -166,7 +176,7 @@ class UserRepository extends Repository implements UserRepositoryInterface
      * @param array $option
      * @param array $param
      */
-    public function removeUserRole($id, $roleId = null, array $option = [], array $param = [])
+    public function detachUserRole($id, $roleId = null, array $option = [], array $param = [])
     {
         $user = $this->getModel()::find($id);
 
@@ -175,7 +185,5 @@ class UserRepository extends Repository implements UserRepositoryInterface
         } else {
             $user->roles()->detach($roleId);
         }
-
-        // return $user->roles;
     }
 }
