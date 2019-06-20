@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/20/19 3:32 AM
+ * Last modified 6/20/19 2:53 PM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
@@ -46,19 +46,33 @@ class RoleCollection
     }
 
     /**
-     * @param       $data
+     * @param       $primary
+     * @param       $additional
      * @param array $option
      * @param array $param
      *
-     * @return mixed
+     * @return array
      */
-    public function __invoke($data, array $option = [], array $param = [])
+    public function __invoke($primary, $additional, array $option = [], array $param = [])
     {
         $newData = [];
         $records = [];
 
-        if ($data->isNotEmpty()) {
-            $newData = $data->map(function($value, $key) use ($param) {
+        if (!empty($primary)) {
+            $records['data']['primary'] = [
+                'type'       => Config::get('scaffold.api.roles.type'),
+                'id'         => $primary->uuid,
+                'attributes' => [
+                    'name'        => $primary->name,
+                    'displayName' => $primary->display_name,
+                ],
+            ];
+        } else {
+            $records['data']['primary'] = null;
+        }
+
+        if ($additional->isNotEmpty()) {
+            $newData = $additional->map(function($value, $key) use ($param) {
                 return [
                     'type'       => Config::get('scaffold.api.roles.type'),
                     'id'         => $value->uuid,
@@ -69,14 +83,13 @@ class RoleCollection
                 ];
             });
 
-            $records['data'] = $newData;
-            $records['link'] = $this->getLink($data);
-            $records['meta'] = $this->getMeta($data);
+            $records['data']['additional'] = $newData;
         } else {
-            $records['data'] = [];
-            $records['link'] = $this->getLink($data);
-            $records['meta'] = $this->getMeta($data);
+            $records['data']['additional'] = [];
         }
+
+        $records['link'] = $this->getLink();
+        $records['meta'] = $this->getMeta();
 
         return $records;
     }
@@ -87,7 +100,7 @@ class RoleCollection
      *
      * @return array
      */
-    private function getLink($data, array $param = []): array
+    private function getLink($data = null, array $param = []): array
     {
         $link['self'] = $this->request->fullUrl();
 
@@ -100,7 +113,7 @@ class RoleCollection
      *
      * @return array
      */
-    private function getMeta($data, array $param = []): array
+    private function getMeta($data = null, array $param = []): array
     {
         $meta = [];
 
