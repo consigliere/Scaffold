@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/24/19 5:10 PM
+ * Last modified 6/24/19 5:53 PM
  */
 
 namespace App\Components\Scaffold\Http\Controllers;
@@ -170,12 +170,12 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function browseRoles(string $uuid, Request $request): \Illuminate\Http\JsonResponse
+    public function userRoles(string $uuid, Request $request): \Illuminate\Http\JsonResponse
     {
         $data = ['input' => $request->all(),];
 
         try {
-            $response = $this->userService->browseRoles($uuid, $data);
+            $response = $this->userService->userRoles($uuid, $data);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
@@ -201,7 +201,7 @@ class UserController extends Controller
 
         try {
             if ($type === 'add' || $type === 'remove' || $type === 'sync') {
-                $response = $this->userService->effectAdditionalRoles($uuid, $data, $option);
+                $response = $this->userService->userAdditionalRoles($uuid, $data, $option);
             } else {
                 throw new NotFoundHttpException("Resource requested cannot be found, type can be of 'sync', 'add', or 'remove'");
             }
@@ -226,7 +226,7 @@ class UserController extends Controller
         $option = ['type' => 'sync',];
 
         try {
-            $response = $this->userService->effectAdditionalRoles($uuid, $data, $option);
+            $response = $this->userService->userAdditionalRoles($uuid, $data, $option);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
@@ -248,7 +248,7 @@ class UserController extends Controller
         $option = ['type' => 'add',];
 
         try {
-            $response = $this->userService->effectAdditionalRoles($uuid, $data, $option);
+            $response = $this->userService->userAdditionalRoles($uuid, $data, $option);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
@@ -270,7 +270,7 @@ class UserController extends Controller
         $option = ['type' => 'remove',];
 
         try {
-            $response = $this->userService->effectAdditionalRoles($uuid, $data, $option);
+            $response = $this->userService->userAdditionalRoles($uuid, $data, $option);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
