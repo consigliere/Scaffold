@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/24/19 5:53 PM
+ * Last modified 6/25/19 4:51 AM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -134,19 +134,17 @@ class UserService extends Service
         $data['inList'] = $this->findRoleIds()->getRoleIds();
         $inputUsername  = data_get($data, 'input.username');
         $inputEmail     = data_get($data, 'input.email');
-        $inputRoleId    = data_get($data, 'input.roleId') ?? null;
+        $inputRoleId    = data_get($data, 'input.roleId');
 
-        $this->findUsersBy('username', $inputUsername)
-            ->validateAndVerifyUsersIsAvailable('username', null, $inputUsername)->getUsers();
-        $this->findUsersBy('email', $inputEmail)
-            ->validateAndVerifyUsersIsAvailable('email', null, $inputEmail)->getUsers();
+        $this->findUsersBy('username', $inputUsername)->verifyUsersIsAvailable('username', null, $inputUsername);
+        $this->findUsersBy('email', $inputEmail)->verifyUsersIsAvailable('email', null, $inputEmail);
 
-        if (null !== data_get($data, 'input.roleId')) {
+        if (null !== $inputRoleId) {
             data_set($data, 'input.roleId', $this->findRoleIdByUuid($inputRoleId)->getRoleId());
         }
 
         $newUser = (new CreateUser)($data);
-        $this->findUsersBy('uuid', $newUser['uuid'])->validateUsersUuidIsExistAndMessageTryAgain(null)->getUsers();
+        $this->findUsersBy('uuid', $newUser['uuid'])->verifyUsersUuidAlreadyExist();
 
         $user = $this->userRepository->create($newUser);
 
@@ -181,18 +179,16 @@ class UserService extends Service
     {
         $uid            = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
         $data['inList'] = $this->findRoleIds()->getRoleId();
-        $inputUsername  = data_get($data, 'input.username') ?? null;
-        $inputEmail     = data_get($data, 'input.email') ?? null;
-        $inputRoleId    = data_get($data, 'input.roleId') ?? null;
+        $inputUsername  = data_get($data, 'input.username');
+        $inputEmail     = data_get($data, 'input.email');
+        $inputRoleId    = data_get($data, 'input.roleId');
 
         if (null !== $inputUsername) {
-            $this->findUsersBy('username', $inputUsername)
-                ->validateAndVerifyUsersIsAvailable('username', null, $inputUsername, $uid)->getUsers();
+            $this->findUsersBy('username', $inputUsername)->verifyUsersIsAvailable('username', null, $inputUsername, $uid);
         }
 
         if (null !== $inputEmail) {
-            $this->findUsersBy('email', $inputEmail)
-                ->validateAndVerifyUsersIsAvailable('email', null, $inputEmail, $uid)->getUsers();
+            $this->findUsersBy('email', $inputEmail)->verifyUsersIsAvailable('email', null, $inputEmail, $uid);
         }
 
         if (null !== $inputRoleId) {
@@ -246,16 +242,16 @@ class UserService extends Service
      */
     public function userAdditionalRoles($uuid, array $data, array $option = [], array $param = [])
     {
-        $uid   = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
-        $roles = $this->findInputRoles($data)->validateInputRolesIsArray(null)->getInputRoles();
-        $user  = $this->findUserById($uid)->getUser();
+        $uid        = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
+        $inputRoles = $this->findInputRoles($data)->validateInputRolesIsArray(null)->getInputRoles();
+        $user       = $this->findUserById($uid)->getUser();
 
-        if (isset($roles) && !empty($roles) && (null !== $roles)) {
+        if (isset($inputRoles) && !empty($inputRoles) && (null !== $inputRoles)) {
             if ($option['type'] === 'sync') {
                 $this->userRepository->detachUserRoles($uid);
             }
 
-            foreach ($roles as $role) {
+            foreach ($inputRoles as $role) {
                 $rid = $this->findRoleIdByUuid($role)->validateRoleIdIsExist(null, $role)->getRoleId();
 
                 if ($option['type'] === 'add' || $option['type'] === 'remove') {
@@ -464,7 +460,7 @@ class UserService extends Service
      *
      * @return $this
      */
-    private function validateUsersUuidIsExistAndMessageTryAgain($users = null): self
+    private function verifyUsersUuidAlreadyExist($users = null): self
     {
         $newUsers = $users ?? $this->users;
 
@@ -483,7 +479,7 @@ class UserService extends Service
      *
      * @return $this
      */
-    private function validateAndVerifyUsersIsAvailable($type, $users = null, $value, $userId = null): self
+    private function verifyUsersIsAvailable($type, $users = null, $value, $userId = null): self
     {
         $newUsers = $users ?? $this->users;
         $message  = ucfirst($type) . " $value already exists, please try another";
