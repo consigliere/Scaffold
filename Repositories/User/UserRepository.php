@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/20/19 4:24 PM
+ * Last modified 6/24/19 3:54 PM
  */
 
 namespace App\Components\Scaffold\Repositories\User;
@@ -138,7 +138,7 @@ class UserRepository extends Repository implements UserRepositoryInterface
      *
      * @return mixed
      */
-    public function primaryRole($id)
+    public function primaryRoles($id)
     {
         $user = $this->getModel()::find($id);
 
@@ -150,7 +150,7 @@ class UserRepository extends Repository implements UserRepositoryInterface
      *
      * @return mixed
      */
-    public function additionalRole($id)
+    public function additionalRoles($id)
     {
         $user = $this->getModel()::find($id);
 
@@ -163,7 +163,7 @@ class UserRepository extends Repository implements UserRepositoryInterface
      * @param array $option
      * @param array $param
      */
-    public function attachUserRole($id, $roleId = null, array $option = [], array $param = [])
+    public function attachUserRoles($id, $roleId = null, array $option = [], array $param = [])
     {
         $user = $this->getModel()::find($id);
 
@@ -176,7 +176,7 @@ class UserRepository extends Repository implements UserRepositoryInterface
      * @param array $option
      * @param array $param
      */
-    public function detachUserRole($id, $roleId = null, array $option = [], array $param = [])
+    public function detachUserRoles($id, $roleId = null, array $option = [], array $param = [])
     {
         $user = $this->getModel()::find($id);
 
