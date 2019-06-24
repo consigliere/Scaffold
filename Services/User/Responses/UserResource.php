@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/16/19 6:42 PM
+ * Last modified 6/22/19 12:58 AM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Config;
  * Class UserResource
  * @package App\Components\Scaffold\Services\User\Responses
  */
-class UserResource
+final class UserResource
 {
     /**
      * @var \Illuminate\Auth\AuthManager|mixed
