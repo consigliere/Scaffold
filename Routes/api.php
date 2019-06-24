@@ -17,7 +17,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/20/19 2:20 AM
+ * Last modified 6/24/19 4:21 PM
  */
 
 Route::group(['prefix' => 'v1'], function() {
@@ -36,7 +36,10 @@ Route::group(['prefix' => 'v1'], function() {
             Route::delete('/{uuid}', 'UserController@delete');
 
             Route::get('/{uuid}/relationships/roles', 'UserController@browseRoles');
-            Route::patch('/{uuid}/relationships/additional-roles/{type}', 'UserController@additionalRole'); # type = sync, add or remove
+            // Route::patch('/{uuid}/relationships/additional-roles/{type}', 'UserController@additionalRoles'); # type = sync, add or remove
+            Route::patch('/{uuid}/relationships/additional-roles/sync', 'UserController@syncAdditionalRoles');
+            Route::patch('/{uuid}/relationships/additional-roles/add', 'UserController@addAdditionalRoles');
+            Route::patch('/{uuid}/relationships/additional-roles/remove', 'UserController@removeAdditionalRoles');
         }
     );
 
