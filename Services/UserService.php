@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/25/19 4:51 AM
+ * Last modified 6/25/19 5:45 AM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -132,14 +132,10 @@ class UserService extends Service
     public function create(array $data, array $option = [], array $param = []): array
     {
         $data['inList'] = $this->findRoleIds()->getRoleIds();
-        $inputUsername  = data_get($data, 'input.username');
-        $inputEmail     = data_get($data, 'input.email');
-        $inputRoleId    = data_get($data, 'input.roleId');
+        $this->preCreateUpdate($data);
 
-        $this->findUsersBy('username', $inputUsername)->verifyUsersIsAvailable('username', null, $inputUsername);
-        $this->findUsersBy('email', $inputEmail)->verifyUsersIsAvailable('email', null, $inputEmail);
-
-        if (null !== $inputRoleId) {
+        if (null !== data_get($data, 'input.roleId')) {
+            $inputRoleId = data_get($data, 'input.roleId');
             data_set($data, 'input.roleId', $this->findRoleIdByUuid($inputRoleId)->getRoleId());
         }
 
@@ -179,19 +175,10 @@ class UserService extends Service
     {
         $uid            = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
         $data['inList'] = $this->findRoleIds()->getRoleId();
-        $inputUsername  = data_get($data, 'input.username');
-        $inputEmail     = data_get($data, 'input.email');
-        $inputRoleId    = data_get($data, 'input.roleId');
+        $this->preCreateUpdate($data, $uid);
 
-        if (null !== $inputUsername) {
-            $this->findUsersBy('username', $inputUsername)->verifyUsersIsAvailable('username', null, $inputUsername, $uid);
-        }
-
-        if (null !== $inputEmail) {
-            $this->findUsersBy('email', $inputEmail)->verifyUsersIsAvailable('email', null, $inputEmail, $uid);
-        }
-
-        if (null !== $inputRoleId) {
+        if (null !== data_get($data, 'input.roleId')) {
+            $inputRoleId = data_get($data, 'input.roleId');
             data_set($data, 'input.roleId', $this->findRoleIdByUuid($inputRoleId)->getRoleId());
         }
 
@@ -229,7 +216,7 @@ class UserService extends Service
     {
         $uid = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
 
-        return $this->getUserRoles($uid);
+        return $this->loadUserRoles($uid);
     }
 
     /**
@@ -270,7 +257,7 @@ class UserService extends Service
             }
         }
 
-        return $this->getUserRoles($uid);
+        return $this->loadUserRoles($uid);
     }
 
     /**
@@ -278,12 +265,31 @@ class UserService extends Service
      *
      * @return mixed
      */
-    private function getUserRoles($userId)
+    private function loadUserRoles($userId)
     {
         $primaryRole    = $this->findPrimaryRoles($userId)->getPrimaryRoles();
         $additionalRole = $this->findAdditionalRoles($userId)->getAdditionalRoles();
 
         return (new RoleCollection)($primaryRole, $additionalRole);
+    }
+
+    /**
+     * @param      $data
+     * @param null $userId
+     */
+    private function preCreateUpdate($data, $userId = null): void
+    {
+        $username = data_get($data, 'input.username');
+        $email    = data_get($data, 'input.email');
+        $uid      = $userId ?? null;
+
+        if (null !== data_get($data, 'input.username')) {
+            $this->findUsersBy('username', $username)->verifyUsersIsAvailable('username', null, $username, $uid);
+        }
+
+        if (null !== data_get($data, 'input.email')) {
+            $this->findUsersBy('email', $email)->verifyUsersIsAvailable('email', null, $email, $uid);
+        }
     }
 
     /**
@@ -373,14 +379,24 @@ class UserService extends Service
         return $this;
     }
 
-    private function findPrimaryRoles($userId)
+    /**
+     * @param $userId
+     *
+     * @return $this
+     */
+    private function findPrimaryRoles($userId): self
     {
         $this->primaryRoles = $this->userRepository->primaryRoles($userId);
 
         return $this;
     }
 
-    private function findAdditionalRoles($userId)
+    /**
+     * @param $userId
+     *
+     * @return $this
+     */
+    private function findAdditionalRoles($userId): self
     {
         $this->additionalRoles = $this->userRepository->additionalRoles($userId);
 
