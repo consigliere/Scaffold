@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/20/19 4:19 AM
+ * Last modified 6/24/19 5:10 PM
  */
 
 namespace App\Components\Scaffold\Http\Controllers;
@@ -164,7 +164,13 @@ class UserController extends Controller
         return $this->response(null, 204);
     }
 
-    public function browseRoles(string $uuid, Request $request)
+    /**
+     * @param string                   $uuid
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function browseRoles(string $uuid, Request $request): \Illuminate\Http\JsonResponse
     {
         $data = ['input' => $request->all(),];
 
@@ -186,7 +192,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function additionalRole(string $uuid, $type = null, Request $request): \Illuminate\Http\JsonResponse
+    public function additionalRoles(string $uuid, $type = null, Request $request): \Illuminate\Http\JsonResponse
     {
         $data   = ['input' => $request->all(),];
         $option = [
@@ -195,10 +201,76 @@ class UserController extends Controller
 
         try {
             if ($type === 'add' || $type === 'remove' || $type === 'sync') {
-                $response = $this->userService->additionalRole($uuid, $data, $option);
+                $response = $this->userService->effectAdditionalRoles($uuid, $data, $option);
             } else {
                 throw new NotFoundHttpException("Resource requested cannot be found, type can be of 'sync', 'add', or 'remove'");
             }
+        } catch (\Exception $error) {
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
+
+            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+        }
+
+        return $this->response($response);
+    }
+
+    /**
+     * @param string                   $uuid
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function syncAdditionalRoles(string $uuid, Request $request): \Illuminate\Http\JsonResponse
+    {
+        $data   = ['input' => $request->all(),];
+        $option = ['type' => 'sync',];
+
+        try {
+            $response = $this->userService->effectAdditionalRoles($uuid, $data, $option);
+        } catch (\Exception $error) {
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
+
+            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+        }
+
+        return $this->response($response);
+    }
+
+    /**
+     * @param string                   $uuid
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function addAdditionalRoles(string $uuid, Request $request): \Illuminate\Http\JsonResponse
+    {
+        $data   = ['input' => $request->all(),];
+        $option = ['type' => 'add',];
+
+        try {
+            $response = $this->userService->effectAdditionalRoles($uuid, $data, $option);
+        } catch (\Exception $error) {
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
+
+            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+        }
+
+        return $this->response($response);
+    }
+
+    /**
+     * @param string                   $uuid
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function removeAdditionalRoles(string $uuid, Request $request): \Illuminate\Http\JsonResponse
+    {
+        $data   = ['input' => $request->all(),];
+        $option = ['type' => 'remove',];
+
+        try {
+            $response = $this->userService->effectAdditionalRoles($uuid, $data, $option);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
