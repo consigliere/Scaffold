@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/20/19 4:24 PM
+ * Last modified 6/24/19 5:53 PM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -49,6 +49,22 @@ class UserService extends Service
      */
     private $request;
 
+    private $users;
+
+    private $user;
+
+    private $userId;
+
+    private $roleIds;
+
+    private $roleId;
+
+    private $inputRoles;
+
+    private $primaryRoles;
+
+    private $additionalRoles;
+
     /**
      * UserService constructor.
      *
@@ -66,6 +82,19 @@ class UserService extends Service
     }
 
     /**
+     * @param $name
+     * @param $arguments
+     *
+     * @return mixed
+     */
+    public function __call($name, $arguments)
+    {
+        $prop = lcfirst(substr($name, 3));
+
+        return $this->$prop;
+    }
+
+    /**
      * @param array $data
      * @param array $option
      * @param array $param
@@ -74,7 +103,7 @@ class UserService extends Service
      */
     public function profile(array $data = [], array $option = [], array $param = []): array
     {
-        $user = $this->userRepository->getById($this->auth->user()->id);
+        $user = $this->findUserById($this->auth->user()->id)->getUser();
 
         return (new UserResource)($user);
     }
@@ -88,7 +117,7 @@ class UserService extends Service
      */
     public function browse(array $data = [], array $option = [], array $param = [])
     {
-        $users = $this->userRepository->browse($data);
+        $users = $this->findUsersPaging($data)->getUsers();
 
         return (new UserCollection)($users);
     }
@@ -102,31 +131,22 @@ class UserService extends Service
      */
     public function create(array $data, array $option = [], array $param = []): array
     {
-        $data['inList'] = $this->roleRepository->getIds();
-        $username       = data_get($data, 'input.username');
-        $userusername   = $this->userRepository->getWhere('username', strtolower($username));
+        $data['inList'] = $this->findRoleIds()->getRoleIds();
+        $inputUsername  = data_get($data, 'input.username');
+        $inputEmail     = data_get($data, 'input.email');
+        $inputRoleId    = data_get($data, 'input.roleId') ?? null;
 
-        if ($userusername->isNotEmpty()) {
-            throw new UnprocessableEntityHttpException("Username $username already exists, please try another");
-        }
-
-        $email     = data_get($data, 'input.email');
-        $useremail = $this->userRepository->getWhere('email', $email);
-
-        if ($useremail->isNotEmpty()) {
-            throw new UnprocessableEntityHttpException("Email $email already exists, please try another");
-        }
+        $this->findUsersBy('username', $inputUsername)
+            ->validateAndVerifyUsersIsAvailable('username', null, $inputUsername)->getUsers();
+        $this->findUsersBy('email', $inputEmail)
+            ->validateAndVerifyUsersIsAvailable('email', null, $inputEmail)->getUsers();
 
         if (null !== data_get($data, 'input.roleId')) {
-            data_set($data, 'input.roleId', $this->roleRepository->getIdbyUuid(data_get($data, 'input.roleId')));
+            data_set($data, 'input.roleId', $this->findRoleIdByUuid($inputRoleId)->getRoleId());
         }
 
-        $newUser  = (new CreateUser)($data);
-        $useruuid = $this->userRepository->getWhere('uuid', $newUser['uuid']);
-
-        if ($useruuid->isNotEmpty()) {
-            throw new UnprocessableEntityHttpException('Please try again');
-        }
+        $newUser = (new CreateUser)($data);
+        $this->findUsersBy('uuid', $newUser['uuid'])->validateUsersUuidIsExistAndMessageTryAgain(null)->getUsers();
 
         $user = $this->userRepository->create($newUser);
 
@@ -143,12 +163,8 @@ class UserService extends Service
      */
     public function read($uuid, array $data = [], array $option = [], array $param = [])
     {
-        $id   = $this->getUserIdByUuidUriQueryParam($uuid);
-        $user = $this->userRepository->getById($id);
-
-        if (null === $user) {
-            throw new BadRequestHttpException('Cannot find User with ID #' . $uuid);
-        }
+        $id   = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
+        $user = $this->findUserById($id)->validateUserIsExist(null, $uuid)->getUser();
 
         return (new UserResource)($user);
     }
@@ -163,41 +179,28 @@ class UserService extends Service
      */
     public function update($uuid, array $data, array $option = [], array $param = [])
     {
-        $id             = $this->getUserIdByUuidUriQueryParam($uuid);
-        $data['inList'] = $this->roleRepository->getIds();
+        $uid            = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
+        $data['inList'] = $this->findRoleIds()->getRoleId();
+        $inputUsername  = data_get($data, 'input.username') ?? null;
+        $inputEmail     = data_get($data, 'input.email') ?? null;
+        $inputRoleId    = data_get($data, 'input.roleId') ?? null;
 
-        if (null !== data_get($data, 'input.username')) {
-            $username = data_get($data, 'input.username');
-            $users    = $this->userRepository->getWhere('username', strtolower($username));
-
-            if ($users->isNotEmpty()) {
-                foreach ($users as $user) {
-                    if ($user->id !== $id) {
-                        throw new UnprocessableEntityHttpException("Username $username already exists, please try another");
-                    }
-                }
-            }
+        if (null !== $inputUsername) {
+            $this->findUsersBy('username', $inputUsername)
+                ->validateAndVerifyUsersIsAvailable('username', null, $inputUsername, $uid)->getUsers();
         }
 
-        if (null !== data_get($data, 'input.email')) {
-            $email = data_get($data, 'input.email');
-            $users = $this->userRepository->getWhere('email', $email);
-
-            if ($users->isNotEmpty()) {
-                foreach ($users as $user) {
-                    if ($user->id !== $id) {
-                        throw new UnprocessableEntityHttpException("Email address $email already exists, please try another");
-                    }
-                }
-            }
+        if (null !== $inputEmail) {
+            $this->findUsersBy('email', $inputEmail)
+                ->validateAndVerifyUsersIsAvailable('email', null, $inputEmail, $uid)->getUsers();
         }
 
-        if (null !== data_get($data, 'input.roleId')) {
-            data_set($data, 'input.roleId', $this->roleRepository->getIdbyUuid(data_get($data, 'input.roleId')));
+        if (null !== $inputRoleId) {
+            data_set($data, 'input.roleId', $this->findRoleIdByUuid($inputRoleId)->getRoleId());
         }
 
         $newUser = (new UpdateUser)($data);
-        $user    = $this->userRepository->update($id, $newUser);
+        $user    = $this->userRepository->update($uid, $newUser);
 
         return (new UserResource)($user);
     }
@@ -212,11 +215,7 @@ class UserService extends Service
         $ids     = explode(',', $trimmed);
 
         foreach ($ids as $id) {
-            $uid = $this->userRepository->getIdbyUuid($id);
-
-            if (null === $uid) {
-                throw new BadRequestHttpException('Cannot find User with ID #' . $id);
-            }
+            $uid = $this->findUserIdByUuid($id)->validateUserIdIsExist(null, $id)->getUserId();
 
             $this->userRepository->delete($uid);
         }
@@ -230,12 +229,11 @@ class UserService extends Service
      *
      * @return mixed
      */
-    public function browseRoles($uuid, array $data, array $option = [], array $param = [])
+    public function userRoles($uuid, array $data, array $option = [], array $param = [])
     {
-        $id = $this->getUserIdByUuidUriQueryParam($uuid);
+        $uid = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
 
-        return $this->getUserRoles($id);
-
+        return $this->getUserRoles($uid);
     }
 
     /**
@@ -246,85 +244,37 @@ class UserService extends Service
      *
      * @return mixed
      */
-    public function additionalRole($uuid, array $data, array $option = [], array $param = [])
+    public function userAdditionalRoles($uuid, array $data, array $option = [], array $param = [])
     {
-        $id    = $this->getUserIdByUuidUriQueryParam($uuid);
-        $roles = $this->getInputRole($data);
-        $user  = $this->userRepository->getById($id);
+        $uid   = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
+        $roles = $this->findInputRoles($data)->validateInputRolesIsArray(null)->getInputRoles();
+        $user  = $this->findUserById($uid)->getUser();
 
         if (isset($roles) && !empty($roles) && (null !== $roles)) {
             if ($option['type'] === 'sync') {
-                $this->userRepository->detachUserRole($id);
+                $this->userRepository->detachUserRoles($uid);
             }
 
             foreach ($roles as $role) {
-                $rid = $this->getRoleIdByUuid($role);
+                $rid = $this->findRoleIdByUuid($role)->validateRoleIdIsExist(null, $role)->getRoleId();
 
                 if ($option['type'] === 'add' || $option['type'] === 'remove') {
-                    $userRoles = $this->userRepository->additionalRole($id);
+                    $userRoles = $this->findAdditionalRoles($uid)->getAdditionalRoles();
                     foreach ($userRoles as $userRole) {
                         if ($rid === $userRole->id) {
-                            $this->userRepository->detachUserRole($id, $rid);
+                            $this->userRepository->detachUserRoles($uid, $rid);
                         }
                     }
                 }
                 if ($option['type'] === 'add' || $option['type'] === 'sync') {
                     if ($user->role_id !== $rid) {
-                        $this->userRepository->attachUserRole($id, $rid);
+                        $this->userRepository->attachUserRoles($uid, $rid);
                     }
                 }
             }
         }
 
-        return $this->getUserRoles($id);
-    }
-
-    /**
-     * @param $uuid
-     *
-     * @return mixed
-     */
-    private function getUserIdByUuidUriQueryParam($uuid)
-    {
-        $id = $this->userRepository->getIdbyUuid($uuid);
-
-        if (null === $id) {
-            throw new NotFoundHttpException('Cannot find Users resources in URI query parameter /' . $uuid);
-        }
-
-        return $id;
-    }
-
-    /**
-     * @param $data
-     *
-     * @return mixed
-     */
-    private function getInputRole($data)
-    {
-        $roles = data_get($data, 'input.roles');
-
-        if (is_array($roles)) {
-            return $roles;
-        }
-
-        throw new BadRequestHttpException('Roles expected to be an array');
-    }
-
-    /**
-     * @param $uuid
-     *
-     * @return mixed
-     */
-    private function getRoleIdByUuid($uuid)
-    {
-        $rid = $this->roleRepository->getIdbyUuid($uuid);
-
-        if (null === $rid) {
-            throw new BadRequestHttpException('Cannot find Role with ID #' . $uuid);
-        }
-
-        return $rid;
+        return $this->getUserRoles($uid);
     }
 
     /**
@@ -334,9 +284,240 @@ class UserService extends Service
      */
     private function getUserRoles($userId)
     {
-        $primaryRole    = $this->userRepository->primaryRole($userId);
-        $additionalRole = $this->userRepository->additionalRole($userId);
+        $primaryRole    = $this->findPrimaryRoles($userId)->getPrimaryRoles();
+        $additionalRole = $this->findAdditionalRoles($userId)->getAdditionalRoles();
 
         return (new RoleCollection)($primaryRole, $additionalRole);
+    }
+
+    /**
+     * @param $userId
+     *
+     * @return $this
+     */
+    private function findUserById($userId): self
+    {
+        $this->user = $this->userRepository->getById($userId);
+
+        return $this;
+    }
+
+    /**
+     * @param $data
+     *
+     * @return $this
+     */
+    private function findUsersPaging($data): self
+    {
+        $this->users = $this->userRepository->browse($data);
+
+        return $this;
+    }
+
+    /**
+     * @param $uuid
+     *
+     * @return $this
+     */
+    private function findUserIdByUuid($uuid): self
+    {
+        $this->userId = $this->userRepository->getIdbyUuid($uuid);
+
+        return $this;
+    }
+
+    /**
+     * @param        $type
+     * @param        $value
+     * @param string $operand
+     * @param array  $arg
+     *
+     * @return $this
+     */
+    private function findUsersBy($type, $value, $operand = '=', array $arg = []): self
+    {
+        $val = $type === 'username' ? strtolower($value) : $value;
+
+        $this->users = $this->userRepository->getWhere($type, $operand, $val);
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    private function findRoleIds(): self
+    {
+        $this->roleIds = $this->roleRepository->getIds();
+
+        return $this;
+    }
+
+    /**
+     * @param $uuid
+     *
+     * @return $this
+     */
+    private function findRoleIdByUuid($uuid): self
+    {
+        $this->roleId = $this->roleRepository->getIdbyUuid($uuid);
+
+        return $this;
+    }
+
+    /**
+     * @param $data
+     *
+     * @return $this
+     */
+    private function findInputRoles($data): self
+    {
+        $this->inputRoles = data_get($data, 'input.roles');
+
+        return $this;
+    }
+
+    private function findPrimaryRoles($userId)
+    {
+        $this->primaryRoles = $this->userRepository->primaryRoles($userId);
+
+        return $this;
+    }
+
+    private function findAdditionalRoles($userId)
+    {
+        $this->additionalRoles = $this->userRepository->additionalRoles($userId);
+
+        return $this;
+    }
+
+    /**
+     * @param null $id
+     * @param      $uuid
+     *
+     * @return $this
+     */
+    private function validateUriQueryParam($id = null, $uuid): self
+    {
+        $newId = $id ?? $this->userId;
+
+        if (null === $newId) {
+            throw new NotFoundHttpException('Cannot find Users resources in URI query parameter /' . $uuid);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param null $roleId
+     * @param      $uuid
+     *
+     * @return $this
+     */
+    private function validateRoleIdIsExist($roleId = null, $uuid): self
+    {
+        $rid = $roleId ?? $this->roleId;
+
+        if (null === $rid) {
+            throw new BadRequestHttpException('Cannot find Role with ID #' . $uuid);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param null $userId
+     * @param      $uuid
+     *
+     * @return $this
+     */
+    private function validateUserIdIsExist($userId = null, $uuid): self
+    {
+        $uid = $userId ?? $this->userId;
+
+        if (null === $uid) {
+            throw new BadRequestHttpException('Cannot find User with ID #' . $uuid);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param null $user
+     * @param      $uuid
+     *
+     * @return $this
+     */
+    private function validateUserIsExist($user = null, $uuid): self
+    {
+        $newUser = $user ?? $this->user;
+
+        if (null === $newUser) {
+            throw new BadRequestHttpException('Cannot find User with ID #' . $uuid);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param null $users
+     *
+     * @return $this
+     */
+    private function validateUsersUuidIsExistAndMessageTryAgain($users = null): self
+    {
+        $newUsers = $users ?? $this->users;
+
+        if ($newUsers->isNotEmpty()) {
+            throw new UnprocessableEntityHttpException('Please try again');
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param      $type
+     * @param null $users
+     * @param      $value
+     * @param null $userId
+     *
+     * @return $this
+     */
+    private function validateAndVerifyUsersIsAvailable($type, $users = null, $value, $userId = null): self
+    {
+        $newUsers = $users ?? $this->users;
+        $message  = ucfirst($type) . " $value already exists, please try another";
+
+        if (null === $userId) {
+            if ($newUsers->isNotEmpty()) {
+                throw new UnprocessableEntityHttpException($message);
+            }
+        } else {
+            if ($newUsers->isNotEmpty()) {
+                foreach ($newUsers as $user) {
+                    if ($user->id !== $userId) {
+                        throw new UnprocessableEntityHttpException($message);
+                    }
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param null $inputRoles
+     *
+     * @return $this
+     */
+    private function validateInputRolesIsArray($inputRoles = null): self
+    {
+        $newInputRoles = $inputRoles ?? $this->inputRoles;
+
+        if (!is_array($newInputRoles)) {
+            throw new BadRequestHttpException('Roles expected to be an array');
+        }
+
+        return $this;
     }
 }
