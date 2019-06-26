@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/27/19 2:54 AM
+ * Last modified 6/27/19 3:02 AM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -283,10 +283,10 @@ class UserService extends Service
      */
     private function loadUserRoles($userId)
     {
-        $primaryRole    = $this->findPrimaryRoles($userId)->getPrimaryRoles();
-        $additionalRole = $this->findAdditionalRoles($userId)->getAdditionalRoles();
-
-        return (new RolesCollection)($primaryRole, $additionalRole);
+        return (new RolesCollection)(
+            $this->findPrimaryRoles($userId)->getPrimaryRoles(),
+            $this->findAdditionalRoles($userId)->getAdditionalRoles()
+        );
     }
 
     /**
@@ -296,10 +296,10 @@ class UserService extends Service
      */
     private function loadRelatedRoles($userId)
     {
-        $primaryRole    = $this->findPrimaryRoles($userId)->getPrimaryRoles();
-        $additionalRole = $this->findAdditionalRoles($userId)->getAdditionalRoles();
-
-        return (new RelatedRolesCollection)($primaryRole, $additionalRole);
+        return (new RelatedRolesCollection)(
+            $this->findPrimaryRoles($userId)->getPrimaryRoles(),
+            $this->findAdditionalRoles($userId)->getAdditionalRoles()
+        );
     }
 
     /**
