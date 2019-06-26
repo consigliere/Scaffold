@@ -17,7 +17,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/26/19 7:00 AM
+ * Last modified 6/27/19 12:53 AM
  */
 
 Route::group(['prefix' => 'v1'], function() {
@@ -35,12 +35,13 @@ Route::group(['prefix' => 'v1'], function() {
             Route::patch('/{uuid}', 'UserController@update');
             Route::delete('/{uuid}', 'UserController@delete');
 
-            Route::get('/{uuid}/relationships/primary-role', 'UserController@relatedPrimaryRole');
-            Route::get('/{uuid}/relationships/additional-roles', 'UserController@relatedAdditionalRoles');
+            Route::get('/{uuid}/relationship/roles', 'UserController@relatedRoles');
             Route::get('/{uuid}/roles', 'UserController@roles');
+            Route::get('/{uuid}/relationships/primary-role', 'UserController@relatedPrimaryRole');
             Route::get('/{uuid}/primary-role', 'UserController@primaryRole');
+            Route::get('/{uuid}/relationships/additional-roles', 'UserController@relatedAdditionalRoles');
             Route::get('/{uuid}/additional-roles', 'UserController@additionalRoles');
-            // Route::patch('/{uuid}/relationships/additional-roles/{type}', 'UserController@additionalRoles'); # type = sync, add or remove
+            // Route::patch('/{uuid}/relationships/additional-roles/{type}', 'UserController@userAdditionalRoles'); # type = sync, add or remove
             Route::patch('/{uuid}/relationships/additional-roles/sync', 'UserController@syncAdditionalRoles');
             Route::patch('/{uuid}/relationships/additional-roles/add', 'UserController@addAdditionalRoles');
             Route::patch('/{uuid}/relationships/additional-roles/remove', 'UserController@removeAdditionalRoles');
