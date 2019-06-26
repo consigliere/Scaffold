@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/26/19 7:28 PM
+ * Last modified 6/27/19 1:12 AM
  */
 
 namespace App\Components\Scaffold\Http\Controllers;
@@ -170,6 +170,27 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
+    public function relatedRoles(string $uuid, Request $request): \Illuminate\Http\JsonResponse
+    {
+        $data = ['input' => $request->all(),];
+
+        try {
+            $response = $this->userService->relatedRoles($uuid, $data);
+        } catch (\Exception $error) {
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
+
+            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+        }
+
+        return $this->response($response);
+    }
+
+    /**
+     * @param string                   $uuid
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function roles(string $uuid, Request $request): \Illuminate\Http\JsonResponse
     {
         $data = ['input' => $request->all(),];
@@ -185,7 +206,13 @@ class UserController extends Controller
         return $this->response($response);
     }
 
-    public function relatedRoles() { }
+    public function relatedPrimaryRole() { }
+
+    public function primaryRole() { }
+
+    public function relatedAdditionalRoles() { }
+
+    public function additionalRoles() { }
 
     /**
      * @param string                   $uuid
@@ -194,7 +221,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function additionalRoles(string $uuid, $type = null, Request $request): \Illuminate\Http\JsonResponse
+    public function userAdditionalRoles(string $uuid, $type = null, Request $request): \Illuminate\Http\JsonResponse
     {
         $data   = ['input' => $request->all(),];
         $option = ['type' => $type,];
