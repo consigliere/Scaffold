@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/24/19 5:53 PM
+ * Last modified 6/26/19 7:28 PM
  */
 
 namespace App\Components\Scaffold\Http\Controllers;
@@ -170,7 +170,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function userRoles(string $uuid, Request $request): \Illuminate\Http\JsonResponse
+    public function roles(string $uuid, Request $request): \Illuminate\Http\JsonResponse
     {
         $data = ['input' => $request->all(),];
 
@@ -185,6 +185,8 @@ class UserController extends Controller
         return $this->response($response);
     }
 
+    public function relatedRoles() { }
+
     /**
      * @param string                   $uuid
      * @param null                     $type
@@ -195,9 +197,7 @@ class UserController extends Controller
     public function additionalRoles(string $uuid, $type = null, Request $request): \Illuminate\Http\JsonResponse
     {
         $data   = ['input' => $request->all(),];
-        $option = [
-            'type' => $type,
-        ];
+        $option = ['type' => $type,];
 
         try {
             if ($type === 'add' || $type === 'remove' || $type === 'sync') {
