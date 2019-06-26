@@ -6,13 +6,12 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/27/19 2:58 AM
+ * Last modified 6/27/19 3:42 AM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
 
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Config;
 
 /**
  * Class RolesCollection
@@ -42,7 +41,7 @@ final class RolesCollection
     {
         $this->auth    = App::get('auth');
         $this->request = App::get('request');
-        $this->appName = Config::get('app.name') ?? Config::get('scaffold.name');
+        $this->appName = config('app.name') ?? config('scaffold.name');
     }
 
     /**
@@ -59,11 +58,14 @@ final class RolesCollection
 
         if (!empty($primary)) {
             $records['data']['primary-role'] = [
-                'type'       => Config::get('scaffold.api.roles.type'),
+                'type'       => config('scaffold.api.roles.type'),
                 'id'         => $primary->uuid,
                 'attributes' => [
                     'name'        => $primary->name,
                     'displayName' => $primary->display_name,
+                ],
+                'links'      => [
+                    'related' => url("/api/v1/" . config('scaffold.api.roles.type') . "/$primary->uuid"),
                 ],
             ];
         } else {
@@ -73,11 +75,14 @@ final class RolesCollection
         if ($additional->isNotEmpty()) {
             $newData = $additional->map(static function($value, $key) use ($param) {
                 return [
-                    'type'       => Config::get('scaffold.api.roles.type'),
+                    'type'       => config('scaffold.api.roles.type'),
                     'id'         => $value->uuid,
                     'attributes' => [
                         'name'        => $value->name,
                         'displayName' => $value->display_name,
+                    ],
+                    'links'      => [
+                        'related' => url("/api/v1/" . config('scaffold.api.roles.type') . "/$value->uuid"),
                     ],
                 ];
             });
@@ -117,7 +122,7 @@ final class RolesCollection
         $meta = [];
 
         $meta['copyright'] = 'copyrightⒸ ' . date('Y') . ' ' . $this->appName;
-        $meta['author']    = Config::get('scaffold.api.roles.authors');
+        $meta['author']    = config('scaffold.api.roles.authors');
 
         return $meta;
     }
