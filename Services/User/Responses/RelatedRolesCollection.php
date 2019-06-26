@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/27/19 2:58 AM
+ * Last modified 6/27/19 3:41 AM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
@@ -54,7 +54,6 @@ final class RelatedRolesCollection
      */
     public function __invoke($primary, $additional, array $option = [], array $param = [])
     {
-        $newData = [];
         $records = [];
 
         if (!empty($primary)) {
