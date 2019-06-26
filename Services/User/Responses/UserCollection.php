@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/26/19 11:19 PM
+ * Last modified 6/26/19 11:51 PM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
@@ -97,7 +97,7 @@ final class UserCollection
             });
 
             $records['data'] = $newData;
-            if (config('scaffold.api.users.hasIncluded')) {
+            if (config('scaffold.api.users.hasRelationship') && config('scaffold.api.users.hasIncluded')) {
                 $records['included'] = $this->loadCompoundDoc($data);
             }
             $records['links'] = $this->getLink($data);
