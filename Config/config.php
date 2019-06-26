@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/26/19 5:21 PM
+ * Last modified 6/26/19 11:17 PM
  */
 
 return [
@@ -25,7 +25,7 @@ return [
             'hasLink'         => true,
             'hasMeta'         => true,
             'hasRelationship' => true,
-            'hasCompoundDoc'  => true,
+            'hasIncluded'     => true,
             'authors'         => [
                 [
                     'name'  => 'anonymoussc',
@@ -38,7 +38,7 @@ return [
             'hasLink'         => true,
             'hasMeta'         => true,
             'hasRelationship' => true,
-            'hasCompoundDoc'  => true,
+            'hasIncluded'     => true,
             'authors'         => [
                 [
                     'name'  => 'anonymoussc',
@@ -51,7 +51,7 @@ return [
             'hasLink'         => true,
             'hasMeta'         => true,
             'hasRelationship' => true,
-            'hasCompoundDoc'  => true,
+            'hasIncluded'     => true,
             'authors'         => [
                 [
                     'name'  => 'anonymoussc',
