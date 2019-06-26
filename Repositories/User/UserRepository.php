@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/24/19 3:54 PM
+ * Last modified 6/26/19 7:29 PM
  */
 
 namespace App\Components\Scaffold\Repositories\User;
@@ -47,7 +47,11 @@ class UserRepository extends Repository implements UserRepositoryInterface
     public function browse(array $data = [], array $option = [], array $param = [])
     {
         $paging = (int)data_get($data, 'header.paging');
-        $users  = $this->getModel();
+        if (Config::get('scaffold.api.users.hasRelationship')) {
+            $users = $this->getModel()::with('role')->with('roles');
+        } else {
+            $users = $this->getModel();
+        }
 
         return $users->paginate($paging);
     }
