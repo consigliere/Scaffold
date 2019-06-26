@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/13/19 3:49 AM
+ * Last modified 6/26/19 5:21 PM
  */
 
 return [
@@ -21,10 +21,12 @@ return [
         ],
         'page_paging' => 5,
         'users'       => [
-            'type'    => 'users',
-            'hasLink' => true,
-            'hasMeta' => true,
-            'authors' => [
+            'type'            => 'users',
+            'hasLink'         => true,
+            'hasMeta'         => true,
+            'hasRelationship' => true,
+            'hasCompoundDoc'  => true,
+            'authors'         => [
                 [
                     'name'  => 'anonymoussc',
                     'email' => '50c5ac69@opayq.com',
@@ -32,10 +34,12 @@ return [
             ],
         ],
         'permissions' => [
-            'type'    => 'permissions',
-            'hasLink' => true,
-            'hasMeta' => true,
-            'authors' => [
+            'type'            => 'permissions',
+            'hasLink'         => true,
+            'hasMeta'         => true,
+            'hasRelationship' => true,
+            'hasCompoundDoc'  => true,
+            'authors'         => [
                 [
                     'name'  => 'anonymoussc',
                     'email' => '50c5ac69@opayq.com',
@@ -43,10 +47,12 @@ return [
             ],
         ],
         'roles'       => [
-            'type'    => 'roles',
-            'hasLink' => true,
-            'hasMeta' => true,
-            'authors' => [
+            'type'            => 'roles',
+            'hasLink'         => true,
+            'hasMeta'         => true,
+            'hasRelationship' => true,
+            'hasCompoundDoc'  => true,
+            'authors'         => [
                 [
                     'name'  => 'anonymoussc',
                     'email' => '50c5ac69@opayq.com',
