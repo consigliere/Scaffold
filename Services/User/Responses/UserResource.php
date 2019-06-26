@@ -6,13 +6,12 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/22/19 12:58 AM
+ * Last modified 6/27/19 3:43 AM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
 
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Config;
 
 /**
  * Class UserResource
@@ -42,7 +41,7 @@ final class UserResource
     {
         $this->auth    = App::get('auth');
         $this->request = App::get('request');
-        $this->appName = Config::get('app.name') ?? Config::get('scaffold.name');
+        $this->appName = config('app.name') ?? config('scaffold.name');
     }
 
     /**
@@ -58,7 +57,7 @@ final class UserResource
 
         if (!empty($data)) {
             $user['data'] = [
-                'type'       => Config::get('scaffold.api.users.type'),
+                'type'       => config('scaffold.api.users.type'),
                 'id'         => $data->uuid,
                 'attributes' => [
                     'username' => $data->username,
@@ -69,16 +68,16 @@ final class UserResource
                 ],
             ];
 
-            if (Config::get('scaffold.api.users.hasLink')) {
+            if (config('scaffold.api.users.hasLink')) {
                 $user['link'] = [
                     'self' => $this->request->fullUrl(),
                 ];
             }
 
-            if (Config::get('scaffold.api.users.hasMeta')) {
+            if (config('scaffold.api.users.hasMeta')) {
                 $user['meta'] = [
                     'copyright' => 'copyrightⒸ ' . date('Y') . ' ' . $this->appName,
-                    'author'    => Config::get('scaffold.api.users.authors'),
+                    'author'    => config('scaffold.api.users.authors'),
                 ];
             }
         }
