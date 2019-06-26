@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/26/19 7:30 PM
+ * Last modified 6/26/19 11:19 PM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Config;
  * Class UserCollection
  * @package App\Components\Scaffold\Services\User\Responses
  */
-class UserCollection
+final class UserCollection
 {
     /**
      * @var \Illuminate\Auth\AuthManager|mixed
@@ -54,82 +54,92 @@ class UserCollection
      */
     public function __invoke($data, array $option = [], array $param = [])
     {
-        $newData = [];
         $records = [];
 
         if ($data->isNotEmpty()) {
             $newData = $data->map(function($value, $key) use ($param) {
-                $nd['type']                   = Config::get('scaffold.api.users.type');
-                $nd['id']                     = $value->uuid;
-                $nd['attributes']['username'] = $value->username;
-                $nd['attributes']['name']     = $value->name;
-                $nd['attributes']['email']    = $value->email;
-                $nd['attributes']['avatar']   = $value->avatar;
-                $nd['attributes']['settings'] = $value->settings;
+                $user['type']                   = config('scaffold.api.users.type');
+                $user['id']                     = $value->uuid;
+                $user['attributes']['username'] = $value->username;
+                $user['attributes']['name']     = $value->name;
+                $user['attributes']['email']    = $value->email;
+                $user['attributes']['avatar']   = $value->avatar;
+                $user['attributes']['settings'] = $value->settings;
 
-                if (Config::get('scaffold.api.users.hasRelationship')) {
+                if (config('scaffold.api.users.hasRelationship')) {
                     if (null !== $value->role) {
-                        $nd['relationship']['primary-role']['links']['self']    = url("/api/v1/users/$value->uuid/relationship/primary-role");
-                        $nd['relationship']['primary-role']['links']['related'] = url("/api/v1/users/$value->uuid/primary-role");
-                        $nd['relationship']['primary-role']['data']             = [
-                            'type' => Config::get('scaffold.api.roles.type'),
+                        $user['relationship']['primary-role']['links']['self']    = url("/api/v1/users/$value->uuid/relationship/primary-role");
+                        $user['relationship']['primary-role']['links']['related'] = url("/api/v1/users/$value->uuid/primary-role");
+                        $user['relationship']['primary-role']['data']             = [
+                            'type' => config('scaffold.api.roles.type'),
                             'id'   => $value->role['uuid'],
                         ];
                     } else {
-                        $nd['relationship']['primary-role'] = [];
+                        $user['relationship']['primary-role'] = null;
                     }
 
                     if ($value->roles->isNotEmpty()) {
                         $additionalRoles = $value->roles->map(function($v, $k) {
-                            return ['type' => Config::get('scaffold.api.roles.type'), 'id' => $v->uuid];
+                            return ['type' => config('scaffold.api.roles.type'), 'id' => $v->uuid];
                         });
 
-                        $nd['relationship']['additional-roles']['links']['self']    = url("/api/v1/users/$value->uuid/relationship/additional-roles");
-                        $nd['relationship']['additional-roles']['links']['related'] = url("/api/v1/users/$value->uuid/additional-roles");
-                        $nd['relationship']['additional-roles']['data']             = $additionalRoles;
-
+                        $user['relationship']['additional-roles']['links']['self']    = url("/api/v1/users/$value->uuid/relationship/additional-roles");
+                        $user['relationship']['additional-roles']['links']['related'] = url("/api/v1/users/$value->uuid/additional-roles");
+                        $user['relationship']['additional-roles']['data']             = $additionalRoles;
                     } else {
-                        $nd['relationship']['additional-roles'] = [];
+                        $user['relationship']['additional-roles'] = [];
                     }
                 }
 
-                $nd['links']['self'] = url("/api/v1/" . Config::get('scaffold.api.users.type') . "/$value->uuid");
+                $user['links']['self'] = url("/api/v1/users/$value->uuid");
 
-                return $nd;
+                return $user;
             });
 
-            $x = new \Illuminate\Database\Eloquent\Collection;
-            foreach ($data as $dt) {
-                $newCollection = $dt->roles;
-                $newCollection->prepend($dt->role);
-
-                $x = $x->merge($newCollection);
+            $records['data'] = $newData;
+            if (config('scaffold.api.users.hasIncluded')) {
+                $records['included'] = $this->loadCompoundDoc($data);
             }
-
-            $newInclude = $x->map(function($value, $key) use ($param) {
-                $t['type']                     = 'roles';
-                $t['id']                       = $value->uuid;
-                $t['attribute']['name']        = $value->name;
-                $t['attribute']['displayName'] = $value->display_name;
-                $t['links']['self']            = url('/api/v1/roles/' . $value->uuid);
-
-                return $t;
-            });
-
-            // dd($newInclude);
-
-            $records['data']     = $newData;
-            $records['included'] = $newInclude;
-            $records['links']    = $this->getLink($data);
-            $records['meta']     = $this->getMeta($data);
+            $records['links'] = $this->getLink($data);
+            $records['meta']  = $this->getMeta($data);
         } else {
-            $records['data']     = [];
-            $records['included'] = [];
-            $records['links']    = $this->getLink($data);
-            $records['meta']     = $this->getMeta($data);
+            $records['data']  = [];
+            $records['links'] = $this->getLink($data);
+            $records['meta']  = $this->getMeta($data);
         }
 
         return $records;
+    }
+
+    /**
+     * @param       $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return \Illuminate\Support\Collection|static
+     */
+    private function loadCompoundDoc($data, array $option = [], array $param = [])
+    {
+        $rolesMerge = new \Illuminate\Database\Eloquent\Collection;
+
+        foreach ($data as $usr) {
+            $newCollection = $usr->roles;
+            $newCollection->prepend($usr->role);
+
+            $rolesMerge = $rolesMerge->merge($newCollection);
+        }
+
+        $include = $rolesMerge->map(static function($value, $key) {
+            $newRole['type']                     = config('scaffold.api.roles.type');
+            $newRole['id']                       = $value->uuid;
+            $newRole['attribute']['name']        = $value->name;
+            $newRole['attribute']['displayName'] = $value->display_name;
+            $newRole['links']['self']            = url("/api/v1/roles/$value->uuid");
+
+            return $newRole;
+        });
+
+        return $include;
     }
 
     /**
@@ -179,7 +189,7 @@ class UserCollection
         }
 
         $meta['copyright'] = 'copyrightⒸ ' . date('Y') . ' ' . $this->appName;
-        $meta['author']    = Config::get('scaffold.api.users.authors');
+        $meta['author']    = config('scaffold.api.users.authors');
 
         return $meta;
     }
