@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/25/19 5:45 AM
+ * Last modified 6/27/19 2:54 AM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -15,7 +15,8 @@ use App\Components\Scaffold\Repositories\RoleRepositoryInterface;
 use App\Components\Scaffold\Repositories\UserRepositoryInterface;
 use App\Components\Scaffold\Services\User\Requests\CreateUser;
 use App\Components\Scaffold\Services\User\Requests\UpdateUser;
-use App\Components\Scaffold\Services\User\Responses\RoleCollection;
+use App\Components\Scaffold\Services\User\Responses\RelatedRolesCollection;
+use App\Components\Scaffold\Services\User\Responses\RolesCollection;
 use App\Components\Scaffold\Services\User\Responses\UserCollection;
 use App\Components\Scaffold\Services\User\Responses\UserResource;
 use App\Components\Signature\Exceptions\BadRequestHttpException;
@@ -212,6 +213,21 @@ class UserService extends Service
      *
      * @return mixed
      */
+    public function relatedRoles($uuid, array $data, array $option = [], array $param = [])
+    {
+        $uid = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
+
+        return $this->loadRelatedRoles($uid);
+    }
+
+    /**
+     * @param       $uuid
+     * @param array $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return mixed
+     */
     public function userRoles($uuid, array $data, array $option = [], array $param = [])
     {
         $uid = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
@@ -270,7 +286,20 @@ class UserService extends Service
         $primaryRole    = $this->findPrimaryRoles($userId)->getPrimaryRoles();
         $additionalRole = $this->findAdditionalRoles($userId)->getAdditionalRoles();
 
-        return (new RoleCollection)($primaryRole, $additionalRole);
+        return (new RolesCollection)($primaryRole, $additionalRole);
+    }
+
+    /**
+     * @param $userId
+     *
+     * @return mixed
+     */
+    private function loadRelatedRoles($userId)
+    {
+        $primaryRole    = $this->findPrimaryRoles($userId)->getPrimaryRoles();
+        $additionalRole = $this->findAdditionalRoles($userId)->getAdditionalRoles();
+
+        return (new RelatedRolesCollection)($primaryRole, $additionalRole);
     }
 
     /**
