@@ -1,12 +1,12 @@
 <?php
 /**
- * RoleCollection.php
+ * RolesCollection.php
  * Created by @anonymoussc on 06/20/2019 3:30 AM.
  */
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/20/19 2:53 PM
+ * Last modified 6/27/19 2:58 AM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
@@ -15,10 +15,10 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 
 /**
- * Class RoleCollection
+ * Class RolesCollection
  * @package App\Components\Scaffold\Services\User\Responses
  */
-class RoleCollection
+final class RolesCollection
 {
     /**
      * @var \Illuminate\Auth\AuthManager|mixed
@@ -55,11 +55,10 @@ class RoleCollection
      */
     public function __invoke($primary, $additional, array $option = [], array $param = [])
     {
-        $newData = [];
         $records = [];
 
         if (!empty($primary)) {
-            $records['data']['primary'] = [
+            $records['data']['primary-role'] = [
                 'type'       => Config::get('scaffold.api.roles.type'),
                 'id'         => $primary->uuid,
                 'attributes' => [
@@ -68,11 +67,11 @@ class RoleCollection
                 ],
             ];
         } else {
-            $records['data']['primary'] = null;
+            $records['data']['primary-role'] = null;
         }
 
         if ($additional->isNotEmpty()) {
-            $newData = $additional->map(function($value, $key) use ($param) {
+            $newData = $additional->map(static function($value, $key) use ($param) {
                 return [
                     'type'       => Config::get('scaffold.api.roles.type'),
                     'id'         => $value->uuid,
@@ -83,9 +82,9 @@ class RoleCollection
                 ];
             });
 
-            $records['data']['additional'] = $newData;
+            $records['data']['additional-roles'] = $newData;
         } else {
-            $records['data']['additional'] = [];
+            $records['data']['additional-roles'] = [];
         }
 
         $records['link'] = $this->getLink();
