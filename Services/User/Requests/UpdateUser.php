@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/17/19 2:46 PM
+ * Last modified 6/28/19 6:15 AM
  */
 
 namespace App\Components\Scaffold\Services\User\Requests;
@@ -15,7 +15,7 @@ namespace App\Components\Scaffold\Services\User\Requests;
  * Class UpdateUser
  * @package App\Components\Scaffold\Services\User\Requests
  */
-class UpdateUser
+final class UpdateUser
 {
     /**
      * @param array $data
