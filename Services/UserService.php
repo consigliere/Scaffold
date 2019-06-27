@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/27/19 3:02 AM
+ * Last modified 6/27/19 3:57 PM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -15,6 +15,7 @@ use App\Components\Scaffold\Repositories\RoleRepositoryInterface;
 use App\Components\Scaffold\Repositories\UserRepositoryInterface;
 use App\Components\Scaffold\Services\User\Requests\CreateUser;
 use App\Components\Scaffold\Services\User\Requests\UpdateUser;
+use App\Components\Scaffold\Services\User\Responses\RelatedPrimaryRolesCollection;
 use App\Components\Scaffold\Services\User\Responses\RelatedRolesCollection;
 use App\Components\Scaffold\Services\User\Responses\RolesCollection;
 use App\Components\Scaffold\Services\User\Responses\UserCollection;
@@ -233,6 +234,23 @@ class UserService extends Service
         $uid = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
 
         return $this->loadUserRoles($uid);
+    }
+
+    /**
+     * @param       $uuid
+     * @param array $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return mixed
+     */
+    public function relatedPrimaryRole($uuid, array $data, array $option = [], array $param = [])
+    {
+        $uid = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
+
+        return (new RelatedPrimaryRolesCollection)(
+            $this->findPrimaryRoles($uid)->getPrimaryRoles()
+        );
     }
 
     /**
