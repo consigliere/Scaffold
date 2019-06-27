@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/16/19 6:42 PM
+ * Last modified 6/28/19 3:46 AM
  */
 
 namespace App\Components\Scaffold\Services\Permission\Responses;
@@ -69,13 +69,13 @@ class PermissionCollection
                 ];
             });
 
-            $records['data'] = $newData;
-            $records['link'] = $this->getLink($data);
-            $records['meta'] = $this->getMeta($data);
+            $records['data']  = $newData;
+            $records['links'] = $this->getLink($data);
+            $records['meta']  = $this->getMeta($data);
         } else {
-            $records['data'] = [];
-            $records['link'] = $this->getLink($data);
-            $records['meta'] = $this->getMeta($data);
+            $records['data']  = [];
+            $records['links'] = $this->getLink($data);
+            $records['meta']  = $this->getMeta($data);
         }
 
         return $records;
@@ -89,20 +89,20 @@ class PermissionCollection
      */
     private function getLink($data, array $param = []): array
     {
-        $link = [];
+        $links = [];
 
         if ($data->isNotEmpty()) {
-            $link = [
+            $links = [
                 'first' => $data->url(1),
                 'last'  => $data->url($data->lastPage()),
                 'prev'  => $data->previousPageUrl(),
                 'next'  => $data->nextPageUrl(),
             ];
         } else {
-            $link['self'] = $this->request->fullUrl();
+            $links['self'] = $this->request->fullUrl();
         }
 
-        return $link;
+        return $links;
     }
 
     /**
