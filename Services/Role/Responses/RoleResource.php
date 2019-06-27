@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/16/19 6:42 PM
+ * Last modified 6/28/19 3:45 AM
  */
 
 namespace App\Components\Scaffold\Services\Role\Responses;
@@ -67,7 +67,7 @@ class RoleResource
             ];
 
             if (Config::get('scaffold.api.roles.hasLink')) {
-                $role['link'] = [
+                $role['links'] = [
                     'self' => $this->request->fullUrl(),
                 ];
             }
