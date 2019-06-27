@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/28/19 3:39 AM
+ * Last modified 6/28/19 6:11 AM
  */
 
 namespace App\Components\Scaffold\Http\Controllers;
@@ -175,7 +175,7 @@ class UserController extends Controller
         $data = ['input' => $request->all(),];
 
         try {
-            $response = $this->userService->relatedRoles($uuid, $data);
+            $response = $this->userService->relatedUserRoles($uuid, $data);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
