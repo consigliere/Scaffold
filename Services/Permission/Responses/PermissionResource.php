@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/16/19 6:42 PM
+ * Last modified 6/28/19 3:45 AM
  */
 
 namespace App\Components\Scaffold\Services\Permission\Responses;
@@ -67,7 +67,7 @@ class PermissionResource
             ];
 
             if (Config::get('scaffold.api.permissions.hasLink')) {
-                $permission['link'] = [
+                $permission['links'] = [
                     'self' => $this->request->fullUrl(),
                 ];
             }
