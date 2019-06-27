@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/27/19 3:11 PM
+ * Last modified 6/27/19 3:12 PM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
@@ -67,7 +67,6 @@ final class UserCollection
 
                 if (config('scaffold.api.users.hasRelationship')) {
                     if (null !== $value->role) {
-                        //$user['relationship']['primary-role'] = [];
                         $user['relationship']['primary-role']['links']['self']    = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/relationship/primary-role");
                         $user['relationship']['primary-role']['links']['related'] = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/primary-role");
                         $user['relationship']['primary-role']['data']             = [
