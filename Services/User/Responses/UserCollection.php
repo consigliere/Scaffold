@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/27/19 3:12 PM
+ * Last modified 6/27/19 3:50 PM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
@@ -67,16 +67,16 @@ final class UserCollection
 
                 if (config('scaffold.api.users.hasRelationship')) {
                     if (null !== $value->role) {
-                        $user['relationship']['primary-role']['links']['self']    = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/relationship/primary-role");
-                        $user['relationship']['primary-role']['links']['related'] = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/primary-role");
-                        $user['relationship']['primary-role']['data']             = [
+                        $user['relationships']['primary-role']['links']['self']    = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/relationships/primary-role");
+                        $user['relationships']['primary-role']['links']['related'] = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/primary-role");
+                        $user['relationships']['primary-role']['data']             = [
                             [
                                 'type' => config('scaffold.api.roles.type'),
                                 'id'   => $value->role['uuid'],
                             ]
                         ];
                     } else {
-                        $user['relationship']['primary-role'] = [];
+                        $user['relationships']['primary-role'] = [];
                     }
 
                     if ($value->roles->isNotEmpty()) {
@@ -84,11 +84,11 @@ final class UserCollection
                             return ['type' => config('scaffold.api.roles.type'), 'id' => $v->uuid];
                         });
 
-                        $user['relationship']['additional-roles']['links']['self']    = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/relationship/additional-roles");
-                        $user['relationship']['additional-roles']['links']['related'] = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/additional-roles");
-                        $user['relationship']['additional-roles']['data']             = $additionalRoles;
+                        $user['relationships']['additional-roles']['links']['self']    = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/relationships/additional-roles");
+                        $user['relationships']['additional-roles']['links']['related'] = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/additional-roles");
+                        $user['relationships']['additional-roles']['data']             = $additionalRoles;
                     } else {
-                        $user['relationship']['additional-roles'] = [];
+                        $user['relationships']['additional-roles'] = [];
                     }
                 }
 
