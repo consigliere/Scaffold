@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/28/19 2:41 AM
+ * Last modified 6/28/19 3:39 AM
  */
 
 namespace App\Components\Scaffold\Http\Controllers;
@@ -269,12 +269,18 @@ class UserController extends Controller
         return $this->response($response);
     }
 
-    public function additionalRoles($uuid, Request $request)
+    /**
+     * @param                          $uuid
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function additionalRoles($uuid, Request $request): \Illuminate\Http\JsonResponse
     {
         $data = ['input' => $request->all(),];
 
         try {
-            $response = $this->userService->relatedAdditionalRoles($uuid, $data);
+            $response = $this->userService->userAdditionalRoles($uuid, $data);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
