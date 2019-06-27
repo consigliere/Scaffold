@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/27/19 3:43 AM
+ * Last modified 6/27/19 3:54 PM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
@@ -69,7 +69,7 @@ final class UserResource
             ];
 
             if (config('scaffold.api.users.hasLink')) {
-                $user['link'] = [
+                $user['links'] = [
                     'self' => $this->request->fullUrl(),
                 ];
             }
