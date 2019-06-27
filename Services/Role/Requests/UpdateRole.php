@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/17/19 11:13 AM
+ * Last modified 6/28/19 6:15 AM
  */
 
 namespace App\Components\Scaffold\Services\Role\Requests;
@@ -15,7 +15,7 @@ namespace App\Components\Scaffold\Services\Role\Requests;
  * Class UpdateRole
  * @package App\Components\Scaffold\Services\Role\Requests
  */
-class UpdateRole
+final class UpdateRole
 {
     /**
      * @param array $data
