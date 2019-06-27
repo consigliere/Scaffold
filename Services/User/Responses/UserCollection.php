@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/27/19 3:42 AM
+ * Last modified 6/27/19 3:11 PM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
@@ -67,14 +67,17 @@ final class UserCollection
 
                 if (config('scaffold.api.users.hasRelationship')) {
                     if (null !== $value->role) {
+                        //$user['relationship']['primary-role'] = [];
                         $user['relationship']['primary-role']['links']['self']    = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/relationship/primary-role");
                         $user['relationship']['primary-role']['links']['related'] = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/primary-role");
                         $user['relationship']['primary-role']['data']             = [
-                            'type' => config('scaffold.api.roles.type'),
-                            'id'   => $value->role['uuid'],
+                            [
+                                'type' => config('scaffold.api.roles.type'),
+                                'id'   => $value->role['uuid'],
+                            ]
                         ];
                     } else {
-                        $user['relationship']['primary-role'] = null;
+                        $user['relationship']['primary-role'] = [];
                     }
 
                     if ($value->roles->isNotEmpty()) {
@@ -90,7 +93,8 @@ final class UserCollection
                     }
                 }
 
-                $user['links']['self'] = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid");
+                $user['links']['self']    = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid");
+                $user['links']['related'] = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/" . config('scaffold.api.roles.type'));
 
                 return $user;
             });
