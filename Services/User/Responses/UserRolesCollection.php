@@ -1,12 +1,12 @@
 <?php
 /**
- * RolesCollection.php
+ * UserRolesCollection.php
  * Created by @anonymoussc on 06/20/2019 3:30 AM.
  */
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/28/19 6:05 AM
+ * Last modified 6/28/19 6:08 AM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
@@ -14,7 +14,7 @@ namespace App\Components\Scaffold\Services\User\Responses;
 use Illuminate\Support\Facades\App;
 
 /**
- * Class RolesCollection
+ * Class UserRolesCollection
  * @package App\Components\Scaffold\Services\User\Responses
  */
 final class UserRolesCollection
