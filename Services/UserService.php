@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/28/19 2:41 AM
+ * Last modified 6/28/19 3:37 AM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -15,6 +15,7 @@ use App\Components\Scaffold\Repositories\RoleRepositoryInterface;
 use App\Components\Scaffold\Repositories\UserRepositoryInterface;
 use App\Components\Scaffold\Services\User\Requests\CreateUser;
 use App\Components\Scaffold\Services\User\Requests\UpdateUser;
+use App\Components\Scaffold\Services\User\Responses\AdditionalRolesCollection;
 use App\Components\Scaffold\Services\User\Responses\PrimaryRolesCollection;
 use App\Components\Scaffold\Services\User\Responses\RelatedAdditionalRolesCollection;
 use App\Components\Scaffold\Services\User\Responses\RelatedPrimaryRolesCollection;
@@ -107,9 +108,9 @@ class UserService extends Service
      */
     public function profile(array $data = [], array $option = [], array $param = []): array
     {
-        $user = $this->findUserById($this->auth->user()->id)->getUser();
-
-        return (new UserResource)($user);
+        return (new UserResource)(
+            $this->findUserById($this->auth->user()->id)->getUser()
+        );
     }
 
     /**
@@ -121,9 +122,9 @@ class UserService extends Service
      */
     public function browse(array $data = [], array $option = [], array $param = [])
     {
-        $users = $this->findUsersPaging($data)->getUsers();
-
-        return (new UserCollection)($users);
+        return (new UserCollection)(
+            $this->findUsersPaging($data)->getUsers()
+        );
     }
 
     /**
@@ -146,9 +147,9 @@ class UserService extends Service
         $newUser = (new CreateUser)($data);
         $this->findUsersBy('uuid', $newUser['uuid'])->verifyUsersUuidAlreadyExist();
 
-        $user = $this->userRepository->create($newUser);
-
-        return (new UserResource)($user);
+        return (new UserResource)(
+            $this->userRepository->create($newUser)
+        );
     }
 
     /**
@@ -161,10 +162,11 @@ class UserService extends Service
      */
     public function read($uuid, array $data = [], array $option = [], array $param = [])
     {
-        $id   = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
-        $user = $this->findUserById($id)->validateUserIsExist(null, $uuid)->getUser();
+        $id = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
 
-        return (new UserResource)($user);
+        return (new UserResource)(
+            $this->findUserById($id)->validateUserIsExist(null, $uuid)->getUser()
+        );
     }
 
     /**
@@ -187,9 +189,10 @@ class UserService extends Service
         }
 
         $newUser = (new UpdateUser)($data);
-        $user    = $this->userRepository->update($uid, $newUser);
 
-        return (new UserResource)($user);
+        return (new UserResource)(
+            $this->userRepository->update($uid, $newUser)
+        );
     }
 
     /**
@@ -220,7 +223,10 @@ class UserService extends Service
     {
         $uid = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
 
-        return $this->loadRelatedRoles($uid);
+        return (new RelatedRolesCollection)(
+            $this->findPrimaryRoles($uid)->getPrimaryRoles(),
+            $this->findAdditionalRoles($uid)->getAdditionalRoles()
+        );
     }
 
     /**
@@ -235,7 +241,10 @@ class UserService extends Service
     {
         $uid = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
 
-        return $this->loadUserRoles($uid);
+        return (new RolesCollection)(
+            $this->findPrimaryRoles($uid)->getPrimaryRoles(),
+            $this->findAdditionalRoles($uid)->getAdditionalRoles()
+        );
     }
 
     /**
@@ -297,6 +306,23 @@ class UserService extends Service
      *
      * @return mixed
      */
+    public function userAdditionalRoles($uuid, array $data, array $option = [], array $param = [])
+    {
+        $uid = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
+
+        return (new AdditionalRolesCollection)(
+            $this->findAdditionalRoles($uid)->getAdditionalRoles()
+        );
+    }
+
+    /**
+     * @param       $uuid
+     * @param array $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return mixed
+     */
     public function operationAdditionalRoles($uuid, array $data, array $option = [], array $param = [])
     {
         $uid        = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
@@ -327,32 +353,9 @@ class UserService extends Service
             }
         }
 
-        return $this->loadUserRoles($uid);
-    }
-
-    /**
-     * @param $userId
-     *
-     * @return mixed
-     */
-    private function loadUserRoles($userId)
-    {
         return (new RolesCollection)(
-            $this->findPrimaryRoles($userId)->getPrimaryRoles(),
-            $this->findAdditionalRoles($userId)->getAdditionalRoles()
-        );
-    }
-
-    /**
-     * @param $userId
-     *
-     * @return mixed
-     */
-    private function loadRelatedRoles($userId)
-    {
-        return (new RelatedRolesCollection)(
-            $this->findPrimaryRoles($userId)->getPrimaryRoles(),
-            $this->findAdditionalRoles($userId)->getAdditionalRoles()
+            $this->findPrimaryRoles($uid)->getPrimaryRoles(),
+            $this->findAdditionalRoles($uid)->getAdditionalRoles()
         );
     }
 
