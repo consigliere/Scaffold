@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/28/19 6:03 AM
+ * Last modified 6/28/19 6:07 AM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -20,9 +20,9 @@ use App\Components\Scaffold\Services\User\Responses\PrimaryRoleResource;
 use App\Components\Scaffold\Services\User\Responses\RelatedAdditionalRolesCollection;
 use App\Components\Scaffold\Services\User\Responses\RelatedPrimaryRoleResource;
 use App\Components\Scaffold\Services\User\Responses\RelatedRolesCollection;
-use App\Components\Scaffold\Services\User\Responses\RolesCollection;
 use App\Components\Scaffold\Services\User\Responses\UserCollection;
 use App\Components\Scaffold\Services\User\Responses\UserResource;
+use App\Components\Scaffold\Services\User\Responses\UserRolesCollection;
 use App\Components\Signature\Exceptions\BadRequestHttpException;
 use App\Components\Signature\Exceptions\NotFoundHttpException;
 use App\Components\Signature\Exceptions\UnprocessableEntityHttpException;
@@ -241,7 +241,7 @@ class UserService extends Service
     {
         $uid = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
 
-        return (new RolesCollection)(
+        return (new UserRolesCollection)(
             $this->findPrimaryRoles($uid)->getPrimaryRoles(),
             $this->findAdditionalRoles($uid)->getAdditionalRoles()
         );
@@ -353,7 +353,7 @@ class UserService extends Service
             }
         }
 
-        return (new RolesCollection)(
+        return (new UserRolesCollection)(
             $this->findPrimaryRoles($uid)->getPrimaryRoles(),
             $this->findAdditionalRoles($uid)->getAdditionalRoles()
         );
