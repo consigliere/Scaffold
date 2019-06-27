@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/27/19 3:57 PM
+ * Last modified 6/28/19 2:41 AM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -15,6 +15,8 @@ use App\Components\Scaffold\Repositories\RoleRepositoryInterface;
 use App\Components\Scaffold\Repositories\UserRepositoryInterface;
 use App\Components\Scaffold\Services\User\Requests\CreateUser;
 use App\Components\Scaffold\Services\User\Requests\UpdateUser;
+use App\Components\Scaffold\Services\User\Responses\PrimaryRolesCollection;
+use App\Components\Scaffold\Services\User\Responses\RelatedAdditionalRolesCollection;
 use App\Components\Scaffold\Services\User\Responses\RelatedPrimaryRolesCollection;
 use App\Components\Scaffold\Services\User\Responses\RelatedRolesCollection;
 use App\Components\Scaffold\Services\User\Responses\RolesCollection;
@@ -261,7 +263,41 @@ class UserService extends Service
      *
      * @return mixed
      */
-    public function userAdditionalRoles($uuid, array $data, array $option = [], array $param = [])
+    public function userPrimaryRole($uuid, array $data, array $option = [], array $param = [])
+    {
+        $uid = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
+
+        return (new PrimaryRolesCollection)(
+            $this->findPrimaryRoles($uid)->getPrimaryRoles()
+        );
+    }
+
+    /**
+     * @param       $uuid
+     * @param array $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return mixed
+     */
+    public function relatedAdditionalRoles($uuid, array $data, array $option = [], array $param = [])
+    {
+        $uid = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
+
+        return (new RelatedAdditionalRolesCollection)(
+            $this->findAdditionalRoles($uid)->getAdditionalRoles()
+        );
+    }
+
+    /**
+     * @param       $uuid
+     * @param array $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return mixed
+     */
+    public function operationAdditionalRoles($uuid, array $data, array $option = [], array $param = [])
     {
         $uid        = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
         $inputRoles = $this->findInputRoles($data)->validateInputRolesIsArray(null)->getInputRoles();
