@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/28/19 3:45 AM
+ * Last modified 6/28/19 6:15 AM
  */
 
 namespace App\Components\Scaffold\Services\Role\Responses;
@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Config;
  * Class RoleResource
  * @package App\Components\Scaffold\Services\Role\Responses
  */
-class RoleResource
+final class RoleResource
 {
     /**
      * @var \Illuminate\Auth\AuthManager|mixed
