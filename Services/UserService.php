@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/28/19 3:37 AM
+ * Last modified 6/28/19 6:00 AM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -16,7 +16,7 @@ use App\Components\Scaffold\Repositories\UserRepositoryInterface;
 use App\Components\Scaffold\Services\User\Requests\CreateUser;
 use App\Components\Scaffold\Services\User\Requests\UpdateUser;
 use App\Components\Scaffold\Services\User\Responses\AdditionalRolesCollection;
-use App\Components\Scaffold\Services\User\Responses\PrimaryRolesCollection;
+use App\Components\Scaffold\Services\User\Responses\PrimaryRoleResource;
 use App\Components\Scaffold\Services\User\Responses\RelatedAdditionalRolesCollection;
 use App\Components\Scaffold\Services\User\Responses\RelatedPrimaryRolesCollection;
 use App\Components\Scaffold\Services\User\Responses\RelatedRolesCollection;
@@ -276,7 +276,7 @@ class UserService extends Service
     {
         $uid = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
 
-        return (new PrimaryRolesCollection)(
+        return (new PrimaryRoleResource)(
             $this->findPrimaryRoles($uid)->getPrimaryRoles()
         );
     }
