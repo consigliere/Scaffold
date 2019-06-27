@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/27/19 4:47 PM
+ * Last modified 6/28/19 2:41 AM
  */
 
 namespace App\Components\Scaffold\Http\Controllers;
@@ -170,7 +170,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function relatedRoles(string $uuid, Request $request): \Illuminate\Http\JsonResponse
+    public function relatedRoles($uuid, Request $request): \Illuminate\Http\JsonResponse
     {
         $data = ['input' => $request->all(),];
 
@@ -191,7 +191,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function roles(string $uuid, Request $request): \Illuminate\Http\JsonResponse
+    public function roles($uuid, Request $request): \Illuminate\Http\JsonResponse
     {
         $data = ['input' => $request->all(),];
 
@@ -212,7 +212,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function relatedPrimaryRole(string $uuid, Request $request): \Illuminate\Http\JsonResponse
+    public function relatedPrimaryRole($uuid, Request $request): \Illuminate\Http\JsonResponse
     {
         $data = ['input' => $request->all(),];
 
@@ -233,7 +233,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function primaryRole(string $uuid, Request $request): \Illuminate\Http\JsonResponse
+    public function primaryRole($uuid, Request $request): \Illuminate\Http\JsonResponse
     {
         $data = ['input' => $request->all(),];
 
@@ -248,9 +248,41 @@ class UserController extends Controller
         return $this->response($response);
     }
 
-    public function relatedAdditionalRoles() { }
+    /**
+     * @param                          $uuid
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function relatedAdditionalRoles($uuid, Request $request): \Illuminate\Http\JsonResponse
+    {
+        $data = ['input' => $request->all(),];
 
-    public function additionalRoles() { }
+        try {
+            $response = $this->userService->relatedAdditionalRoles($uuid, $data);
+        } catch (\Exception $error) {
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
+
+            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+        }
+
+        return $this->response($response);
+    }
+
+    public function additionalRoles($uuid, Request $request)
+    {
+        $data = ['input' => $request->all(),];
+
+        try {
+            $response = $this->userService->relatedAdditionalRoles($uuid, $data);
+        } catch (\Exception $error) {
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
+
+            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+        }
+
+        return $this->response($response);
+    }
 
     /**
      * @param string                   $uuid
@@ -259,14 +291,14 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function userAdditionalRoles(string $uuid, $type = null, Request $request): \Illuminate\Http\JsonResponse
+    public function userAdditionalRoles($uuid, $type = null, Request $request): \Illuminate\Http\JsonResponse
     {
         $data   = ['input' => $request->all(),];
         $option = ['type' => $type,];
 
         try {
             if ($type === 'add' || $type === 'remove' || $type === 'sync') {
-                $response = $this->userService->userAdditionalRoles($uuid, $data, $option);
+                $response = $this->userService->operationAdditionalRoles($uuid, $data, $option);
             } else {
                 throw new NotFoundHttpException("Resource requested cannot be found, type can be of 'sync', 'add', or 'remove'");
             }
@@ -285,13 +317,13 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function syncAdditionalRoles(string $uuid, Request $request): \Illuminate\Http\JsonResponse
+    public function syncAdditionalRoles($uuid, Request $request): \Illuminate\Http\JsonResponse
     {
         $data   = ['input' => $request->all(),];
         $option = ['type' => 'sync',];
 
         try {
-            $response = $this->userService->userAdditionalRoles($uuid, $data, $option);
+            $response = $this->userService->operationAdditionalRoles($uuid, $data, $option);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
@@ -307,13 +339,13 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function addAdditionalRoles(string $uuid, Request $request): \Illuminate\Http\JsonResponse
+    public function addAdditionalRoles($uuid, Request $request): \Illuminate\Http\JsonResponse
     {
         $data   = ['input' => $request->all(),];
         $option = ['type' => 'add',];
 
         try {
-            $response = $this->userService->userAdditionalRoles($uuid, $data, $option);
+            $response = $this->userService->operationAdditionalRoles($uuid, $data, $option);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
@@ -329,13 +361,13 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function removeAdditionalRoles(string $uuid, Request $request): \Illuminate\Http\JsonResponse
+    public function removeAdditionalRoles($uuid, Request $request): \Illuminate\Http\JsonResponse
     {
         $data   = ['input' => $request->all(),];
         $option = ['type' => 'remove',];
 
         try {
-            $response = $this->userService->userAdditionalRoles($uuid, $data, $option);
+            $response = $this->userService->operationAdditionalRoles($uuid, $data, $option);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
