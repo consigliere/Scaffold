@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/27/19 3:08 PM
+ * Last modified 6/27/19 3:55 PM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
@@ -71,7 +71,7 @@ final class RolesCollection
                 ],
             ];
         } else {
-            $records['data']['primary-role'] = null;
+            $records['data']['primary-role'] = [];
         }
 
         if ($additional->isNotEmpty()) {
@@ -94,8 +94,8 @@ final class RolesCollection
             $records['data']['additional-roles'] = [];
         }
 
-        $records['link'] = $this->getLink();
-        $records['meta'] = $this->getMeta();
+        $records['links'] = $this->getLink();
+        $records['meta']  = $this->getMeta();
 
         return $records;
     }
