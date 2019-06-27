@@ -1,12 +1,12 @@
 <?php
 /**
- * PrimaryRolesCollection.php
+ * PrimaryRoleResource.php
  * Created by @anonymoussc on 06/27/2019 4:34 PM.
  */
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/28/19 5:21 AM
+ * Last modified 6/28/19 6:00 AM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
@@ -14,10 +14,10 @@ namespace App\Components\Scaffold\Services\User\Responses;
 use Illuminate\Support\Facades\App;
 
 /**
- * Class PrimaryRolesCollection
+ * Class PrimaryRoleResource
  * @package App\Components\Scaffold\Services\User\Responses
  */
-final class PrimaryRolesCollection
+final class PrimaryRoleResource
 {
     /**
      * @var \Illuminate\Auth\AuthManager|mixed
