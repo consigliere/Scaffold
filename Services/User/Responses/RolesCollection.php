@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/27/19 3:55 PM
+ * Last modified 6/28/19 5:21 AM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
@@ -58,20 +58,18 @@ final class RolesCollection
 
         if (!empty($primary)) {
             $records['data']['primary-role'] = [
-                [
-                    'type'       => config('scaffold.api.roles.type'),
-                    'id'         => $primary->uuid,
-                    'attributes' => [
-                        'name'        => $primary->name,
-                        'displayName' => $primary->display_name,
-                    ],
-                    'links'      => [
-                        'self' => url("/api/v1/" . config('scaffold.api.roles.type') . "/$primary->uuid"),
-                    ],
+                'type'       => config('scaffold.api.roles.type'),
+                'id'         => $primary->uuid,
+                'attributes' => [
+                    'name'        => $primary->name,
+                    'displayName' => $primary->display_name,
+                ],
+                'links'      => [
+                    'self' => url("/api/v1/" . config('scaffold.api.roles.type') . "/$primary->uuid"),
                 ],
             ];
         } else {
-            $records['data']['primary-role'] = [];
+            $records['data']['primary-role'] = null;
         }
 
         if ($additional->isNotEmpty()) {
