@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/27/19 3:54 PM
+ * Last modified 6/28/19 3:37 PM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
@@ -67,19 +67,21 @@ final class UserResource
                     'settings' => $data->settings,
                 ],
             ];
+        } else {
+            $user['data'] = null;
+        }
 
-            if (config('scaffold.api.users.hasLink')) {
-                $user['links'] = [
-                    'self' => $this->request->fullUrl(),
-                ];
-            }
+        if (config('scaffold.api.users.hasLink')) {
+            $user['links'] = [
+                'self' => $this->request->fullUrl(),
+            ];
+        }
 
-            if (config('scaffold.api.users.hasMeta')) {
-                $user['meta'] = [
-                    'copyright' => 'copyrightⒸ ' . date('Y') . ' ' . $this->appName,
-                    'author'    => config('scaffold.api.users.authors'),
-                ];
-            }
+        if (config('scaffold.api.users.hasMeta')) {
+            $user['meta'] = [
+                'copyright' => 'copyrightⒸ ' . date('Y') . ' ' . $this->appName,
+                'author'    => config('scaffold.api.users.authors'),
+            ];
         }
 
         return $user;
