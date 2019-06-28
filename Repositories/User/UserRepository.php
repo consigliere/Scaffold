@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/26/19 11:17 PM
+ * Last modified 6/28/19 2:20 PM
  */
 
 namespace App\Components\Scaffold\Repositories\User;
@@ -136,6 +136,24 @@ class UserRepository extends Repository implements UserRepositoryInterface
         $user->save();
 
         return $user;
+    }
+
+    /**
+     * @param       $id
+     * @param array $options
+     * @param array $param
+     *
+     * @return mixed
+     */
+    public function firstById($id, array $options = [], array $param = [])
+    {
+        if (config('scaffold.api.users.hasRelationship') || config('scaffold.api.users.hasIncluded')) {
+            $users = $users = $this->getModel()::where('id', $id)->with('role')->with('roles');
+        } else {
+            $users = $users = $this->getModel()::where('id', $id);
+        }
+
+        return $users->first();
     }
 
     /**
