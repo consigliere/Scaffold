@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/28/19 6:11 AM
+ * Last modified 6/28/19 3:29 PM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -23,6 +23,7 @@ use App\Components\Scaffold\Services\User\Responses\RelatedUserRolesCollection;
 use App\Components\Scaffold\Services\User\Responses\UserCollection;
 use App\Components\Scaffold\Services\User\Responses\UserResource;
 use App\Components\Scaffold\Services\User\Responses\UserRolesCollection;
+use App\Components\Scaffold\Services\User\Responses\UserRolesResource;
 use App\Components\Signature\Exceptions\BadRequestHttpException;
 use App\Components\Signature\Exceptions\NotFoundHttpException;
 use App\Components\Signature\Exceptions\UnprocessableEntityHttpException;
@@ -108,8 +109,8 @@ class UserService extends Service
      */
     public function profile(array $data = [], array $option = [], array $param = []): array
     {
-        return (new UserResource)(
-            $this->findUserById($this->auth->user()->id)->getUser()
+        return (new UserRolesResource)(
+            $this->findUserFirstById($this->auth->user()->id)->getUser()
         );
     }
 
@@ -164,8 +165,8 @@ class UserService extends Service
     {
         $id = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
 
-        return (new UserResource)(
-            $this->findUserById($id)->validateUserIsExist(null, $uuid)->getUser()
+        return (new UserRolesResource)(
+            $this->findUserFirstById($id)->validateUserIsExist(null, $uuid)->getUser()
         );
     }
 
@@ -386,6 +387,18 @@ class UserService extends Service
     private function findUserById($userId): self
     {
         $this->user = $this->userRepository->getById($userId);
+
+        return $this;
+    }
+
+    /**
+     * @param $userId
+     *
+     * @return $this
+     */
+    private function findUserFirstById($userId): self
+    {
+        $this->user = $this->userRepository->firstById($userId);
 
         return $this;
     }
