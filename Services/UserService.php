@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/28/19 3:29 PM
+ * Last modified 6/29/19 11:20 PM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -148,8 +148,18 @@ class UserService extends Service
         $newUser = (new CreateUser)($data);
         $this->findUsersBy('uuid', $newUser['uuid'])->verifyUsersUuidAlreadyExist();
 
-        return (new UserResource)(
-            $this->userRepository->create($newUser)
+        $freshmen = $this->userRepository->create($newUser);
+
+        if (!$freshmen) {
+            return (new UserResource)(
+                $freshmen
+            );
+        } else {
+            $uid = $freshmen->id;
+        }
+
+        return (new UserRolesResource)(
+            $this->findUserFirstById($uid)->validateUserIsExist(null, null)->getUser()
         );
     }
 
@@ -181,7 +191,7 @@ class UserService extends Service
     public function update($uuid, array $data, array $option = [], array $param = [])
     {
         $uid            = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
-        $data['inList'] = $this->findRoleIds()->getRoleId();
+        $data['inList'] = $this->findRoleIds()->getRoleIds();
         $this->preCreateUpdate($data, $uid);
 
         if (null !== data_get($data, 'input.roleId')) {
@@ -191,8 +201,18 @@ class UserService extends Service
 
         $newUser = (new UpdateUser)($data);
 
-        return (new UserResource)(
-            $this->userRepository->update($uid, $newUser)
+        $freshmen = $this->userRepository->update($uid, $newUser);
+
+        if (!$freshmen) {
+            return (new UserResource)(
+                $freshmen
+            );
+        } else {
+            $uid = $freshmen->id;
+        }
+
+        return (new UserRolesResource)(
+            $this->findUserFirstById($uid)->validateUserIsExist(null, null)->getUser()
         );
     }
 
@@ -430,16 +450,15 @@ class UserService extends Service
     /**
      * @param        $type
      * @param        $value
-     * @param string $operand
      * @param array  $arg
      *
      * @return $this
      */
-    private function findUsersBy($type, $value, $operand = '=', array $arg = []): self
+    private function findUsersBy($type, $value, array $arg = []): self
     {
         $val = $type === 'username' ? strtolower($value) : $value;
 
-        $this->users = $this->userRepository->getWhere($type, $operand, $val);
+        $this->users = $this->userRepository->getWhere($type, $val);
 
         return $this;
     }
@@ -508,11 +527,15 @@ class UserService extends Service
      *
      * @return $this
      */
-    private function validateUriQueryParam($id = null, $uuid): self
+    private function validateUriQueryParam($id = null, $uuid = null): self
     {
         $newId = $id ?? $this->userId;
 
         if (null === $newId) {
+            if (null === $uuid) {
+                throw new NotFoundHttpException('Cannot find Users resources in URI query parameter');
+            }
+
             throw new NotFoundHttpException('Cannot find Users resources in URI query parameter /' . $uuid);
         }
 
@@ -525,11 +548,15 @@ class UserService extends Service
      *
      * @return $this
      */
-    private function validateRoleIdIsExist($roleId = null, $uuid): self
+    private function validateRoleIdIsExist($roleId = null, $uuid = null): self
     {
         $rid = $roleId ?? $this->roleId;
 
         if (null === $rid) {
+            if (null === $uuid) {
+                throw new BadRequestHttpException('Cannot find Role ID');
+            }
+
             throw new BadRequestHttpException('Cannot find Role with ID #' . $uuid);
         }
 
@@ -542,11 +569,15 @@ class UserService extends Service
      *
      * @return $this
      */
-    private function validateUserIdIsExist($userId = null, $uuid): self
+    private function validateUserIdIsExist($userId = null, $uuid = null): self
     {
         $uid = $userId ?? $this->userId;
 
         if (null === $uid) {
+            if (null === $uuid) {
+                throw new BadRequestHttpException('Cannot find User ID');
+            }
+
             throw new BadRequestHttpException('Cannot find User with ID #' . $uuid);
         }
 
@@ -559,11 +590,15 @@ class UserService extends Service
      *
      * @return $this
      */
-    private function validateUserIsExist($user = null, $uuid): self
+    private function validateUserIsExist($user = null, $uuid = null): self
     {
         $newUser = $user ?? $this->user;
 
         if (null === $newUser) {
+            if (null === $uuid) {
+                throw new BadRequestHttpException('Cannot find User');
+            }
+
             throw new BadRequestHttpException('Cannot find User with ID #' . $uuid);
         }
 
