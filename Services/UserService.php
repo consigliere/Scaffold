@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/29/19 11:20 PM
+ * Last modified 7/1/19 1:50 AM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -25,6 +25,7 @@ use App\Components\Scaffold\Services\User\Responses\UserResource;
 use App\Components\Scaffold\Services\User\Responses\UserRolesCollection;
 use App\Components\Scaffold\Services\User\Responses\UserRolesResource;
 use App\Components\Signature\Exceptions\BadRequestHttpException;
+use App\Components\Signature\Exceptions\ConflictHttpException;
 use App\Components\Signature\Exceptions\NotFoundHttpException;
 use App\Components\Signature\Exceptions\UnprocessableEntityHttpException;
 use Illuminate\Foundation\Application;
@@ -109,6 +110,8 @@ class UserService extends Service
      */
     public function profile(array $data = [], array $option = [], array $param = []): array
     {
+        $this->bootsJsonApi();
+
         return (new UserRolesResource)(
             $this->findUserFirstById($this->auth->user()->id)->getUser()
         );
@@ -123,6 +126,8 @@ class UserService extends Service
      */
     public function browse(array $data = [], array $option = [], array $param = [])
     {
+        $this->bootsJsonApi();
+
         return (new UserCollection)(
             $this->findUsersPaging($data)->getUsers()
         );
@@ -137,6 +142,8 @@ class UserService extends Service
      */
     public function create(array $data, array $option = [], array $param = []): array
     {
+        $this->bootsJsonApi();
+
         $data['inList'] = $this->findRoleIds()->getRoleIds();
         $this->preCreateUpdate($data);
 
@@ -173,6 +180,8 @@ class UserService extends Service
      */
     public function read($uuid, array $data = [], array $option = [], array $param = [])
     {
+        $this->bootsJsonApi();
+
         $id = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
 
         return (new UserRolesResource)(
@@ -190,6 +199,8 @@ class UserService extends Service
      */
     public function update($uuid, array $data, array $option = [], array $param = [])
     {
+        $this->bootsJsonApi();
+
         $uid            = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
         $data['inList'] = $this->findRoleIds()->getRoleIds();
         $this->preCreateUpdate($data, $uid);
@@ -222,6 +233,8 @@ class UserService extends Service
      */
     public function delete($uuid, array $param = []): void
     {
+        $this->bootsJsonApi();
+
         $trimmed = rtrim(trim(preg_replace('/\s+/', '', $uuid)), ',');
         $ids     = explode(',', $trimmed);
 
@@ -242,6 +255,8 @@ class UserService extends Service
      */
     public function relatedUserRoles($uuid, array $data, array $option = [], array $param = [])
     {
+        $this->bootsJsonApi();
+
         $uid = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
 
         return (new RelatedUserRolesCollection)(
@@ -260,6 +275,8 @@ class UserService extends Service
      */
     public function userRoles($uuid, array $data, array $option = [], array $param = [])
     {
+        $this->bootsJsonApi();
+
         $uid = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
 
         return (new UserRolesCollection)(
@@ -278,6 +295,8 @@ class UserService extends Service
      */
     public function relatedPrimaryRole($uuid, array $data, array $option = [], array $param = [])
     {
+        $this->bootsJsonApi();
+
         $uid = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
 
         return (new RelatedPrimaryRoleResource)(
@@ -295,6 +314,8 @@ class UserService extends Service
      */
     public function userPrimaryRole($uuid, array $data, array $option = [], array $param = [])
     {
+        $this->bootsJsonApi();
+
         $uid = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
 
         return (new PrimaryRoleResource)(
@@ -312,6 +333,8 @@ class UserService extends Service
      */
     public function relatedAdditionalRoles($uuid, array $data, array $option = [], array $param = [])
     {
+        $this->bootsJsonApi();
+
         $uid = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
 
         return (new RelatedAdditionalRolesCollection)(
@@ -329,6 +352,8 @@ class UserService extends Service
      */
     public function userAdditionalRoles($uuid, array $data, array $option = [], array $param = [])
     {
+        $this->bootsJsonApi();
+
         $uid = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
 
         return (new AdditionalRolesCollection)(
@@ -346,6 +371,8 @@ class UserService extends Service
      */
     public function operationAdditionalRoles($uuid, array $data, array $option = [], array $param = [])
     {
+        $this->bootsJsonApi();
+
         $uid        = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
         $inputRoles = $this->findInputRoles($data)->validateInputRolesIsArray(null)->getInputRoles();
         $user       = $this->findUserById($uid)->getUser();
@@ -636,13 +663,13 @@ class UserService extends Service
 
         if (null === $userId) {
             if ($newUsers->isNotEmpty()) {
-                throw new UnprocessableEntityHttpException($message);
+                throw new ConflictHttpException($message);
             }
         } else {
             if ($newUsers->isNotEmpty()) {
                 foreach ($newUsers as $user) {
                     if ($user->id !== $userId) {
-                        throw new UnprocessableEntityHttpException($message);
+                        throw new ConflictHttpException($message);
                     }
                 }
             }
