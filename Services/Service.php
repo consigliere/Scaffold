@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/1/19 1:45 AM
+ * Last modified 7/1/19 4:55 AM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -34,7 +34,7 @@ class Service extends BaseService
         $headers = request()->headers->all();
 
         if (!isset($headers['content-type'])) {
-            throw new UnsupportedMediaTypeHttpException('HTTP Request Content-Type header required');
+            throw new UnsupportedMediaTypeHttpException('HTTP Request Content-Type header are required');
         } else {
             if (!in_array('application/vnd.api+json', $headers['content-type'], true)) {
                 throw new UnsupportedMediaTypeHttpException('Unsupported Media Type in HTTP request Content-Type header');
@@ -50,9 +50,8 @@ class Service extends BaseService
     {
         $headers = request()->headers->all();
 
-        // dd($headers);
         if (!isset($headers['accept'])) {
-            throw new NotAcceptableHttpException('HTTP Request Accept header required');
+            throw new NotAcceptableHttpException('HTTP Request Accept header are required');
         } else {
             if (!in_array('application/vnd.api+json', $headers['accept'], true)) {
                 throw new NotAcceptableHttpException('Not Acceptable value in HTTP request Accept header');
@@ -68,8 +67,8 @@ class Service extends BaseService
     public function bootsJsonApi($mode = true, array $option = [], array $param = []): void
     {
         if ($mode) {
-            $this->verifyAcceptHeader();
             $this->verifyContentType();
+            $this->verifyAcceptHeader();
         }
     }
 }
