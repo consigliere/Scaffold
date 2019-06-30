@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/26/19 11:17 PM
+ * Last modified 7/1/19 2:27 AM
  */
 
 return [
@@ -33,8 +33,8 @@ return [
                 ],
             ],
         ],
-        'permissions' => [
-            'type'            => 'permissions',
+        'roles'       => [
+            'type'            => 'roles',
             'hasLink'         => true,
             'hasMeta'         => true,
             'hasRelationship' => true,
@@ -46,8 +46,8 @@ return [
                 ],
             ],
         ],
-        'roles'       => [
-            'type'            => 'roles',
+        'permissions' => [
+            'type'            => 'permissions',
             'hasLink'         => true,
             'hasMeta'         => true,
             'hasRelationship' => true,
