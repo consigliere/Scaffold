@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/28/19 5:23 AM
+ * Last modified 7/1/19 3:07 AM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
@@ -34,14 +34,19 @@ final class UserCollection
      */
     private $appName;
 
+    private $userType;
+    private $roleType;
+
     /**
      * UserCollection constructor.
      */
     public function __construct()
     {
-        $this->auth    = App::get('auth');
-        $this->request = App::get('request');
-        $this->appName = config('app.name') ?? config('scaffold.name');
+        $this->auth     = App::get('auth');
+        $this->request  = App::get('request');
+        $this->appName  = config('app.name') ?? config('scaffold.name');
+        $this->userType = config('scaffold.api.users.type');
+        $this->roleType = config('scaffold.api.roles.type');
     }
 
     /**
@@ -57,21 +62,29 @@ final class UserCollection
 
         if ($data->isNotEmpty()) {
             $newData = $data->map(function($value, $key) use ($param) {
-                $user['type']                   = config('scaffold.api.users.type');
-                $user['id']                     = $value->uuid;
-                $user['attributes']['username'] = $value->username;
-                $user['attributes']['name']     = $value->name;
-                $user['attributes']['email']    = $value->email;
-                $user['attributes']['avatar']   = $value->avatar;
-                $user['attributes']['settings'] = $value->settings;
+                $user = [
+                    'type'       => $this->userType,
+                    'id'         => $value->uuid,
+                    'attributes' => [
+                        'username' => $value->username,
+                        'name'     => $value->name,
+                        'email'    => $value->email,
+                        'avatar'   => $value->avatar,
+                        'settings' => $value->settings,
+                    ],
+                ];
 
                 if (config('scaffold.api.users.hasRelationship')) {
                     if (null !== $value->role) {
-                        $user['relationships']['primary-role']['links']['self']    = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/relationships/primary-role");
-                        $user['relationships']['primary-role']['links']['related'] = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/primary-role");
-                        $user['relationships']['primary-role']['data']             = [
-                            'type' => config('scaffold.api.roles.type'),
-                            'id'   => $value->role['uuid'],
+                        $user['relationships']['primary-role'] = [
+                            'links' => [
+                                'self'    => url("/api/v1/$this->userType/$value->uuid/relationships/primary-role"),
+                                'related' => url("/api/v1/$this->userType/$value->uuid/primary-role"),
+                            ],
+                            'data'  => [
+                                'type' => $this->roleType,
+                                'id'   => $value->role['uuid'],
+                            ],
                         ];
                     } else {
                         $user['relationships']['primary-role'] = null;
@@ -79,19 +92,25 @@ final class UserCollection
 
                     if ($value->roles->isNotEmpty()) {
                         $additionalRoles = $value->roles->map(function($v, $k) {
-                            return ['type' => config('scaffold.api.roles.type'), 'id' => $v->uuid];
+                            return ['type' => $this->roleType, 'id' => $v->uuid];
                         });
 
-                        $user['relationships']['additional-roles']['links']['self']    = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/relationships/additional-roles");
-                        $user['relationships']['additional-roles']['links']['related'] = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/additional-roles");
-                        $user['relationships']['additional-roles']['data']             = $additionalRoles;
+                        $user['relationships']['additional-roles'] = [
+                            'links' => [
+                                'self'    => url("/api/v1/$this->userType/$value->uuid/relationships/additional-roles"),
+                                'related' => url("/api/v1/$this->userType/$value->uuid/additional-roles"),
+                            ],
+                            'data'  => $additionalRoles,
+                        ];
                     } else {
                         $user['relationships']['additional-roles'] = [];
                     }
                 }
 
-                $user['links']['self']    = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid");
-                $user['links']['related'] = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/" . config('scaffold.api.roles.type'));
+                $user['links'] = [
+                    'self'    => url("/api/v1/$this->userType/$value->uuid"),
+                    'related' => url("/api/v1/$this->userType/$value->uuid/$this->roleType"),
+                ];
 
                 return $user;
             });
@@ -100,13 +119,12 @@ final class UserCollection
             if (config('scaffold.api.users.hasRelationship') && config('scaffold.api.users.hasIncluded')) {
                 $records['included'] = $this->loadCompoundDoc($data);
             }
-            $records['links'] = $this->getLink($data);
-            $records['meta']  = $this->getMeta($data);
         } else {
-            $records['data']  = [];
-            $records['links'] = $this->getLink($data);
-            $records['meta']  = $this->getMeta($data);
+            $records['data'] = [];
         }
+
+        $records['links'] = $this->getLinks($data);
+        $records['meta']  = $this->getMeta($data);
 
         return $records;
     }
@@ -130,11 +148,17 @@ final class UserCollection
         }
 
         $include = $rolesMerge->map(static function($value, $key) {
-            $newRole['type']                     = config('scaffold.api.roles.type');
-            $newRole['id']                       = $value->uuid;
-            $newRole['attribute']['name']        = $value->name;
-            $newRole['attribute']['displayName'] = $value->display_name;
-            $newRole['links']['self']            = url("/api/v1/" . config('scaffold.api.roles.type') . "/$value->uuid");
+            $newRole = [
+                'type'      => config('scaffold.api.roles.type'),
+                'id'        => $value->uuid,
+                'attribute' => [
+                    'name'        => $value->name,
+                    'displayName' => $value->display_name,
+                ],
+                'links'     => [
+                    'self' => url("/api/v1/" . config('scaffold.api.roles.type') . "/$value->uuid"),
+                ],
+            ];
 
             return $newRole;
         });
@@ -148,22 +172,22 @@ final class UserCollection
      *
      * @return array
      */
-    private function getLink($data, array $param = []): array
+    private function getLinks($data, array $param = []): array
     {
-        $link = [];
+        $links = [];
 
         if ($data->isNotEmpty()) {
-            $link = [
+            $links = [
                 'first' => $data->url(1),
                 'last'  => $data->url($data->lastPage()),
                 'prev'  => $data->previousPageUrl(),
                 'next'  => $data->nextPageUrl(),
             ];
         } else {
-            $link['self'] = $this->request->fullUrl();
+            $links['self'] = $this->request->fullUrl();
         }
 
-        return $link;
+        return $links;
     }
 
     /**
@@ -178,7 +202,7 @@ final class UserCollection
 
         if ($data->isNotEmpty()) {
             $meta = [
-                "current_page" => $data->currentPage(),
+                'current_page' => $data->currentPage(),
                 'from'         => $data->firstItem(),
                 'last_page'    => $data->lastPage(),
                 'path'         => $this->request->url(),
