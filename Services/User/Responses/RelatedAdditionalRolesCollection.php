@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/28/19 2:43 AM
+ * Last modified 7/2/19 6:19 AM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
@@ -63,9 +63,9 @@ final class RelatedAdditionalRolesCollection
                 ];
             });
 
-            $records['data']['additional-roles'] = $newData;
+            $records['data'] = $newData;
         } else {
-            $records['data']['additional-roles'] = [];
+            $records['data'] = [];
         }
 
         $records['links'] = $this->getLink();
