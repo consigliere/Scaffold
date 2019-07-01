@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/1/19 3:07 AM
+ * Last modified 7/2/19 6:31 AM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
@@ -109,7 +109,7 @@ final class UserCollection
 
                 $user['links'] = [
                     'self'    => url("/api/v1/$this->userType/$value->uuid"),
-                    'related' => url("/api/v1/$this->userType/$value->uuid/$this->roleType"),
+                    /*'related' => url("/api/v1/$this->userType/$value->uuid/$this->roleType"),*/
                 ];
 
                 return $user;
