@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/2/19 6:01 PM
+ * Last modified 7/3/19 2:38 AM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -17,6 +17,7 @@ use App\Components\Scaffold\Services\Role\Requests\UpdateRole;
 use App\Components\Scaffold\Services\Role\Responses\PermissionCollection;
 use App\Components\Scaffold\Services\Role\Responses\RelatedPermissionCollection;
 use App\Components\Scaffold\Services\Role\Responses\RoleCollection;
+use App\Components\Scaffold\Services\Role\Responses\RolePermissionsResource;
 use App\Components\Scaffold\Services\Role\Responses\RoleResource;
 use App\Components\Signature\Exceptions\BadRequestHttpException;
 use App\Components\Signature\Exceptions\ConflictHttpException;
@@ -46,6 +47,7 @@ class RoleService extends Service
     private $roles;
     private $roleId;
     private $permissions;
+    private $role;
 
     /**
      * RoleService constructor.
@@ -124,19 +126,11 @@ class RoleService extends Service
      */
     public function read($uuid, array $data, array $option = [], array $param = []): array
     {
-        $roleId = $this->roleRepository->getIdbyUuid($uuid);
+        $rid = $this->findRoleIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getRoleId();
 
-        if (null === $roleId) {
-            throw new NotFoundHttpException('Cannot find Roles resources in URI query parameter /' . $uuid);
-        }
-
-        $role = $this->roleRepository->getById($roleId);
-
-        if (null === $role) {
-            throw new BadRequestHttpException('Cannot find Role with ID #' . $uuid);
-        }
-
-        return (new RoleResource)($role);
+        return (new RolePermissionsResource)(
+            $this->findRoleFirstById($rid)->validateRoleIsExist(null, $uuid)->getRole()
+        );
     }
 
     /**
@@ -264,6 +258,39 @@ class RoleService extends Service
     private function findPermissionsByRole($roleId): self
     {
         $this->permissions = $this->roleRepository->permissionsByRole($roleId);
+
+        return $this;
+    }
+
+    /**
+     * @param $roleId
+     *
+     * @return \App\Components\Scaffold\Services\RoleService
+     */
+    private function findRoleFirstById($roleId): self
+    {
+        $this->role = $this->roleRepository->firstById($roleId);
+
+        return $this;
+    }
+
+    /**
+     * @param null $role
+     * @param null $uuid
+     *
+     * @return \App\Components\Scaffold\Services\RoleService
+     */
+    private function validateRoleIsExist($role = null, $uuid = null): self
+    {
+        $newRole = $role ?? $this->role;
+
+        if (null === $newRole) {
+            if (null === $uuid) {
+                throw new BadRequestHttpException('Cannot find Role');
+            }
+
+            throw new BadRequestHttpException('Cannot find Role with ID #' . $uuid);
+        }
 
         return $this;
     }
