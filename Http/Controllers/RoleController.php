@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/2/19 4:39 PM
+ * Last modified 7/2/19 6:01 PM
  */
 
 namespace App\Components\Scaffold\Http\Controllers;
@@ -170,5 +170,24 @@ class RoleController extends Controller
         return $this->response($response);
     }
 
-    public function permissions() { }
+    /**
+     * @param                          $uuid
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function permissions($uuid, Request $request): \Illuminate\Http\JsonResponse
+    {
+        $data = ['input' => $request->all(),];
+
+        try {
+            $response = $this->roleService->rolePermissions($uuid, $data);
+        } catch (\Exception $error) {
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
+
+            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+        }
+
+        return $this->response($response);
+    }
 }
