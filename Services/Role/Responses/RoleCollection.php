@@ -6,13 +6,12 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/28/19 6:15 AM
+ * Last modified 7/2/19 7:56 AM
  */
 
 namespace App\Components\Scaffold\Services\Role\Responses;
 
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Config;
 
 /**
  * Class RoleCollection
@@ -42,7 +41,7 @@ final class RoleCollection
     {
         $this->auth    = App::get('auth');
         $this->request = App::get('request');
-        $this->appName = Config::get('app.name') ?? Config::get('scaffold.name');
+        $this->appName = config('app.name') ?? config('scaffold.name');
     }
 
     /**
@@ -54,31 +53,93 @@ final class RoleCollection
      */
     public function __invoke($data, array $option = [], array $param = [])
     {
-        $newData = [];
         $records = [];
 
         if ($data->isNotEmpty()) {
-            $newData = $data->map(function($value, $key) use ($param) {
-                return [
-                    'type'       => Config::get('scaffold.api.roles.type'),
+            $newData = $data->map(static function($value, $key) use ($param) {
+                $role = [
+                    'type'       => config('scaffold.api.roles.type'),
                     'id'         => $value->uuid,
                     'attributes' => [
                         'name'        => $value->name,
                         'displayName' => $value->display_name,
                     ],
                 ];
+
+                if (config('scaffold.api.roles.hasRelationship')) {
+                    if ($value->permissions->isNotEmpty()) {
+                        $relatedPermissions = $value->permissions->map(static function($v, $k) {
+                            return ['type' => config('scaffold.api.permissions.type'), 'id' => $v->uuid];
+                        });
+
+                        $role['relationship']['permissions'] = [
+                            'links' => [
+                                'self'    => url("/api/v1/roles/$value->uuid/relationships/permissions"),
+                                'related' => url("/api/v1/roles/$value->uuid/permissions"),
+                            ],
+                            'data'  => $relatedPermissions,
+                        ];
+                    } else {
+                        $role['relationship']['permissions'] = [];
+                    }
+                }
+
+                $role['links'] = [
+                    'self'    => url("/api/v1/roles/$value->uuid"),
+                    'related' => url("/api/v1/roles/$value->uuid/permissions"),
+                ];
+
+                return $role;
             });
 
-            $records['data']  = $newData;
-            $records['links'] = $this->getLink($data);
-            $records['meta']  = $this->getMeta($data);
+            $records['data'] = $newData;
+            if (config('scaffold.api.roles.hasRelationship') && config('scaffold.api.roles.hasIncluded')) {
+                $records['included'] = $this->loadCompoundDoc($data);
+            }
         } else {
-            $records['data']  = [];
-            $records['links'] = $this->getLink($data);
-            $records['meta']  = $this->getMeta($data);
+            $records['data'] = [];
         }
 
+        $records['links'] = $this->getLink($data);
+        $records['meta']  = $this->getMeta($data);
+
         return $records;
+    }
+
+    /**
+     * @param       $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return \Illuminate\Support\Collection|static
+     */
+    private function loadCompoundDoc($data, array $option = [], array $param = [])
+    {
+        $newPermission = new \Illuminate\Database\Eloquent\Collection;
+
+        foreach ($data as $roles) {
+            $newCollection = $roles->permissions;
+
+            $newPermission = $newPermission->merge($newCollection);
+        }
+
+        $include = $newPermission->map(static function($value, $key) {
+            $newRole = [
+                'type'      => config('scaffold.api.permissions.type'),
+                'id'        => $value->uuid,
+                'attribute' => [
+                    'key'    => $value->key,
+                    'entity' => $value->table_name,
+                ],
+                'links'     => [
+                    'self' => url("/api/v1/permissions/$value->uuid"),
+                ],
+            ];
+
+            return $newRole;
+        });
+
+        return $include;
     }
 
     /**
@@ -128,7 +189,7 @@ final class RoleCollection
         }
 
         $meta['copyright'] = 'copyrightⒸ ' . date('Y') . ' ' . $this->appName;
-        $meta['author']    = Config::get('scaffold.api.roles.authors');
+        $meta['author']    = config('scaffold.api.roles.authors');
 
         return $meta;
     }
