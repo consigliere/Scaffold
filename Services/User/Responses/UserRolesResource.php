@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/28/19 2:35 PM
+ * Last modified 7/2/19 7:09 AM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
@@ -59,21 +59,30 @@ final class UserRolesResource
 
             $value = $data;
 
-            $user['type']                   = config('scaffold.api.users.type');
-            $user['id']                     = $value->uuid;
-            $user['attributes']['username'] = $value->username;
-            $user['attributes']['name']     = $value->name;
-            $user['attributes']['email']    = $value->email;
-            $user['attributes']['avatar']   = $value->avatar;
-            $user['attributes']['settings'] = $value->settings;
+            $user = [
+                'type'       => config('scaffold.api.users.type'),
+                'id'         => $value->uuid,
+                'attributes' => [
+                    'username' => $value->username,
+                    'name'     => $value->name,
+                    'email'    => $value->email,
+                    'avatar'   => $value->avatar,
+                    'settings' => $value->settings,
+                ],
+            ];
 
             if (config('scaffold.api.users.hasRelationship')) {
                 if (null !== $value->role) {
-                    $user['relationships']['primary-role']['links']['self']    = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/relationships/primary-role");
-                    $user['relationships']['primary-role']['links']['related'] = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/primary-role");
-                    $user['relationships']['primary-role']['data']             = [
-                        'type' => config('scaffold.api.roles.type'),
-                        'id'   => $value->role['uuid'],
+
+                    $user['relationships']['primary-role'] = [
+                        'links' => [
+                            'self'    => url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/relationships/primary-role"),
+                            'related' => url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/primary-role"),
+                        ],
+                        'data'  => [
+                            'type' => config('scaffold.api.roles.type'),
+                            'id'   => $value->role['uuid'],
+                        ],
                     ];
                 } else {
                     $user['relationships']['primary-role'] = null;
@@ -84,16 +93,20 @@ final class UserRolesResource
                         return ['type' => config('scaffold.api.roles.type'), 'id' => $v->uuid];
                     });
 
-                    $user['relationships']['additional-roles']['links']['self']    = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/relationships/additional-roles");
-                    $user['relationships']['additional-roles']['links']['related'] = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/additional-roles");
-                    $user['relationships']['additional-roles']['data']             = $additionalRoles;
+                    $user['relationships']['additional-roles'] = [
+                        'links' => [
+                            'self'    => url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/relationships/additional-roles"),
+                            'related' => url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/additional-roles"),
+                        ],
+                        'data'  => $additionalRoles,
+                    ];
                 } else {
                     $user['relationships']['additional-roles'] = [];
                 }
             }
 
-            $user['links']['self']    = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid");
-            $user['links']['related'] = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/" . config('scaffold.api.roles.type'));
+            $user['links']['self'] = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid");
+            // $user['links']['related'] = url("/api/v1/" . config('scaffold.api.users.type') . "/$value->uuid/" . config('scaffold.api.roles.type'));
 
             $records['data'] = $user;
             if (config('scaffold.api.users.hasRelationship') && config('scaffold.api.users.hasIncluded')) {
@@ -138,11 +151,17 @@ final class UserRolesResource
         $rolesMerge = $rolesMerge->merge($newCollection);
 
         $include = $rolesMerge->map(static function($value, $key) {
-            $newRole['type']                     = config('scaffold.api.roles.type');
-            $newRole['id']                       = $value->uuid;
-            $newRole['attribute']['name']        = $value->name;
-            $newRole['attribute']['displayName'] = $value->display_name;
-            $newRole['links']['self']            = url("/api/v1/" . config('scaffold.api.roles.type') . "/$value->uuid");
+            $newRole = [
+                'type'       => config('scaffold.api.roles.type'),
+                'id'         => $value->uuid,
+                'attributes' => [
+                    'name'        => $value->name,
+                    'displayName' => $value->display_name,
+                ],
+                'links'      => [
+                    'self' => url("/api/v1/" . config('scaffold.api.roles.type') . "/$value->uuid"),
+                ],
+            ];
 
             return $newRole;
         });
