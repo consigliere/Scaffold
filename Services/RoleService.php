@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/25/19 4:51 AM
+ * Last modified 7/2/19 4:59 PM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -14,11 +14,12 @@ namespace App\Components\Scaffold\Services;
 use App\Components\Scaffold\Repositories\RoleRepositoryInterface;
 use App\Components\Scaffold\Services\Role\Requests\CreateRole;
 use App\Components\Scaffold\Services\Role\Requests\UpdateRole;
+use App\Components\Scaffold\Services\Role\Responses\RelatedPermissionCollection;
 use App\Components\Scaffold\Services\Role\Responses\RoleCollection;
 use App\Components\Scaffold\Services\Role\Responses\RoleResource;
 use App\Components\Signature\Exceptions\BadRequestHttpException;
+use App\Components\Signature\Exceptions\ConflictHttpException;
 use App\Components\Signature\Exceptions\NotFoundHttpException;
-use App\Components\Signature\Exceptions\UnprocessableEntityHttpException;
 use Illuminate\Foundation\Application;
 
 /**
@@ -41,6 +42,9 @@ class RoleService extends Service
      * @var mixed
      */
     private $request;
+    private $roles;
+    private $roleId;
+    private $permissions;
 
     /**
      * RoleService constructor.
@@ -57,6 +61,19 @@ class RoleService extends Service
     }
 
     /**
+     * @param $name
+     * @param $arguments
+     *
+     * @return mixed
+     */
+    public function __call($name, $arguments)
+    {
+        $prop = lcfirst(substr($name, 3));
+
+        return $this->$prop;
+    }
+
+    /**
      * @param array $data
      * @param array $option
      * @param array $param
@@ -65,9 +82,11 @@ class RoleService extends Service
      */
     public function browse(array $data = [], array $option = [], array $param = []): array
     {
-        $roles = $this->roleRepository->browse($data);
+        $this->bootsJsonApi();
 
-        return (new RoleCollection)($roles);
+        return (new RoleCollection)(
+            $this->findRolesPaging($data)->getRoles()
+        );
     }
 
     /**
@@ -79,11 +98,13 @@ class RoleService extends Service
      */
     public function create(array $data, array $option = [], array $param = []): array
     {
+        $this->bootsJsonApi();
+
         $inputName = data_get($data, 'input.name');
         $roles     = $this->roleRepository->getWhere('name', $inputName);
 
         if ($roles->isNotEmpty()) {
-            throw new UnprocessableEntityHttpException("Role name $inputName already exists, please try another");
+            throw new ConflictHttpException("Role name $inputName already exists, please try another");
         }
 
         $newRole = (new CreateRole)($data);
@@ -140,7 +161,7 @@ class RoleService extends Service
             if ($roles->isNotEmpty()) {
                 foreach ($roles as $role) {
                     if ($role->id !== $roleId) {
-                        throw new UnprocessableEntityHttpException("Role name $inputName already exists, please try another");
+                        throw new ConflictHttpException("Role name $inputName already exists, please try another");
                     }
                 }
             }
@@ -170,5 +191,81 @@ class RoleService extends Service
 
             $this->roleRepository->delete($rid);
         }
+    }
+
+    /**
+     * @param       $uuid
+     * @param array $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return mixed
+     */
+    public function relatedPermissions($uuid, array $data, array $option = [], array $param = [])
+    {
+        $this->bootsJsonApi();
+
+        $rid = $this->findRoleIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getRoleId();
+
+        return (new RelatedPermissionCollection)(
+            $this->findPermissionsByRole($rid)->getPermissions()
+        );
+    }
+
+    /**
+     * @param $data
+     *
+     * @return $this
+     */
+    private function findRolesPaging($data): self
+    {
+        $this->roles = $this->roleRepository->browse($data);
+
+        return $this;
+    }
+
+    /**
+     * @param $uuid
+     *
+     * @return \App\Components\Scaffold\Services\RoleService
+     */
+    private function findRoleIdByUuid($uuid): self
+    {
+        $this->roleId = $this->roleRepository->getIdbyUuid($uuid);
+
+        return $this;
+    }
+
+    /**
+     * @param $roleId
+     *
+     * @return $this
+     */
+    private function findPermissionsByRole($roleId): self
+    {
+        $this->permissions = $this->roleRepository->permissionsByRole($roleId);
+
+        return $this;
+    }
+
+    /**
+     * @param null $id
+     * @param null $uuid
+     *
+     * @return \App\Components\Scaffold\Services\RoleService
+     */
+    private function validateUriQueryParam($id = null, $uuid = null): self
+    {
+        $newId = $id ?? $this->roleId;
+
+        if (null === $newId) {
+            if (null === $uuid) {
+                throw new NotFoundHttpException('Cannot find Roles resources in URI query parameter');
+            }
+
+            throw new NotFoundHttpException('Cannot find Roles resources in URI query parameter /' . $uuid);
+        }
+
+        return $this;
     }
 }
