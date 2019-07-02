@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/1/19 1:50 AM
+ * Last modified 7/2/19 7:23 AM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -19,10 +19,8 @@ use App\Components\Scaffold\Services\User\Responses\AdditionalRolesCollection;
 use App\Components\Scaffold\Services\User\Responses\PrimaryRoleResource;
 use App\Components\Scaffold\Services\User\Responses\RelatedAdditionalRolesCollection;
 use App\Components\Scaffold\Services\User\Responses\RelatedPrimaryRoleResource;
-use App\Components\Scaffold\Services\User\Responses\RelatedUserRolesCollection;
 use App\Components\Scaffold\Services\User\Responses\UserCollection;
 use App\Components\Scaffold\Services\User\Responses\UserResource;
-use App\Components\Scaffold\Services\User\Responses\UserRolesCollection;
 use App\Components\Scaffold\Services\User\Responses\UserRolesResource;
 use App\Components\Signature\Exceptions\BadRequestHttpException;
 use App\Components\Signature\Exceptions\ConflictHttpException;
@@ -253,46 +251,6 @@ class UserService extends Service
      *
      * @return mixed
      */
-    public function relatedUserRoles($uuid, array $data, array $option = [], array $param = [])
-    {
-        $this->bootsJsonApi();
-
-        $uid = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
-
-        return (new RelatedUserRolesCollection)(
-            $this->findPrimaryRoles($uid)->getPrimaryRoles(),
-            $this->findAdditionalRoles($uid)->getAdditionalRoles()
-        );
-    }
-
-    /**
-     * @param       $uuid
-     * @param array $data
-     * @param array $option
-     * @param array $param
-     *
-     * @return mixed
-     */
-    public function userRoles($uuid, array $data, array $option = [], array $param = [])
-    {
-        $this->bootsJsonApi();
-
-        $uid = $this->findUserIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getUserId();
-
-        return (new UserRolesCollection)(
-            $this->findPrimaryRoles($uid)->getPrimaryRoles(),
-            $this->findAdditionalRoles($uid)->getAdditionalRoles()
-        );
-    }
-
-    /**
-     * @param       $uuid
-     * @param array $data
-     * @param array $option
-     * @param array $param
-     *
-     * @return mixed
-     */
     public function relatedPrimaryRole($uuid, array $data, array $option = [], array $param = [])
     {
         $this->bootsJsonApi();
@@ -401,8 +359,7 @@ class UserService extends Service
             }
         }
 
-        return (new UserRolesCollection)(
-            $this->findPrimaryRoles($uid)->getPrimaryRoles(),
+        return (new AdditionalRolesCollection)(
             $this->findAdditionalRoles($uid)->getAdditionalRoles()
         );
     }
