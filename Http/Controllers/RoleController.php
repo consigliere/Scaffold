@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/17/19 11:29 AM
+ * Last modified 7/2/19 4:39 PM
  */
 
 namespace App\Components\Scaffold\Http\Controllers;
@@ -47,7 +47,7 @@ class RoleController extends Controller
      */
     public function browse(Request $request): \Illuminate\Http\JsonResponse
     {
-        $data   = [
+        $data = [
             'header' => [
                 'paging' => $request->header('Page-Paging') ?? Config::get('scaffold.api.page_paging'),
             ],
@@ -71,7 +71,7 @@ class RoleController extends Controller
      */
     public function create(RoleCreateFormRequest $request): \Illuminate\Http\JsonResponse
     {
-        $data   = [
+        $data = [
             'input' => $request->all(),
         ];
 
@@ -94,7 +94,7 @@ class RoleController extends Controller
      */
     public function read($uuid = null, Request $request): \Illuminate\Http\JsonResponse
     {
-        $data   = [];
+        $data = [];
 
         try {
             $response = $this->roleService->read($uuid, $data);
@@ -115,7 +115,7 @@ class RoleController extends Controller
      */
     public function update($uuid, RoleUpdateFormRequest $request): \Illuminate\Http\JsonResponse
     {
-        $data   = [
+        $data = [
             'input' => $request->all(),
         ];
 
@@ -148,4 +148,27 @@ class RoleController extends Controller
 
         return $this->response(null, 204);
     }
+
+    /**
+     * @param                          $uuid
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function relatedPermissions($uuid, Request $request): \Illuminate\Http\JsonResponse
+    {
+        $data = ['input' => $request->all(),];
+
+        try {
+            $response = $this->roleService->relatedPermissions($uuid, $data);
+        } catch (\Exception $error) {
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
+
+            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+        }
+
+        return $this->response($response);
+    }
+
+    public function permissions() { }
 }
