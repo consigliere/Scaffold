@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/2/19 6:19 AM
+ * Last modified 7/2/19 4:48 PM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
@@ -68,7 +68,7 @@ final class RelatedAdditionalRolesCollection
             $records['data'] = [];
         }
 
-        $records['links'] = $this->getLink();
+        $records['links'] = $this->getLinks();
         $records['meta']  = $this->getMeta();
 
         return $records;
@@ -80,11 +80,17 @@ final class RelatedAdditionalRolesCollection
      *
      * @return array
      */
-    private function getLink($data = null, array $param = []): array
+    private function getLinks($data = null, array $param = []): array
     {
-        $link['self'] = $this->request->fullUrl();
+        $self    = $this->request->fullUrl();
+        $related = str_replace('/relationships', '', $self);
 
-        return $link;
+        $links = [
+            'self'    => $self,
+            'related' => $related,
+        ];
+
+        return $links;
     }
 
     /**
@@ -95,10 +101,13 @@ final class RelatedAdditionalRolesCollection
      */
     private function getMeta($data = null, array $param = []): array
     {
-        $meta = [];
+        $year = date('Y');
+        $name = $this->appName;
 
-        $meta['copyright'] = 'copyrightⒸ ' . date('Y') . ' ' . $this->appName;
-        $meta['author']    = config('scaffold.api.roles.authors');
+        $meta = [
+            'copyright' => "copyrightⒸ $year $name",
+            'author'    => config('scaffold.api.roles.authors'),
+        ];
 
         return $meta;
     }
