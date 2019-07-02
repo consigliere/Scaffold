@@ -5,8 +5,8 @@
  */
 
 /**
- * Copyright(c) 2019. All rights reserved.
- * Last modified 6/16/19 6:22 PM
+ * CopyrightⒸ 2019. All rights reserved.
+ * Last modified 7/2/19 4:52 PM
  */
 
 namespace App\Components\Scaffold\Repositories\Role;
@@ -45,7 +45,12 @@ class RoleRepository extends Repository implements RoleRepositoryInterface
     public function browse(array $data = [], array $option = [], array $param = [])
     {
         $paging = (int)data_get($data, 'header.paging');
-        $roles  = $this->getModel();
+
+        if (config('scaffold.api.roles.hasRelationship') || config('scaffold.api.roles.hasIncluded')) {
+            $roles = $this->getModel()::with('permissions');
+        } else {
+            $roles = $this->getModel();
+        }
 
         return $roles->paginate($paging);
     }
@@ -104,5 +109,17 @@ class RoleRepository extends Repository implements RoleRepositoryInterface
     public function getIds()
     {
         return $this->getModel()::where('id', '>', 0)->pluck('id')->toArray();
+    }
+
+    /**
+     * @param $id
+     *
+     * @return mixed
+     */
+    public function permissionsByRole($id)
+    {
+        $role = $this->getModel()::find($id);
+
+        return $role->permissions;
     }
 }
