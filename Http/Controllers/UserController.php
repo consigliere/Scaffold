@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/28/19 6:11 AM
+ * Last modified 7/2/19 7:23 AM
  */
 
 namespace App\Components\Scaffold\Http\Controllers;
@@ -162,48 +162,6 @@ class UserController extends Controller
         }
 
         return $this->response(null, 204);
-    }
-
-    /**
-     * @param string                   $uuid
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function relatedRoles($uuid, Request $request): \Illuminate\Http\JsonResponse
-    {
-        $data = ['input' => $request->all(),];
-
-        try {
-            $response = $this->userService->relatedUserRoles($uuid, $data);
-        } catch (\Exception $error) {
-            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
-
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
-        }
-
-        return $this->response($response);
-    }
-
-    /**
-     * @param string                   $uuid
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function roles($uuid, Request $request): \Illuminate\Http\JsonResponse
-    {
-        $data = ['input' => $request->all(),];
-
-        try {
-            $response = $this->userService->userRoles($uuid, $data);
-        } catch (\Exception $error) {
-            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
-
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
-        }
-
-        return $this->response($response);
     }
 
     /**
