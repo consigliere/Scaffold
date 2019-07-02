@@ -17,17 +17,17 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/27/19 12:53 AM
+ * Last modified 7/2/19 7:23 AM
  */
 
-Route::group(['prefix' => 'v1'], function() {
+Route::group(['prefix' => 'v1'], static function() {
     Route::group(
         [
             'middleware' => 'auth:api',
             'prefix'     => 'users',
             'namespace'  => '\App\Components\Scaffold\Http\Controllers',
         ],
-        function() {
+        static function() {
             Route::get('/profile', 'UserController@profile');
             Route::get('/', 'UserController@browse');
             Route::get('/{uuid}', 'UserController@read');
@@ -35,8 +35,6 @@ Route::group(['prefix' => 'v1'], function() {
             Route::patch('/{uuid}', 'UserController@update');
             Route::delete('/{uuid}', 'UserController@delete');
 
-            Route::get('/{uuid}/relationship/roles', 'UserController@relatedRoles');
-            Route::get('/{uuid}/roles', 'UserController@roles');
             Route::get('/{uuid}/relationships/primary-role', 'UserController@relatedPrimaryRole');
             Route::get('/{uuid}/primary-role', 'UserController@primaryRole');
             Route::get('/{uuid}/relationships/additional-roles', 'UserController@relatedAdditionalRoles');
@@ -54,14 +52,18 @@ Route::group(['prefix' => 'v1'], function() {
             'prefix'     => 'roles',
             'namespace'  => '\App\Components\Scaffold\Http\Controllers',
         ],
-        function() {
+        static function() {
             Route::get('/', 'RoleController@browse');
             Route::get('/{uuid}', 'RoleController@read');
             Route::post('/', 'RoleController@create');
             Route::patch('/{uuid}', 'RoleController@update');
             Route::delete('/{uuid}', 'RoleController@delete');
 
-            Route::patch('/{uuid}/relationships/permissions', 'RoleController@assignPermission');
+            Route::get('/{uuid}/relationships/permissions', 'RoleController@relatedPermissions');
+            Route::get('/{uuid}/permissions', 'RoleController@permissions');
+            Route::patch('/{uuid}/relationships/permissions/sync', 'RoleController@syncPermissions');
+            Route::patch('/{uuid}/relationships/permissions/add', 'RoleController@addPermissions');
+            Route::patch('/{uuid}/relationships/permissions/remove', 'RoleController@removePermissions');
         }
     );
 
@@ -71,7 +73,7 @@ Route::group(['prefix' => 'v1'], function() {
             'prefix'     => 'permissions',
             'namespace'  => '\App\Components\Scaffold\Http\Controllers',
         ],
-        function() {
+        static function() {
             Route::get('/', 'PermissionController@browse');
             Route::get('/{uuid}', 'PermissionController@read');
             Route::post('/', 'PermissionController@create');
