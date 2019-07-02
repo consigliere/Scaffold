@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/2/19 7:56 AM
+ * Last modified 7/2/19 5:48 PM
  */
 
 namespace App\Components\Scaffold\Services\Role\Responses;
@@ -118,9 +118,7 @@ final class RoleCollection
         $newPermission = new \Illuminate\Database\Eloquent\Collection;
 
         foreach ($data as $roles) {
-            $newCollection = $roles->permissions;
-
-            $newPermission = $newPermission->merge($newCollection);
+            $newPermission = $newPermission->merge($roles->permissions);
         }
 
         $include = $newPermission->map(static function($value, $key) {
