@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/2/19 4:59 PM
+ * Last modified 7/2/19 6:01 PM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -14,6 +14,7 @@ namespace App\Components\Scaffold\Services;
 use App\Components\Scaffold\Repositories\RoleRepositoryInterface;
 use App\Components\Scaffold\Services\Role\Requests\CreateRole;
 use App\Components\Scaffold\Services\Role\Requests\UpdateRole;
+use App\Components\Scaffold\Services\Role\Responses\PermissionCollection;
 use App\Components\Scaffold\Services\Role\Responses\RelatedPermissionCollection;
 use App\Components\Scaffold\Services\Role\Responses\RoleCollection;
 use App\Components\Scaffold\Services\Role\Responses\RoleResource;
@@ -208,6 +209,25 @@ class RoleService extends Service
         $rid = $this->findRoleIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getRoleId();
 
         return (new RelatedPermissionCollection)(
+            $this->findPermissionsByRole($rid)->getPermissions()
+        );
+    }
+
+    /**
+     * @param       $uuid
+     * @param array $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return mixed
+     */
+    public function rolePermissions($uuid, array $data, array $option = [], array $param = [])
+    {
+        $this->bootsJsonApi();
+
+        $rid = $this->findRoleIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getRoleId();
+
+        return (new PermissionCollection)(
             $this->findPermissionsByRole($rid)->getPermissions()
         );
     }
