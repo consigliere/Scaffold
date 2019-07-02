@@ -5,8 +5,8 @@
  */
 
 /**
- * CopyrightⒸ 2019. All rights reserved.
- * Last modified 7/2/19 4:52 PM
+ * Copyright(c) 2019. All rights reserved.
+ * Last modified 7/3/19 2:07 AM
  */
 
 namespace App\Components\Scaffold\Repositories\Role;
@@ -121,5 +121,23 @@ class RoleRepository extends Repository implements RoleRepositoryInterface
         $role = $this->getModel()::find($id);
 
         return $role->permissions;
+    }
+
+    /**
+     * @param       $id
+     * @param array $options
+     * @param array $param
+     *
+     * @return mixed
+     */
+    public function firstById($id, array $options = [], array $param = [])
+    {
+        if (config('scaffold.api.roles.hasRelationship') || config('scaffold.api.roles.hasIncluded')) {
+            $role = $this->getModel()::where('id', $id)->with('permissions');
+        } else {
+            $role = $this->getModel()::where('id', $id);
+        }
+
+        return $role->first();
     }
 }
