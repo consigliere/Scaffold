@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/4/19 5:06 PM
+ * Last modified 7/5/19 2:58 AM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -298,6 +298,11 @@ class RoleService extends Service
         );
     }
 
+    /**
+     * @param $data
+     *
+     * @return \App\Components\Scaffold\Services\RoleService
+     */
     private function findInputPermissions($data): self
     {
         if (!array_key_exists('permissions', $data['input'])) {
@@ -309,6 +314,11 @@ class RoleService extends Service
         return $this;
     }
 
+    /**
+     * @param null $inputRoles
+     *
+     * @return \App\Components\Scaffold\Services\RoleService
+     */
     private function validateInputPermissionsIsArray($inputRoles = null): self
     {
         $newInputPermissions = $inputRoles ?? $this->inputPermissions;
