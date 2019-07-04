@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/2/19 6:01 PM
+ * Last modified 7/5/19 2:53 AM
  */
 
 namespace App\Components\Scaffold\Http\Controllers;
@@ -182,6 +182,72 @@ class RoleController extends Controller
 
         try {
             $response = $this->roleService->rolePermissions($uuid, $data);
+        } catch (\Exception $error) {
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
+
+            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+        }
+
+        return $this->response($response);
+    }
+
+    /**
+     * @param                          $uuid
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function syncPermissions($uuid, Request $request): \Illuminate\Http\JsonResponse
+    {
+        $data   = ['input' => $request->all(),];
+        $option = ['type' => 'sync',];
+
+        try {
+            $response = $this->roleService->permissionAction($uuid, $data, $option);
+        } catch (\Exception $error) {
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
+
+            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+        }
+
+        return $this->response($response);
+    }
+
+    /**
+     * @param                          $uuid
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function addPermissions($uuid, Request $request): \Illuminate\Http\JsonResponse
+    {
+        $data   = ['input' => $request->all(),];
+        $option = ['type' => 'add',];
+
+        try {
+            $response = $this->roleService->permissionAction($uuid, $data, $option);
+        } catch (\Exception $error) {
+            $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
+
+            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+        }
+
+        return $this->response($response);
+    }
+
+    /**
+     * @param string                   $uuid
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function removePermissions($uuid, Request $request): \Illuminate\Http\JsonResponse
+    {
+        $data   = ['input' => $request->all(),];
+        $option = ['type' => 'remove',];
+
+        try {
+            $response = $this->roleService->permissionAction($uuid, $data, $option);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
