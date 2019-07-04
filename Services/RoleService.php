@@ -6,11 +6,12 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/3/19 2:38 AM
+ * Last modified 7/4/19 5:06 PM
  */
 
 namespace App\Components\Scaffold\Services;
 
+use App\Components\Scaffold\Repositories\PermissionRepositoryInterface;
 use App\Components\Scaffold\Repositories\RoleRepositoryInterface;
 use App\Components\Scaffold\Services\Role\Requests\CreateRole;
 use App\Components\Scaffold\Services\Role\Requests\UpdateRole;
@@ -22,6 +23,7 @@ use App\Components\Scaffold\Services\Role\Responses\RoleResource;
 use App\Components\Signature\Exceptions\BadRequestHttpException;
 use App\Components\Signature\Exceptions\ConflictHttpException;
 use App\Components\Signature\Exceptions\NotFoundHttpException;
+use App\Components\Signature\Exceptions\UnprocessableEntityHttpException;
 use Illuminate\Foundation\Application;
 
 /**
@@ -40,6 +42,8 @@ class RoleService extends Service
      */
     private $auth;
 
+    private $permissionRepository;
+
     /**
      * @var mixed
      */
@@ -48,16 +52,20 @@ class RoleService extends Service
     private $roleId;
     private $permissions;
     private $role;
+    private $inputPermissions;
+    private $permissionId;
 
     /**
      * RoleService constructor.
      *
-     * @param \Illuminate\Foundation\Application                            $app
-     * @param \App\Components\Scaffold\Repositories\RoleRepositoryInterface $RoleRepository
+     * @param \Illuminate\Foundation\Application                                  $app
+     * @param \App\Components\Scaffold\Repositories\RoleRepositoryInterface       $RoleRepository
+     * @param \App\Components\Scaffold\Repositories\PermissionRepositoryInterface $PermissionRepository
      */
-    public function __construct(Application $app, RoleRepositoryInterface $RoleRepository)
+    public function __construct(Application $app, RoleRepositoryInterface $RoleRepository, PermissionRepositoryInterface $PermissionRepository)
     {
-        $this->roleRepository = $RoleRepository;
+        $this->roleRepository       = $RoleRepository;
+        $this->permissionRepository = $PermissionRepository;
 
         $this->auth    = $app->make('auth');
         $this->request = $app->make('request');
@@ -113,7 +121,15 @@ class RoleService extends Service
         $newRole = (new CreateRole)($data);
         $role    = $this->roleRepository->create($newRole);
 
-        return (new RoleResource)($role);
+        if (!$role) {
+            return (new RoleResource)($role);
+        } else {
+            $rid = $role->id;
+        }
+
+        return (new RolePermissionsResource)(
+            $this->findRoleFirstById($rid)->validateRoleIsExist(null, null)->getRole()
+        );
     }
 
     /**
@@ -126,6 +142,8 @@ class RoleService extends Service
      */
     public function read($uuid, array $data, array $option = [], array $param = []): array
     {
+        $this->bootsJsonApi();
+
         $rid = $this->findRoleIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getRoleId();
 
         return (new RolePermissionsResource)(
@@ -143,6 +161,8 @@ class RoleService extends Service
      */
     public function update($uuid, array $data, array $option = [], array $param = []): array
     {
+        $this->bootsJsonApi();
+
         $roleId    = $this->roleRepository->getIdbyUuid($uuid);
         $inputName = data_get($data, 'input.name');
 
@@ -165,7 +185,15 @@ class RoleService extends Service
         $newRole = (new UpdateRole)($data);
         $role    = $this->roleRepository->update($roleId, $newRole);
 
-        return (new RoleResource)($role);
+        if (!$role) {
+            return (new RoleResource)($role);
+        } else {
+            $rid = $role->id;
+        }
+
+        return (new RolePermissionsResource)(
+            $this->findRoleFirstById($rid)->validateRoleIsExist(null, null)->getRole()
+        );
     }
 
     /**
@@ -174,6 +202,8 @@ class RoleService extends Service
      */
     public function delete($uuid, array $param = []): void
     {
+        $this->bootsJsonApi();
+
         $trimmed = rtrim(trim(preg_replace('/\s+/', '', $uuid)), ',');
         $ids     = explode(',', $trimmed);
 
@@ -227,6 +257,70 @@ class RoleService extends Service
     }
 
     /**
+     * @param       $uuid
+     * @param array $data
+     * @param array $option
+     * @param array $param
+     *
+     * @return mixed
+     */
+    public function permissionAction($uuid, array $data, array $option = [], array $param = [])
+    {
+        $this->bootsJsonApi();
+
+        $rid              = $this->findRoleIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getRoleId();
+        $inputPermissions = $this->findInputPermissions($data)->validateInputPermissionsIsArray(null)->getInputPermissions();
+
+        if (isset($inputPermissions) && !empty($inputPermissions) && (null !== $inputPermissions)) {
+            if ($option['type'] === 'sync') {
+                $this->roleRepository->detachPermissions($rid);
+            }
+
+            foreach ($inputPermissions as $permission) {
+                $pid = $this->findPermissionIdByUuid($permission)->validatePermissionIdIsExist(null, $permission)->getPermissionId();
+
+                if ($option['type'] === 'add' || $option['type'] === 'remove') {
+                    $rolePermissions = $this->findPermissionsByRole($rid)->getPermissions();
+                    foreach ($rolePermissions as $rp) {
+                        if ($pid === $rp->id) {
+                            $this->roleRepository->detachPermissions($rid, $pid);
+                        }
+                    }
+                }
+                if ($option['type'] === 'add' || $option['type'] === 'sync') {
+                    $this->roleRepository->attachPermissions($rid, $pid);
+                }
+            }
+        }
+
+        return (new PermissionCollection)(
+            $this->findPermissionsByRole($rid)->getPermissions()
+        );
+    }
+
+    private function findInputPermissions($data): self
+    {
+        if (!array_key_exists('permissions', $data['input'])) {
+            throw new UnprocessableEntityHttpException('Permissions key are required');
+        }
+
+        $this->inputPermissions = data_get($data, 'input.permissions');
+
+        return $this;
+    }
+
+    private function validateInputPermissionsIsArray($inputRoles = null): self
+    {
+        $newInputPermissions = $inputRoles ?? $this->inputPermissions;
+
+        if (!is_array($newInputPermissions)) {
+            throw new BadRequestHttpException('Permissions expected to be an array');
+        }
+
+        return $this;
+    }
+
+    /**
      * @param $data
      *
      * @return $this
@@ -250,6 +344,13 @@ class RoleService extends Service
         return $this;
     }
 
+    private function findPermissionIdByUuid($uuid): self
+    {
+        $this->permissionId = $this->permissionRepository->getIdbyUuid($uuid);
+
+        return $this;
+    }
+
     /**
      * @param $roleId
      *
@@ -257,7 +358,7 @@ class RoleService extends Service
      */
     private function findPermissionsByRole($roleId): self
     {
-        $this->permissions = $this->roleRepository->permissionsByRole($roleId);
+        $this->permissions = $this->roleRepository->permissions($roleId);
 
         return $this;
     }
@@ -311,6 +412,21 @@ class RoleService extends Service
             }
 
             throw new NotFoundHttpException('Cannot find Roles resources in URI query parameter /' . $uuid);
+        }
+
+        return $this;
+    }
+
+    private function validatePermissionIdIsExist($permissionId = null, $uuid = null): self
+    {
+        $pid = $permissionId ?? $this->permissionId;
+
+        if (null === $pid) {
+            if (null === $uuid) {
+                throw new BadRequestHttpException('Cannot find Role ID');
+            }
+
+            throw new BadRequestHttpException('Cannot find Role with ID #' . $uuid);
         }
 
         return $this;
