@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/2/19 6:04 PM
+ * Last modified 7/4/19 5:15 PM
  */
 
 namespace App\Components\Scaffold\Services\Role\Responses;
@@ -56,7 +56,7 @@ final class PermissionCollection
         if ($permissions->isNotEmpty()) {
             $newData = $permissions->map(static function($value, $key) use ($param) {
                 return [
-                    'type'       => config('scaffold.api.roles.type'),
+                    'type'       => config('scaffold.api.permissions.type'),
                     'id'         => $value->uuid,
                     'attributes' => [
                         'key'    => $value->key,
@@ -89,7 +89,7 @@ final class PermissionCollection
 
         $links = [
             'self'    => $self,
-            'related' => $related,
+            /*'related' => $related,*/
         ];
 
         return $links;
