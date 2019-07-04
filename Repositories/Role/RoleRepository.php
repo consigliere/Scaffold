@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/3/19 2:07 AM
+ * Last modified 7/4/19 5:06 PM
  */
 
 namespace App\Components\Scaffold\Repositories\Role;
@@ -116,7 +116,7 @@ class RoleRepository extends Repository implements RoleRepositoryInterface
      *
      * @return mixed
      */
-    public function permissionsByRole($id)
+    public function permissions($id)
     {
         $role = $this->getModel()::find($id);
 
@@ -139,5 +139,35 @@ class RoleRepository extends Repository implements RoleRepositoryInterface
         }
 
         return $role->first();
+    }
+
+    /**
+     * @param       $id
+     * @param null  $permissionId
+     * @param array $option
+     * @param array $param
+     */
+    public function attachPermissions($id, $permissionId = null, array $option = [], array $param = [])
+    {
+        $role = $this->getModel()::find($id);
+
+        $role->permissions()->attach($permissionId);
+    }
+
+    /**
+     * @param       $id
+     * @param null  $permissionId
+     * @param array $option
+     * @param array $param
+     */
+    public function detachPermissions($id, $permissionId = null, array $option = [], array $param = [])
+    {
+        $role = $this->getModel()::find($id);
+
+        if (null === $permissionId) {
+            $role->permissions()->detach();
+        } else {
+            $role->permissions()->detach($permissionId);
+        }
     }
 }
