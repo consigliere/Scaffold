@@ -17,7 +17,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/2/19 7:23 AM
+ * Last modified 7/4/19 5:34 PM
  */
 
 Route::group(['prefix' => 'v1'], static function() {
@@ -40,9 +40,9 @@ Route::group(['prefix' => 'v1'], static function() {
             Route::get('/{uuid}/relationships/additional-roles', 'UserController@relatedAdditionalRoles');
             Route::get('/{uuid}/additional-roles', 'UserController@additionalRoles');
             // Route::patch('/{uuid}/relationships/additional-roles/{type}', 'UserController@userAdditionalRoles'); # type = sync, add or remove
-            Route::patch('/{uuid}/relationships/additional-roles/sync', 'UserController@syncAdditionalRoles');
-            Route::patch('/{uuid}/relationships/additional-roles/add', 'UserController@addAdditionalRoles');
-            Route::patch('/{uuid}/relationships/additional-roles/remove', 'UserController@removeAdditionalRoles');
+            Route::patch('/{uuid}/relationships/sync-additional-roles', 'UserController@syncAdditionalRoles');
+            Route::patch('/{uuid}/relationships/add-additional-roles', 'UserController@addAdditionalRoles');
+            Route::patch('/{uuid}/relationships/remove-additional-roles', 'UserController@removeAdditionalRoles');
         }
     );
 
@@ -61,9 +61,9 @@ Route::group(['prefix' => 'v1'], static function() {
 
             Route::get('/{uuid}/relationships/permissions', 'RoleController@relatedPermissions');
             Route::get('/{uuid}/permissions', 'RoleController@permissions');
-            Route::patch('/{uuid}/relationships/permissions/sync', 'RoleController@syncPermissions');
-            Route::patch('/{uuid}/relationships/permissions/add', 'RoleController@addPermissions');
-            Route::patch('/{uuid}/relationships/permissions/remove', 'RoleController@removePermissions');
+            Route::patch('/{uuid}/relationships/sync-permissions', 'RoleController@syncPermissions');
+            Route::patch('/{uuid}/relationships/add-permissions', 'RoleController@addPermissions');
+            Route::patch('/{uuid}/relationships/remove-permissions', 'RoleController@removePermissions');
         }
     );
 
