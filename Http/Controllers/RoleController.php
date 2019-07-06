@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/5/19 2:53 AM
+ * Last modified 7/6/19 6:44 PM
  */
 
 namespace App\Components\Scaffold\Http\Controllers;
@@ -14,6 +14,7 @@ namespace App\Components\Scaffold\Http\Controllers;
 use App\Components\Scaffold\Http\Requests\RoleCreateFormRequest;
 use App\Components\Scaffold\Http\Requests\RoleUpdateFormRequest;
 use App\Components\Scaffold\Services\RoleService;
+use App\Components\Signature\Exceptions\UnauthorizedHttpException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 
@@ -54,6 +55,10 @@ class RoleController extends Controller
         ];
 
         try {
+            if (!$request->user()->tokenCan('browse_roles')) {
+                throw new UnauthorizedHttpException('Unauthorized');
+            }
+
             $response = $this->roleService->browse($data);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
