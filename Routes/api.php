@@ -17,7 +17,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/4/19 5:34 PM
+ * Last modified 7/9/19 12:53 AM
  */
 
 Route::group(['prefix' => 'v1'], static function() {
@@ -29,20 +29,20 @@ Route::group(['prefix' => 'v1'], static function() {
         ],
         static function() {
             Route::get('/profile', 'UserController@profile');
-            Route::get('/', 'UserController@browse');
-            Route::get('/{uuid}', 'UserController@read');
-            Route::post('/', 'UserController@create');
-            Route::patch('/{uuid}', 'UserController@update');
-            Route::delete('/{uuid}', 'UserController@delete');
+            Route::get('/', 'UserController@browse')->middleware('scopes:browse_users');
+            Route::get('/{uuid}', 'UserController@read')->middleware('scopes:read_users');
+            Route::post('/', 'UserController@create')->middleware('scopes:add_users');
+            Route::patch('/{uuid}', 'UserController@update')->middleware('scopes:edit_users');
+            Route::delete('/{uuid}', 'UserController@delete')->middleware('scopes:delete_users');
 
-            Route::get('/{uuid}/relationships/primary-role', 'UserController@relatedPrimaryRole');
-            Route::get('/{uuid}/primary-role', 'UserController@primaryRole');
-            Route::get('/{uuid}/relationships/additional-roles', 'UserController@relatedAdditionalRoles');
-            Route::get('/{uuid}/additional-roles', 'UserController@additionalRoles');
+            Route::get('/{uuid}/relationships/primary-role', 'UserController@relatedPrimaryRole')->middleware('scopes:read_users');
+            Route::get('/{uuid}/primary-role', 'UserController@primaryRole')->middleware('scopes:read_users');
+            Route::get('/{uuid}/relationships/additional-roles', 'UserController@relatedAdditionalRoles')->middleware('scopes:read_users');
+            Route::get('/{uuid}/additional-roles', 'UserController@additionalRoles')->middleware('scopes:read_users');
             // Route::patch('/{uuid}/relationships/additional-roles/{type}', 'UserController@userAdditionalRoles'); # type = sync, add or remove
-            Route::patch('/{uuid}/relationships/sync-additional-roles', 'UserController@syncAdditionalRoles');
-            Route::patch('/{uuid}/relationships/add-additional-roles', 'UserController@addAdditionalRoles');
-            Route::patch('/{uuid}/relationships/remove-additional-roles', 'UserController@removeAdditionalRoles');
+            Route::patch('/{uuid}/relationships/sync-additional-roles', 'UserController@syncAdditionalRoles')->middleware('scope:add_users,delete_users');
+            Route::patch('/{uuid}/relationships/add-additional-roles', 'UserController@addAdditionalRoles')->middleware('scopes:add_users');
+            Route::patch('/{uuid}/relationships/remove-additional-roles', 'UserController@removeAdditionalRoles')->middleware('scopes:delete_users');
         }
     );
 
@@ -53,17 +53,17 @@ Route::group(['prefix' => 'v1'], static function() {
             'namespace'  => '\App\Components\Scaffold\Http\Controllers',
         ],
         static function() {
-            Route::get('/', 'RoleController@browse');
-            Route::get('/{uuid}', 'RoleController@read');
-            Route::post('/', 'RoleController@create');
-            Route::patch('/{uuid}', 'RoleController@update');
-            Route::delete('/{uuid}', 'RoleController@delete');
+            Route::get('/', 'RoleController@browse')->middleware('scopes:browse_roles');
+            Route::get('/{uuid}', 'RoleController@read')->middleware('scopes:read_roles');
+            Route::post('/', 'RoleController@create')->middleware('scopes:add_roles');
+            Route::patch('/{uuid}', 'RoleController@update')->middleware('scopes:edit_roles');
+            Route::delete('/{uuid}', 'RoleController@delete')->middleware('scopes:delete_roles');
 
-            Route::get('/{uuid}/relationships/permissions', 'RoleController@relatedPermissions');
-            Route::get('/{uuid}/permissions', 'RoleController@permissions');
-            Route::patch('/{uuid}/relationships/sync-permissions', 'RoleController@syncPermissions');
-            Route::patch('/{uuid}/relationships/add-permissions', 'RoleController@addPermissions');
-            Route::patch('/{uuid}/relationships/remove-permissions', 'RoleController@removePermissions');
+            Route::get('/{uuid}/relationships/permissions', 'RoleController@relatedPermissions')->middleware('scopes:read_roles');
+            Route::get('/{uuid}/permissions', 'RoleController@permissions')->middleware('scopes:read_roles');
+            Route::patch('/{uuid}/relationships/sync-permissions', 'RoleController@syncPermissions')->middleware('scope:add_roles,delete_roles');
+            Route::patch('/{uuid}/relationships/add-permissions', 'RoleController@addPermissions')->middleware('scopes:add_roles');
+            Route::patch('/{uuid}/relationships/remove-permissions', 'RoleController@removePermissions')->middleware('scopes:delete_roles');
         }
     );
 
