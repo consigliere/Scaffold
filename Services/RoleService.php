@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/5/19 2:58 AM
+ * Last modified 7/9/19 1:34 AM
  */
 
 namespace App\Components\Scaffold\Services;
@@ -93,8 +93,6 @@ class RoleService extends Service
      */
     public function browse(array $data = [], array $option = [], array $param = []): array
     {
-        $this->bootsJsonApi();
-
         return (new RoleCollection)(
             $this->findRolesPaging($data)->getRoles()
         );
@@ -109,8 +107,6 @@ class RoleService extends Service
      */
     public function create(array $data, array $option = [], array $param = []): array
     {
-        $this->bootsJsonApi();
-
         $inputName = data_get($data, 'input.name');
         $roles     = $this->roleRepository->getWhere('name', $inputName);
 
@@ -142,8 +138,6 @@ class RoleService extends Service
      */
     public function read($uuid, array $data, array $option = [], array $param = []): array
     {
-        $this->bootsJsonApi();
-
         $rid = $this->findRoleIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getRoleId();
 
         return (new RolePermissionsResource)(
@@ -161,8 +155,6 @@ class RoleService extends Service
      */
     public function update($uuid, array $data, array $option = [], array $param = []): array
     {
-        $this->bootsJsonApi();
-
         $roleId    = $this->roleRepository->getIdbyUuid($uuid);
         $inputName = data_get($data, 'input.name');
 
@@ -202,8 +194,6 @@ class RoleService extends Service
      */
     public function delete($uuid, array $param = []): void
     {
-        $this->bootsJsonApi();
-
         $trimmed = rtrim(trim(preg_replace('/\s+/', '', $uuid)), ',');
         $ids     = explode(',', $trimmed);
 
@@ -228,8 +218,6 @@ class RoleService extends Service
      */
     public function relatedPermissions($uuid, array $data, array $option = [], array $param = [])
     {
-        $this->bootsJsonApi();
-
         $rid = $this->findRoleIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getRoleId();
 
         return (new RelatedPermissionCollection)(
@@ -247,8 +235,6 @@ class RoleService extends Service
      */
     public function rolePermissions($uuid, array $data, array $option = [], array $param = [])
     {
-        $this->bootsJsonApi();
-
         $rid = $this->findRoleIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getRoleId();
 
         return (new PermissionCollection)(
@@ -266,8 +252,6 @@ class RoleService extends Service
      */
     public function permissionAction($uuid, array $data, array $option = [], array $param = [])
     {
-        $this->bootsJsonApi();
-
         $rid              = $this->findRoleIdByUuid($uuid)->validateUriQueryParam(null, $uuid)->getRoleId();
         $inputPermissions = $this->findInputPermissions($data)->validateInputPermissionsIsArray(null)->getInputPermissions();
 
