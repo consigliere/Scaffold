@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/17/19 2:46 PM
+ * Last modified 7/9/19 12:25 AM
  */
 
 namespace App\Components\Scaffold\Http\Controllers;
@@ -15,7 +15,6 @@ use App\Components\Scaffold\Http\Requests\PermissionCreateFormRequest;
 use App\Components\Scaffold\Http\Requests\PermissionUpdateFormRequest;
 use App\Components\Scaffold\Services\PermissionService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
 
 /**
  * Class PermissionController
@@ -37,7 +36,7 @@ class PermissionController extends Controller
     {
         $this->permissionService = $PermissionService;
         $this->euuid             = randomUuid();
-        $this->type              = Config::get('scaffold.api.permissions.type');
+        $this->type              = config('scaffold.api.permissions.type');
     }
 
     /**
@@ -49,7 +48,7 @@ class PermissionController extends Controller
     {
         $data   = [
             'header' => [
-                'paging' => $request->header('Page-Paging') ?? Config::get('scaffold.api.page_paging'),
+                'paging' => $request->header('Page-Paging') ?? config('scaffold.api.page_paging'),
             ],
         ];
 
@@ -58,10 +57,10 @@ class PermissionController extends Controller
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
-        return $this->response($response);
+        return response()->Api($response);
     }
 
     /**
@@ -80,10 +79,10 @@ class PermissionController extends Controller
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
-        return $this->response($response, 201);
+        return response()->Api($response, 201);
     }
 
     /**
@@ -101,10 +100,10 @@ class PermissionController extends Controller
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
-        return $this->response($response);
+        return response()->Api($response);
     }
 
     /**
@@ -124,10 +123,10 @@ class PermissionController extends Controller
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
-        return $this->response($response);
+        return response()->Api($response);
     }
 
     /**
@@ -143,9 +142,9 @@ class PermissionController extends Controller
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
-        return $this->response(null, 204);
+        return response()->Api(null, 204);
     }
 }
