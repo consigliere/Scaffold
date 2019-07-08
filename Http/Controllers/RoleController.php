@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/6/19 6:44 PM
+ * Last modified 7/8/19 8:18 PM
  */
 
 namespace App\Components\Scaffold\Http\Controllers;
@@ -56,14 +56,14 @@ class RoleController extends Controller
 
         try {
             if (!$request->user()->tokenCan('browse_roles')) {
-                throw new UnauthorizedHttpException('Unauthorized');
+                throw new UnauthorizedHttpException('Unauthorized to access resource');
             }
 
             $response = $this->roleService->browse($data);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
         return $this->response($response);
@@ -81,11 +81,15 @@ class RoleController extends Controller
         ];
 
         try {
+            if (!$request->user()->tokenCan('add_roles')) {
+                throw new UnauthorizedHttpException('Unauthorized to access resource');
+            }
+
             $response = $this->roleService->create($data);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
         return $this->response($response, 201);
@@ -102,11 +106,15 @@ class RoleController extends Controller
         $data = [];
 
         try {
+            if (!$request->user()->tokenCan('read_roles')) {
+                throw new UnauthorizedHttpException('Unauthorized to access resource');
+            }
+
             $response = $this->roleService->read($uuid, $data);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
         return $this->response($response);
@@ -125,11 +133,15 @@ class RoleController extends Controller
         ];
 
         try {
+            if (!$request->user()->tokenCan('edit_roles')) {
+                throw new UnauthorizedHttpException('Unauthorized to access resource');
+            }
+
             $response = $this->roleService->update($uuid, $data);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
         return $this->response($response);
@@ -144,11 +156,15 @@ class RoleController extends Controller
     public function delete($uuid, Request $request): \Illuminate\Http\JsonResponse
     {
         try {
+            if (!$request->user()->tokenCan('delete_roles')) {
+                throw new UnauthorizedHttpException('Unauthorized to access resource');
+            }
+
             $this->roleService->delete($uuid);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
         return $this->response(null, 204);
@@ -165,11 +181,15 @@ class RoleController extends Controller
         $data = ['input' => $request->all(),];
 
         try {
+            if (!$request->user()->tokenCan('read_roles')) {
+                throw new UnauthorizedHttpException('Unauthorized to access resource');
+            }
+
             $response = $this->roleService->relatedPermissions($uuid, $data);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
         return $this->response($response);
@@ -186,11 +206,15 @@ class RoleController extends Controller
         $data = ['input' => $request->all(),];
 
         try {
+            if (!$request->user()->tokenCan('read_roles')) {
+                throw new UnauthorizedHttpException('Unauthorized to access resource');
+            }
+
             $response = $this->roleService->rolePermissions($uuid, $data);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
         return $this->response($response);
@@ -208,11 +232,15 @@ class RoleController extends Controller
         $option = ['type' => 'sync',];
 
         try {
+            if (!$request->user()->tokenCan('edit_roles')) {
+                throw new UnauthorizedHttpException('Unauthorized to access resource');
+            }
+
             $response = $this->roleService->permissionAction($uuid, $data, $option);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
         return $this->response($response);
@@ -230,11 +258,15 @@ class RoleController extends Controller
         $option = ['type' => 'add',];
 
         try {
+            if (!$request->user()->tokenCan('edit_roles')) {
+                throw new UnauthorizedHttpException('Unauthorized to access resource');
+            }
+
             $response = $this->roleService->permissionAction($uuid, $data, $option);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
         return $this->response($response);
@@ -252,11 +284,15 @@ class RoleController extends Controller
         $option = ['type' => 'remove',];
 
         try {
+            if (!$request->user()->tokenCan('edit_roles')) {
+                throw new UnauthorizedHttpException('Unauthorized to access resource');
+            }
+
             $response = $this->roleService->permissionAction($uuid, $data, $option);
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
         return $this->response($response);
