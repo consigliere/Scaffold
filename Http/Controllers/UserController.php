@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/2/19 7:23 AM
+ * Last modified 7/9/19 12:25 AM
  */
 
 namespace App\Components\Scaffold\Http\Controllers;
@@ -16,7 +16,6 @@ use App\Components\Scaffold\Http\Requests\UserUpdateFormRequest;
 use App\Components\Scaffold\Services\UserService;
 use App\Components\Signature\Exceptions\NotFoundHttpException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
 
 /**
  * Class UserController
@@ -38,7 +37,7 @@ class UserController extends Controller
     {
         $this->userService = $UserService;
         $this->euuid       = randomUuid();
-        $this->type        = Config::get('scaffold.api.users.type');
+        $this->type        = config('scaffold.api.users.type');
     }
 
     /**
@@ -55,10 +54,10 @@ class UserController extends Controller
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
-        return $this->response($response);
+        return response()->Api($response);
     }
 
     /**
@@ -70,7 +69,7 @@ class UserController extends Controller
     {
         $data = [
             'header' => [
-                'paging' => $request->header('Page-Paging') ?? Config::get('scaffold.api.page_paging'),
+                'paging' => $request->header('Page-Paging') ?? config('scaffold.api.page_paging'),
             ],
         ];
 
@@ -79,10 +78,10 @@ class UserController extends Controller
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
-        return $this->response($response);
+        return response()->Api($response);
     }
 
     /**
@@ -99,10 +98,10 @@ class UserController extends Controller
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
-        return $this->response($response, 201);
+        return response()->Api($response, 201);
     }
 
     /**
@@ -118,10 +117,10 @@ class UserController extends Controller
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid,]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
-        return $this->response($response);
+        return response()->Api($response);
     }
 
     /**
@@ -139,10 +138,10 @@ class UserController extends Controller
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
-        return $this->response($response);
+        return response()->Api($response);
     }
 
     /**
@@ -158,10 +157,10 @@ class UserController extends Controller
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
-        return $this->response(null, 204);
+        return response()->Api(null, 204);
     }
 
     /**
@@ -179,10 +178,10 @@ class UserController extends Controller
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
-        return $this->response($response);
+        return response()->Api($response);
     }
 
     /**
@@ -200,10 +199,10 @@ class UserController extends Controller
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
-        return $this->response($response);
+        return response()->Api($response);
     }
 
     /**
@@ -221,10 +220,10 @@ class UserController extends Controller
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
-        return $this->response($response);
+        return response()->Api($response);
     }
 
     /**
@@ -242,10 +241,10 @@ class UserController extends Controller
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
-        return $this->response($response);
+        return response()->Api($response);
     }
 
     /**
@@ -269,10 +268,10 @@ class UserController extends Controller
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
-        return $this->response($response);
+        return response()->Api($response);
     }
 
     /**
@@ -291,10 +290,10 @@ class UserController extends Controller
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
-        return $this->response($response);
+        return response()->Api($response);
     }
 
     /**
@@ -313,10 +312,10 @@ class UserController extends Controller
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
-        return $this->response($response);
+        return response()->Api($response);
     }
 
     /**
@@ -335,9 +334,9 @@ class UserController extends Controller
         } catch (\Exception $error) {
             $this->fireLog('error', $error->getMessage(), ['error' => $error, 'uuid' => $this->euuid]);
 
-            return $this->response($this->getErrorResponse($this->euuid, $error), httpStatusCode($error));
+            return response()->ApiError($this->euuid, $error);
         }
 
-        return $this->response($response);
+        return response()->Api($response);
     }
 }
