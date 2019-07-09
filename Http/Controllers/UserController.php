@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/9/19 12:25 AM
+ * Last modified 7/10/19 2:36 AM
  */
 
 namespace App\Components\Scaffold\Http\Controllers;
@@ -69,7 +69,7 @@ class UserController extends Controller
     {
         $data = [
             'header' => [
-                'paging' => $request->header('Page-Paging') ?? config('scaffold.api.page_paging'),
+                'paging' => $request->header('X-Page-Paging') ?? config('scaffold.api.page_paging'),
             ],
         ];
 
