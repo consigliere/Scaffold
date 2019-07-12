@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/28/19 6:15 AM
+ * Last modified 7/12/19 9:52 AM
  */
 
 namespace App\Components\Scaffold\Services\Permission\Responses;
@@ -63,6 +63,9 @@ final class PermissionResource
                 'attributes' => [
                     'key'    => $data->key,
                     'entity' => $data->table_name,
+                ],
+                'links'      => [
+                    'self' => url("/api/v1/permissions/$data->uuid"),
                 ],
             ];
 
