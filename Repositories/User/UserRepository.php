@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/3/19 1:35 AM
+ * Last modified 7/10/19 10:56 PM
  */
 
 namespace App\Components\Scaffold\Repositories\User;
@@ -49,7 +49,7 @@ class UserRepository extends Repository implements UserRepositoryInterface
         $paging = (int)data_get($data, 'header.paging');
 
         if (config('scaffold.api.users.hasRelationship') || config('scaffold.api.users.hasIncluded')) {
-            $users = $this->getModel()::with('role')->with('roles');
+            $users = $this->getModel()::with('role', 'role.permissions')->with('roles', 'roles.permissions');
         } else {
             $users = $this->getModel();
         }
@@ -148,7 +148,7 @@ class UserRepository extends Repository implements UserRepositoryInterface
     public function firstById($id, array $options = [], array $param = [])
     {
         if (config('scaffold.api.users.hasRelationship') || config('scaffold.api.users.hasIncluded')) {
-            $user = $this->getModel()::where('id', $id)->with('role')->with('roles');
+            $user = $this->getModel()::where('id', $id)->with('role', 'role.permissions')->with('roles', 'roles.permissions');
         } else {
             $user = $this->getModel()::where('id', $id);
         }
