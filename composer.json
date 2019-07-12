@@ -25,7 +25,7 @@
     "illuminate/support"   : "5.8.*",
     "illuminate/contracts" : "5.8.*",
     "tcg/voyager"          : "^1.2",
-    "consigliere/signature": "0.10.*",
+    "consigliere/signature": "0.11.*",
     "consigliere/signal"   : "^1.0"
   }
 }
