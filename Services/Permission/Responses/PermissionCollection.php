@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/28/19 6:15 AM
+ * Last modified 7/12/19 9:51 AM
  */
 
 namespace App\Components\Scaffold\Services\Permission\Responses;
@@ -65,6 +65,9 @@ final class PermissionCollection
                     'attributes' => [
                         'key'    => $value->key,
                         'entity' => $value->table_name,
+                    ],
+                    'links'      => [
+                        'self' => url("/api/v1/permissions/$value->uuid"),
                     ],
                 ];
             });
