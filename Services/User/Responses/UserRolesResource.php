@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/3/19 2:12 AM
+ * Last modified 7/10/19 10:18 PM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
@@ -150,10 +150,19 @@ final class UserRolesResource
                     'name'        => $value->name,
                     'displayName' => $value->display_name,
                 ],
-                'links'      => [
-                    'self' => url("/api/v1/roles/$value->uuid"),
-                ],
             ];
+
+            if ($value->permissions->isNotEmpty()) {
+                $permissions = $value->permissions->map(static function($v, $k) {
+                    return ['type' => config('scaffold.api.permissions.type'), 'id' => $v->uuid];
+                });
+
+                $newRole['relationships']['permissions'] = [
+                    'data' => $permissions,
+                ];
+            }
+
+            $newRole['links']['self'] = url("/api/v1/roles/$value->uuid");
 
             return $newRole;
         });
