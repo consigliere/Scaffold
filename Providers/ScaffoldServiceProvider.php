@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/11/19 7:11 PM
+ * Last modified 7/16/19 7:36 AM
  */
 
 namespace App\Components\Scaffold\Providers;
@@ -45,6 +45,10 @@ class ScaffoldServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../Resources/views/vendor' => base_path() . '/resources/views/vendor',
         ], 'vendor_views');
+
+        $this->publishes([
+            __DIR__ . '/../Database/Seeders' => base_path() . '/database/seeds',
+        ], 'vendor_dbseeds');
     }
 
     /**
@@ -77,10 +81,10 @@ class ScaffoldServiceProvider extends ServiceProvider
     protected function registerConfig()
     {
         $this->publishes([
-            __DIR__.'/../Config/config.php' => config_path('scaffold.php'),
+            __DIR__ . '/../Config/config.php' => config_path('scaffold.php'),
         ], 'config');
         $this->mergeConfigFrom(
-            __DIR__.'/../Config/config.php', 'scaffold'
+            __DIR__ . '/../Config/config.php', 'scaffold'
         );
     }
 
@@ -93,13 +97,13 @@ class ScaffoldServiceProvider extends ServiceProvider
     {
         $viewPath = resource_path('views/modules/scaffold');
 
-        $sourcePath = __DIR__.'/../Resources/views';
+        $sourcePath = __DIR__ . '/../Resources/views';
 
         $this->publishes([
-            $sourcePath => $viewPath
-        ],'views');
+            $sourcePath => $viewPath,
+        ], 'views');
 
-        $this->loadViewsFrom(array_merge(array_map(function ($path) {
+        $this->loadViewsFrom(array_merge(array_map(function($path) {
             return $path . '/modules/scaffold';
         }, \Config::get('view.paths')), [$sourcePath]), 'scaffold');
     }
@@ -116,18 +120,18 @@ class ScaffoldServiceProvider extends ServiceProvider
         if (is_dir($langPath)) {
             $this->loadTranslationsFrom($langPath, 'scaffold');
         } else {
-            $this->loadTranslationsFrom(__DIR__ .'/../Resources/lang', 'scaffold');
+            $this->loadTranslationsFrom(__DIR__ . '/../Resources/lang', 'scaffold');
         }
     }
 
     /**
      * Register an additional directory of factories.
-     * 
+     *
      * @return void
      */
     public function registerFactories()
     {
-        if (! app()->environment('production')) {
+        if (!app()->environment('production')) {
             app(Factory::class)->load(__DIR__ . '/../Database/factories');
         }
     }
