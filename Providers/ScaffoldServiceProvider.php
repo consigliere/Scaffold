@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/16/19 7:36 AM
+ * Last modified 7/16/19 11:00 AM
  */
 
 namespace App\Components\Scaffold\Providers;
@@ -34,7 +34,7 @@ class ScaffoldServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->registerFactories();
-        $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
+        // $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
 
         $dispatcher = $this->app->make('events');
 
@@ -48,7 +48,11 @@ class ScaffoldServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__ . '/../Database/Seeders' => base_path() . '/database/seeds',
-        ], 'vendor_dbseeds');
+        ], 'scaffold_dbseeds');
+
+        $this->publishes([
+            __DIR__ . '/../Database/Migrations' => base_path() . '/database/migrations',
+        ], 'scaffold_migration');
     }
 
     /**
