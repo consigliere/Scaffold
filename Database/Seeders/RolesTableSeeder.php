@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/16/19 7:29 AM
+ * Last modified 7/16/19 9:39 AM
  */
 
 use Illuminate\Database\Seeder;
@@ -14,18 +14,16 @@ class RolesTableSeeder extends Seeder
      */
     public function run()
     {
-        $role = Role::firstOrNew(['name' => 'admin']);
+        $role = Role::firstOrNew(['uuid' => randomUuid(), 'name' => 'admin']);
         if (!$role->exists) {
             $role->fill([
-                'uuid'         => randomUuid(),
                 'display_name' => __('voyager::seeders.roles.admin'),
             ])->save();
         }
 
-        $role = Role::firstOrNew(['name' => 'user']);
+        $role = Role::firstOrNew(['uuid' => randomUuid(), 'name' => 'user']);
         if (!$role->exists) {
             $role->fill([
-                'uuid'         => randomUuid(),
                 'display_name' => __('voyager::seeders.roles.user'),
             ])->save();
         }
