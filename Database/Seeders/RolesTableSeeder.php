@@ -1,11 +1,11 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/16/19 9:39 AM
+ * Last modified 7/16/19 11:20 AM
  */
 
+use App\Components\Scaffold\Entities\Role;
 use Illuminate\Database\Seeder;
-use TCG\Voyager\Models\Role;
 
 class RolesTableSeeder extends Seeder
 {
