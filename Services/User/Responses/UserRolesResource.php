@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/10/19 10:18 PM
+ * Last modified 7/20/19 2:03 AM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
@@ -30,9 +30,14 @@ final class UserRolesResource
     private $request;
 
     /**
-     * @var mixed
+     * @var \Illuminate\Config\Repository|mixed
      */
-    private $appName;
+    private $appname;
+
+    /**
+     * @var false|string
+     */
+    private $year;
 
     /**
      * UserResource constructor.
@@ -41,7 +46,8 @@ final class UserRolesResource
     {
         $this->auth    = App::get('auth');
         $this->request = App::get('request');
-        $this->appName = config('app.name') ?? config('scaffold.name');
+        $this->year    = date('Y');
+        $this->appname = config('app.name') ?? config('scaffold.name');
     }
 
     /**
@@ -118,7 +124,7 @@ final class UserRolesResource
 
         if (config('scaffold.api.users.hasMeta')) {
             $records['meta'] = [
-                'copyright' => 'copyrightⒸ ' . date('Y') . ' ' . $this->appName,
+                'copyright' => "copyrightⒸ $this->year  $this->appname",
                 'author'    => config('scaffold.api.users.authors'),
             ];
         }
