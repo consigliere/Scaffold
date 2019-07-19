@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/20/19 12:59 AM
+ * Last modified 7/20/19 1:51 AM
  */
 
 namespace App\Components\Scaffold\Services\Permission\Responses;
@@ -30,9 +30,14 @@ final class PermissionResource
     private $request;
 
     /**
-     * @var mixed
+     * @var \Illuminate\Config\Repository|mixed
      */
-    private $appName;
+    private $appname;
+
+    /**
+     * @var false|string
+     */
+    private $year;
 
     /**
      * PermissionResource constructor.
@@ -41,7 +46,8 @@ final class PermissionResource
     {
         $this->auth    = App::get('auth');
         $this->request = App::get('request');
-        $this->appName = config('app.name') ?? config('scaffold.name');
+        $this->year    = date('Y');
+        $this->appname = config('app.name') ?? config('scaffold.name');
     }
 
     /**
@@ -76,7 +82,7 @@ final class PermissionResource
 
             if (config('scaffold.api.permissions.hasMeta')) {
                 $permission['meta'] = [
-                    'copyright' => 'copyrightⒸ ' . date('Y') . ' ' . $this->appName,
+                    'copyright' => "copyrightⒸ $this->year  $this->appname",
                     'author'    => config('scaffold.api.permissions.authors'),
                 ];
             }
