@@ -6,13 +6,12 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 6/28/19 6:15 AM
+ * Last modified 7/20/19 1:08 AM
  */
 
 namespace App\Components\Scaffold\Services\Role\Responses;
 
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Config;
 
 /**
  * Class RoleResource
@@ -42,7 +41,7 @@ final class RoleResource
     {
         $this->auth    = App::get('auth');
         $this->request = App::get('request');
-        $this->appName = Config::get('app.name') ?? Config::get('scaffold.name');
+        $this->appName = config('app.name') ?? config('scaffold.name');
     }
 
     /**
@@ -58,7 +57,7 @@ final class RoleResource
 
         if (!empty($data)) {
             $role['data'] = [
-                'type'       => Config::get('scaffold.api.roles.type'),
+                'type'       => config('scaffold.api.roles.type'),
                 'id'         => $data->uuid,
                 'attributes' => [
                     'name'        => $data->name,
@@ -66,16 +65,16 @@ final class RoleResource
                 ],
             ];
 
-            if (Config::get('scaffold.api.roles.hasLink')) {
+            if (config('scaffold.api.roles.hasLink')) {
                 $role['links'] = [
                     'self' => $this->request->fullUrl(),
                 ];
             }
 
-            if (Config::get('scaffold.api.roles.hasMeta')) {
+            if (config('scaffold.api.roles.hasMeta')) {
                 $role['meta'] = [
                     'copyright' => 'copyrightⒸ ' . date('Y') . ' ' . $this->appName,
-                    'author'    => Config::get('scaffold.api.roles.authors'),
+                    'author'    => config('scaffold.api.roles.authors'),
                 ];
             }
         }
