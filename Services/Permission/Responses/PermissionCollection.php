@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/20/19 12:59 AM
+ * Last modified 7/20/19 1:51 AM
  */
 
 namespace App\Components\Scaffold\Services\Permission\Responses;
@@ -30,9 +30,14 @@ final class PermissionCollection
     private $request;
 
     /**
-     * @var mixed
+     * @var \Illuminate\Config\Repository|mixed
      */
-    private $appName;
+    private $appname;
+
+    /**
+     * @var false|string
+     */
+    private $year;
 
     /**
      * PermissionCollection constructor.
@@ -41,7 +46,8 @@ final class PermissionCollection
     {
         $this->auth    = App::get('auth');
         $this->request = App::get('request');
-        $this->appName = config('app.name') ?? config('scaffold.name');
+        $this->year    = date('Y');
+        $this->appname = config('app.name') ?? config('scaffold.name');
     }
 
     /**
@@ -129,7 +135,7 @@ final class PermissionCollection
             ];
         }
 
-        $meta['copyright'] = 'copyrightⒸ ' . date('Y') . ' ' . $this->appName;
+        $meta['copyright'] = "copyrightⒸ $this->year  $this->appname";
         $meta['author']    = config('scaffold.api.permissions.authors');
 
         return $meta;
