@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/10/19 10:56 PM
+ * Last modified 7/20/19 12:15 AM
  */
 
 namespace App\Components\Scaffold\Repositories\User;
@@ -14,7 +14,6 @@ namespace App\Components\Scaffold\Repositories\User;
 use App\Components\Scaffold\Repositories\Repository;
 use App\Components\Scaffold\Repositories\UserRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
 
 /**
  * Class UserRepository
@@ -32,7 +31,7 @@ class UserRepository extends Repository implements UserRepositoryInterface
      */
     protected function getModel()
     {
-        $this->userCfg = Config::get('auth.providers.apis.model');
+        $this->userCfg = config('auth.providers.apis.model');
 
         return new $this->userCfg;
     }
