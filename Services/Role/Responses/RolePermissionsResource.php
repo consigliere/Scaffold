@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/3/19 2:05 AM
+ * Last modified 7/20/19 1:44 AM
  */
 
 namespace App\Components\Scaffold\Services\Role\Responses;
@@ -30,9 +30,14 @@ final class RolePermissionsResource
     private $request;
 
     /**
-     * @var mixed
+     * @var \Illuminate\Config\Repository|mixed
      */
-    private $appName;
+    private $appname;
+
+    /**
+     * @var false|string
+     */
+    private $year;
 
     /**
      * RolePermissionsResource constructor.
@@ -41,7 +46,8 @@ final class RolePermissionsResource
     {
         $this->auth    = App::get('auth');
         $this->request = App::get('request');
-        $this->appName = config('app.name') ?? config('scaffold.name');
+        $this->year    = date('Y');
+        $this->appname = config('app.name') ?? config('scaffold.name');
     }
 
     /**
@@ -98,11 +104,8 @@ final class RolePermissionsResource
         }
 
         if (config('scaffold.api.roles.hasMeta')) {
-            $year = date('Y');
-            $name = $this->appName;
-
             $records['meta'] = [
-                'copyright' => "copyrightⒸ $year $name",
+                'copyright' => "copyrightⒸ $this->year  $this->appname",
                 'author'    => config('scaffold.api.roles.authors'),
             ];
         }
