@@ -6,13 +6,12 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/12/19 9:51 AM
+ * Last modified 7/20/19 12:59 AM
  */
 
 namespace App\Components\Scaffold\Services\Permission\Responses;
 
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Config;
 
 /**
  * Class PermissionCollection
@@ -42,7 +41,7 @@ final class PermissionCollection
     {
         $this->auth    = App::get('auth');
         $this->request = App::get('request');
-        $this->appName = Config::get('app.name') ?? Config::get('scaffold.name');
+        $this->appName = config('app.name') ?? config('scaffold.name');
     }
 
     /**
@@ -60,7 +59,7 @@ final class PermissionCollection
         if ($data->isNotEmpty()) {
             $newData = $data->map(function($value, $key) use ($param) {
                 return [
-                    'type'       => Config::get('scaffold.api.permissions.type'),
+                    'type'       => config('scaffold.api.permissions.type'),
                     'id'         => $value->uuid,
                     'attributes' => [
                         'key'    => $value->key,
@@ -131,7 +130,7 @@ final class PermissionCollection
         }
 
         $meta['copyright'] = 'copyrightⒸ ' . date('Y') . ' ' . $this->appName;
-        $meta['author']    = Config::get('scaffold.api.permissions.authors');
+        $meta['author']    = config('scaffold.api.permissions.authors');
 
         return $meta;
     }
