@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/11/19 4:09 PM
+ * Last modified 7/20/19 1:35 AM
  */
 
 namespace App\Components\Scaffold\Services\Role\Responses;
@@ -30,9 +30,14 @@ final class PermissionCollection
     private $request;
 
     /**
-     * @var mixed
+     * @var \Illuminate\Config\Repository|mixed
      */
-    private $appName;
+    private $appname;
+
+    /**
+     * @var false|string
+     */
+    private $year;
 
     /**
      * PermissionCollection constructor.
@@ -41,7 +46,8 @@ final class PermissionCollection
     {
         $this->auth    = App::get('auth');
         $this->request = App::get('request');
-        $this->appName = config('app.name') ?? config('scaffold.name');
+        $this->year    = date('Y');
+        $this->appname = config('app.name') ?? config('scaffold.name');
     }
 
     /**
@@ -91,12 +97,9 @@ final class PermissionCollection
         $self    = $this->request->fullUrl();
         $related = str_replace('/permissions', '/relationships/permissions', $self);
 
-        $links = [
-            'self'    => $self,
-            /*'related' => $related,*/
+        return [
+            'self' => $self,
         ];
-
-        return $links;
     }
 
     /**
@@ -107,14 +110,9 @@ final class PermissionCollection
      */
     private function getMeta($data = null, array $param = []): array
     {
-        $year = date('Y');
-        $name = $this->appName;
-
-        $meta = [
-            'copyright' => "copyrightⒸ $year $name",
+        return [
+            'copyright' => "copyrightⒸ $this->year  $this->appname",
             'author'    => config('scaffold.api.roles.authors'),
         ];
-
-        return $meta;
     }
 }
