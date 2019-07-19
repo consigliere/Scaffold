@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/10/19 10:56 PM
+ * Last modified 7/20/19 2:06 AM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
@@ -30,11 +30,23 @@ final class UserCollection
     private $request;
 
     /**
-     * @var mixed
+     * @var \Illuminate\Config\Repository|mixed
      */
-    private $appName;
+    private $appname;
 
+    /**
+     * @var false|string
+     */
+    private $year;
+
+    /**
+     * @var \Illuminate\Config\Repository|mixed
+     */
     private $userType;
+
+    /**
+     * @var \Illuminate\Config\Repository|mixed
+     */
     private $roleType;
 
     /**
@@ -44,7 +56,8 @@ final class UserCollection
     {
         $this->auth     = App::get('auth');
         $this->request  = App::get('request');
-        $this->appName  = config('app.name') ?? config('scaffold.name');
+        $this->year     = date('Y');
+        $this->appname  = config('app.name') ?? config('scaffold.name');
         $this->userType = config('scaffold.api.users.type');
         $this->roleType = config('scaffold.api.roles.type');
     }
@@ -221,7 +234,7 @@ final class UserCollection
             ];
         }
 
-        $meta['copyright'] = 'copyrightⒸ ' . date('Y') . ' ' . $this->appName;
+        $meta['copyright'] = "copyrightⒸ $this->year  $this->appname";
         $meta['author']    = config('scaffold.api.users.authors');
 
         return $meta;
