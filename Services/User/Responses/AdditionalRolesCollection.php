@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/2/19 6:22 AM
+ * Last modified 7/20/19 2:03 AM
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
@@ -30,9 +30,14 @@ final class AdditionalRolesCollection
     private $request;
 
     /**
-     * @var mixed
+     * @var \Illuminate\Config\Repository|mixed
      */
-    private $appName;
+    private $appname;
+
+    /**
+     * @var false|string
+     */
+    private $year;
 
     /**
      * RoleCollection constructor.
@@ -41,7 +46,8 @@ final class AdditionalRolesCollection
     {
         $this->auth    = App::get('auth');
         $this->request = App::get('request');
-        $this->appName = config('app.name') ?? config('scaffold.name');
+        $this->year    = date('Y');
+        $this->appname = config('app.name') ?? config('scaffold.name');
     }
 
     /**
@@ -104,7 +110,7 @@ final class AdditionalRolesCollection
     {
         $meta = [];
 
-        $meta['copyright'] = 'copyrightⒸ ' . date('Y') . ' ' . $this->appName;
+        $meta['copyright'] = "copyrightⒸ $this->year  $this->appname";
         $meta['author']    = config('scaffold.api.roles.authors');
 
         return $meta;
