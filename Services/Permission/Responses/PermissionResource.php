@@ -6,13 +6,12 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/12/19 9:52 AM
+ * Last modified 7/20/19 12:59 AM
  */
 
 namespace App\Components\Scaffold\Services\Permission\Responses;
 
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Config;
 
 /**
  * Class PermissionResource
@@ -42,7 +41,7 @@ final class PermissionResource
     {
         $this->auth    = App::get('auth');
         $this->request = App::get('request');
-        $this->appName = Config::get('app.name') ?? Config::get('scaffold.name');
+        $this->appName = config('app.name') ?? config('scaffold.name');
     }
 
     /**
@@ -58,7 +57,7 @@ final class PermissionResource
 
         if (!empty($data)) {
             $permission['data'] = [
-                'type'       => Config::get('scaffold.api.permissions.type'),
+                'type'       => config('scaffold.api.permissions.type'),
                 'id'         => $data->uuid,
                 'attributes' => [
                     'key'    => $data->key,
@@ -69,16 +68,16 @@ final class PermissionResource
                 ],
             ];
 
-            if (Config::get('scaffold.api.permissions.hasLink')) {
+            if (config('scaffold.api.permissions.hasLink')) {
                 $permission['links'] = [
                     'self' => $this->request->fullUrl(),
                 ];
             }
 
-            if (Config::get('scaffold.api.permissions.hasMeta')) {
+            if (config('scaffold.api.permissions.hasMeta')) {
                 $permission['meta'] = [
                     'copyright' => 'copyrightⒸ ' . date('Y') . ' ' . $this->appName,
-                    'author'    => Config::get('scaffold.api.permissions.authors'),
+                    'author'    => config('scaffold.api.permissions.authors'),
                 ];
             }
         }
