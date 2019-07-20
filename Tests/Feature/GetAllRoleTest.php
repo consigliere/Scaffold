@@ -1,18 +1,18 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/21/19 2:56 AM
+ * Last modified 7/21/19 3:10 AM
  */
 
 namespace Tests\Feature;
 
-use Tests\ApiTestCase;
+use Tests\ScaffoldApiTestCase;
 
 /**
  * Class GetAllRoleTest
  * @package Tests\Feature
  */
-class GetAllRoleTest extends ApiTestCase
+class GetAllRoleTest extends ScaffoldApiTestCase
 {
     /**
      * @return void
