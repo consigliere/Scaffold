@@ -1,12 +1,12 @@
 <?php
 /**
- * ApiTestCase.php
- * Created by @anonymoussc on 07/20/2019 5:40 AM.
+ * ScaffoldApiTestCase.php
+ * Created by @anonymoussc on 07/21/2019 3:09 AM.
  */
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/21/19 3:06 AM
+ * Last modified 7/21/19 3:10 AM
  */
 
 namespace Tests;
@@ -16,10 +16,10 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Laravel\Passport\Passport;
 
 /**
- * Class ApiTestCase
+ * Class ScaffoldApiTestCase
  * @package Tests
  */
-abstract class ApiTestCase extends BaseTestCase
+abstract class ScaffoldApiTestCase extends BaseTestCase
 {
     use CreatesApplication, DatabaseTransactions;
 
