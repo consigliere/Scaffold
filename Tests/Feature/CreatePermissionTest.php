@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/21/19 2:57 AM
+ * Last modified 7/21/19 3:10 AM
  */
 
 namespace App\Components\Scaffold\Tests\Feature;
@@ -15,7 +15,7 @@ namespace App\Components\Scaffold\Tests\Feature;
  * Class CreatePermissionTest
  * @package App\Components\Scaffold\Tests\Feature
  */
-class CreatePermissionTest extends \Tests\ApiTestCase
+class CreatePermissionTest extends \Tests\ScaffoldApiTestCase
 {
     /**
      * @return void
