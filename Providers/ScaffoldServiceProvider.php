@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/16/19 11:00 AM
+ * Last modified 7/20/19 6:59 AM
  */
 
 namespace App\Components\Scaffold\Providers;
@@ -53,6 +53,10 @@ class ScaffoldServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../Database/Migrations' => base_path() . '/database/migrations',
         ], 'scaffold_migration');
+
+        $this->publishes([
+            __DIR__ . '/../Tests' => base_path() . '/tests',
+        ], 'scaffold_tests');
     }
 
     /**
