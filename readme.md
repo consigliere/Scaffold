@@ -5,12 +5,22 @@
 - [Middleware](#middleware)
     - [Check For All Scopes](#check-for-all-scopes)
     - [Check For Any Scopes](#check-for-any-scopes)
+- [API Testing](#api-testing)
+    - [Publish Tests File](#publish-tests-file)
+    - [Run PhpUnit](#run-phpunit)
 - [API](#api)
     - [Get Users Profile](#get-users-profile)
     - [Get All Users](#get-all-users)
+        - [Example request](#example-request)
+        - [Example response 200](#example-response-200)
+        - [Example response 406](#example-response-200)
     - [Get Users](#get-users)
+        - [Example request](#example-request)
+        - [Example response 200](#example-response-200)
+        - [Example response 404](#example-response-404)
     - [Create Users](#create-users)
     - [Update Users](#update-users)
+    - [Delete Users](#delete-users)
     - [Delete Multiple Users](#delete-multiple-users)
     - [Get Users Relationship Primary Role](#get-users-relationship-primary-role)
     - [Get Users Primary Role](#get-users-primary-role)
@@ -70,6 +80,49 @@ The `scope` middleware may be assigned to a route to verify that the incoming re
 Route::get('/orders', function () {
     // Access token has either "check-status" or "place-orders" scope...
 })->middleware('scope:check-status,place-orders');
+```
+
+## API Testing
+
+All API test file extend from `ScaffoldApiTestCase`.
+
+```php
+namespace Tests;
+
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Laravel\Passport\Passport;
+
+/**
+ * Class ScaffoldApiTestCase
+ * @package Tests
+ */
+abstract class ScaffoldApiTestCase extends BaseTestCase
+{
+    use CreatesApplication, DatabaseTransactions;
+
+    public function init()
+    {
+        $scopes = \App\Components\Scaffold\Entities\Permission::where('id', '>', 0)->pluck('key');
+
+        Passport::actingAs(
+            factory(\Api\User\Entities\User::class)->create(['role_id' => 2, 'uuid' => randomUuid(), 'username' => 'test' . mt_rand()]),
+            $scopes->toArray()
+        );
+    }
+}
+```
+
+### Publish Tests File
+
+```bash
+php artisan vendor:publish --tag=scaffold_tests --force
+```
+
+### Run PhpUnit
+
+```bash
+phpunit
 ```
 
 ## API
@@ -726,6 +779,31 @@ X-Page-Paging: 5
 }
 ```
 
+#### Example response 406
+
+```json
+{
+    "error": {
+        "id": "a142f488-53ad-452d-83ef-61231534caac",
+        "status": "406",
+        "code": "0",
+        "title": "Not Acceptable value in HTTP request Accept header"
+    },
+    "links": {
+        "self": "http://localhost:8000/api/v1/users"
+    },
+    "meta": {
+        "copyright": "copyrightⒸ 2019 Onsigbaar",
+        "authors": [
+            {
+                "name": "anonymoussc",
+                "email": "50c5ac69@opayq.com"
+            }
+        ]
+    }
+}
+```
+
 ### Get Users
 
 #### Example request
@@ -827,6 +905,31 @@ Accept: application/vnd.api+json
     "meta": {
         "copyright": "copyrightⒸ 2019 Onsigbaar",
         "author": [
+            {
+                "name": "anonymoussc",
+                "email": "50c5ac69@opayq.com"
+            }
+        ]
+    }
+}
+```
+
+#### Example response 404
+
+```json
+{
+    "error": {
+        "id": "b3d9c5b5-1f1c-4720-ba46-a2fcbabe9690",
+        "status": "404",
+        "code": "0",
+        "title": "Cannot find Users resources in URI query parameter /6436c87b-6769-4ecb-a2a2-79d786e913f1x"
+    },
+    "links": {
+        "self": "http://localhost:8000/api/v1/users/6436c87b-6769-4ecb-a2a2-79d786e913f1x"
+    },
+    "meta": {
+        "copyright": "copyrightⒸ 2019 Onsigbaar",
+        "authors": [
             {
                 "name": "anonymoussc",
                 "email": "50c5ac69@opayq.com"
@@ -1014,6 +1117,7 @@ Accept: application/vnd.api+json
 
 Notes:
 - Success response will return http status `204 No Content`
+- Multiple delete can be done, by input multiple uuid into URI separated by comma
 
 ### Delete Multiple Users
 
@@ -2933,6 +3037,7 @@ Accept: application/vnd.api+json
 
 Notes:
 - Success response will return http status `204 No Content`
+- Multiple delete can be done, by input multiple uuid into URI separated by comma
 
 ### Example error response in `production` environment
 
