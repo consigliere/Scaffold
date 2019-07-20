@@ -6,7 +6,7 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/21/19 2:59 AM
+ * Last modified 7/21/19 3:10 AM
  */
 
 namespace App\Components\Scaffold\Tests\Feature;
@@ -15,7 +15,7 @@ namespace App\Components\Scaffold\Tests\Feature;
  * Class CreateUsersTest
  * @package App\Components\Scaffold\Tests\Feature
  */
-class CreateUsersTest extends \Tests\ApiTestCase
+class CreateUsersTest extends \Tests\ScaffoldApiTestCase
 {
     /**
      * @return void
