@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/21/19 3:01 AM
+ * Last modified 7/21/19 3:10 AM
  */
 
 namespace App\Components\Scaffold\Tests\Feature;
@@ -10,7 +10,7 @@ namespace App\Components\Scaffold\Tests\Feature;
  * Class GetAllUsersTest
  * @package App\Components\Scaffold\Tests\Feature
  */
-class GetAllUsersTest extends \Tests\ApiTestCase
+class GetAllUsersTest extends \Tests\ScaffoldApiTestCase
 {
     /**
      * @return void
