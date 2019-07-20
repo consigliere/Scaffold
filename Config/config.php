@@ -6,12 +6,12 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/1/19 2:27 AM
+ * Last modified 7/21/19 5:05 AM
  */
 
 return [
     'name'    => 'Scaffold',
-    'version' => 'v0.2.0',
+    'version' => 'v0.3.1',
     'api'     => [
         'authors'     => [
             [
