@@ -6,18 +6,18 @@
 
 /**
  * Copyright(c) 2019. All rights reserved.
- * Last modified 7/21/19 2:54 AM
+ * Last modified 7/21/19 3:10 AM
  */
 
 namespace Tests\Feature;
 
-use Tests\ApiTestCase;
+use Tests\ScaffoldApiTestCase;
 
 /**
  * Class GetAllRoleTest
  * @package Tests\Feature
  */
-class GetAllPermissionTest extends ApiTestCase
+class GetAllPermissionTest extends ScaffoldApiTestCase
 {
     /**
      * @return void
