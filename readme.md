@@ -13,7 +13,7 @@
     - [Get All Users](#get-all-users)
         - [Example request](#example-request)
         - [Example response 200](#example-response-200)
-        - [Example response 406](#example-response-200)
+        - [Example response 406](#example-response-406)
     - [Get Users](#get-users)
         - [Example request](#example-request)
         - [Example response 200](#example-response-200)
