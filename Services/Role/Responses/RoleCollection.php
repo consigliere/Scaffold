@@ -1,12 +1,12 @@
 <?php
 /**
- * RoleCollection.php
- * Created by @anonymoussc on 05/10/2019 5:01 AM.
+ * Copyright(c) 2019. All rights reserved.
+ * Last modified 8/1/19 3:17 PM
  */
 
 /**
- * Copyright(c) 2019. All rights reserved.
- * Last modified 7/20/19 1:44 AM
+ * RoleCollection.php
+ * Created by @anonymoussc on 05/10/2019 5:01 AM.
  */
 
 namespace App\Components\Scaffold\Services\Role\Responses;
@@ -129,13 +129,13 @@ final class RoleCollection
 
         $include = $newPermission->map(static function($value, $key) {
             $newRole = [
-                'type'      => config('scaffold.api.permissions.type'),
-                'id'        => $value->uuid,
-                'attribute' => [
+                'type'       => config('scaffold.api.permissions.type'),
+                'id'         => $value->uuid,
+                'attributes' => [
                     'key'    => $value->key,
                     'entity' => $value->table_name,
                 ],
-                'links'     => [
+                'links'      => [
                     'self' => url("/api/v1/permissions/$value->uuid"),
                 ],
             ];
