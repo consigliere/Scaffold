@@ -491,7 +491,7 @@ X-Page-Paging: 5
         {
             "type": "roles",
             "id": "b04965e6-a9bb-591f-8f8a-1adcb2c8dc39",
-            "attribute": {
+            "attributes": {
                 "name": "admin",
                 "displayName": "Administrator"
             },
@@ -672,7 +672,7 @@ X-Page-Paging: 5
         {
             "type": "roles",
             "id": "4b166dbe-d99d-5091-abdd-95b83330ed3a",
-            "attribute": {
+            "attributes": {
                 "name": "user",
                 "displayName": "Normal User"
             },
@@ -683,7 +683,7 @@ X-Page-Paging: 5
         {
             "type": "roles",
             "id": "b480ec6a-2557-4fdb-b543-017243f8e001",
-            "attribute": {
+            "attributes": {
                 "name": "author",
                 "displayName": "Author User"
             },
@@ -716,7 +716,7 @@ X-Page-Paging: 5
         {
             "type": "roles",
             "id": "832683f9-fee8-4ce4-b275-398fb3a8eda4",
-            "attribute": {
+            "attributes": {
                 "name": "editor",
                 "displayName": "Editor User"
             },
@@ -745,7 +745,7 @@ X-Page-Paging: 5
         {
             "type": "roles",
             "id": "88aeb931-dc0c-45aa-96eb-532751ea4ae9",
-            "attribute": {
+            "attributes": {
                 "name": "tax_specialist",
                 "displayName": "Tax Specialist"
             },
@@ -1783,7 +1783,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "b04965e6-a9bb-591f-8f8a-1adcb2c8dc39",
-            "attribute": {
+            "attributes": {
                 "key": "browse_admin",
                 "entity": null
             },
@@ -1794,7 +1794,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "4b166dbe-d99d-5091-abdd-95b83330ed3a",
-            "attribute": {
+            "attributes": {
                 "key": "browse_bread",
                 "entity": null
             },
@@ -1805,7 +1805,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "98123fde-012f-5ff3-8b50-881449dac91a",
-            "attribute": {
+            "attributes": {
                 "key": "browse_database",
                 "entity": null
             },
@@ -1816,7 +1816,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "6ed955c6-506a-5343-9be4-2c0afae02eef",
-            "attribute": {
+            "attributes": {
                 "key": "browse_media",
                 "entity": null
             },
@@ -1827,7 +1827,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "c8691da2-158a-5ed6-8537-0e6f140801f2",
-            "attribute": {
+            "attributes": {
                 "key": "browse_compass",
                 "entity": null
             },
@@ -1838,7 +1838,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "a6c4fc8f-6950-51de-a9ae-2c519c465071",
-            "attribute": {
+            "attributes": {
                 "key": "browse_menus",
                 "entity": "menus"
             },
@@ -1849,7 +1849,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "a9f96b98-dd44-5216-ab0d-dbfc6b262edf",
-            "attribute": {
+            "attributes": {
                 "key": "read_menus",
                 "entity": "menus"
             },
@@ -1860,7 +1860,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "e99caacd-6c45-5906-bd9f-b79e62f25963",
-            "attribute": {
+            "attributes": {
                 "key": "edit_menus",
                 "entity": "menus"
             },
@@ -1871,7 +1871,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "e4d80b30-151e-51b5-9f4f-18a3b82718e6",
-            "attribute": {
+            "attributes": {
                 "key": "add_menus",
                 "entity": "menus"
             },
@@ -1882,7 +1882,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "0159d6c7-973f-5e7a-a9a0-d195d0ea6fe2",
-            "attribute": {
+            "attributes": {
                 "key": "delete_menus",
                 "entity": "menus"
             },
@@ -1893,7 +1893,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "7fef88f7-411d-5669-b42d-bf5fc7f9b58b",
-            "attribute": {
+            "attributes": {
                 "key": "browse_roles",
                 "entity": "roles"
             },
@@ -1904,7 +1904,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "52524d6e-10dc-5261-aa36-8b2efcbaa5f0",
-            "attribute": {
+            "attributes": {
                 "key": "read_roles",
                 "entity": "roles"
             },
@@ -1915,7 +1915,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "91c274f2-9a0d-5ce6-ac3d-7529f452df21",
-            "attribute": {
+            "attributes": {
                 "key": "edit_roles",
                 "entity": "roles"
             },
@@ -1926,7 +1926,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "0ff1e264-520d-543a-87dd-181a491e667e",
-            "attribute": {
+            "attributes": {
                 "key": "add_roles",
                 "entity": "roles"
             },
@@ -1937,7 +1937,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "23986425-d3a5-5e13-8bab-299745777a8d",
-            "attribute": {
+            "attributes": {
                 "key": "delete_roles",
                 "entity": "roles"
             },
@@ -1948,7 +1948,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "c15b38c9-9a3e-543c-a703-dd742f25b4d5",
-            "attribute": {
+            "attributes": {
                 "key": "browse_users",
                 "entity": "users"
             },
@@ -1959,7 +1959,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "db680066-c83d-5ed7-89a4-1d79466ea62d",
-            "attribute": {
+            "attributes": {
                 "key": "read_users",
                 "entity": "users"
             },
@@ -1970,7 +1970,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "cadb7952-2bba-5609-88d4-8e47ec4e7920",
-            "attribute": {
+            "attributes": {
                 "key": "edit_users",
                 "entity": "users"
             },
@@ -1981,7 +1981,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "35140057-a2a4-5adb-a500-46f8ed8b66a9",
-            "attribute": {
+            "attributes": {
                 "key": "add_users",
                 "entity": "users"
             },
@@ -1992,7 +1992,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "66e549b7-01e2-5d07-98d5-430f74d8d3b2",
-            "attribute": {
+            "attributes": {
                 "key": "delete_users",
                 "entity": "users"
             },
@@ -2003,7 +2003,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "292c8e99-2378-55aa-83d8-350e0ac3f1cc",
-            "attribute": {
+            "attributes": {
                 "key": "browse_settings",
                 "entity": "settings"
             },
@@ -2014,7 +2014,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "0e3b230a-0509-55d8-96a0-9875f387a2be",
-            "attribute": {
+            "attributes": {
                 "key": "read_settings",
                 "entity": "settings"
             },
@@ -2025,7 +2025,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "4c507660-a83b-55c0-9b2b-83eccb07723d",
-            "attribute": {
+            "attributes": {
                 "key": "edit_settings",
                 "entity": "settings"
             },
@@ -2036,7 +2036,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "a1b9b633-da11-58be-b1a9-5cfa2848f186",
-            "attribute": {
+            "attributes": {
                 "key": "add_settings",
                 "entity": "settings"
             },
@@ -2047,7 +2047,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "c2708a8b-120a-56f5-a30d-990048af87cc",
-            "attribute": {
+            "attributes": {
                 "key": "delete_settings",
                 "entity": "settings"
             },
@@ -2058,7 +2058,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "e7263999-68b6-5a23-b530-af25b7efd632",
-            "attribute": {
+            "attributes": {
                 "key": "browse_categories",
                 "entity": "categories"
             },
@@ -2069,7 +2069,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "ce1ae2d5-3454-5952-97ff-36ff935bcfe9",
-            "attribute": {
+            "attributes": {
                 "key": "read_categories",
                 "entity": "categories"
             },
@@ -2080,7 +2080,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "33677b87-bc8d-5ff6-9a25-fe60225e4bf0",
-            "attribute": {
+            "attributes": {
                 "key": "edit_categories",
                 "entity": "categories"
             },
@@ -2091,7 +2091,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "ed2305ae-e8f9-5387-b860-3d80ae6c02f7",
-            "attribute": {
+            "attributes": {
                 "key": "add_categories",
                 "entity": "categories"
             },
@@ -2102,7 +2102,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "604ed872-ae2d-5d91-8e3e-572f3a3aaaa5",
-            "attribute": {
+            "attributes": {
                 "key": "delete_categories",
                 "entity": "categories"
             },
@@ -2113,7 +2113,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "8f8173d9-2f8d-5636-a693-24d9f79ba651",
-            "attribute": {
+            "attributes": {
                 "key": "browse_posts",
                 "entity": "posts"
             },
@@ -2124,7 +2124,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "36eb8d4d-b854-51f1-9fdf-3735964225d5",
-            "attribute": {
+            "attributes": {
                 "key": "read_posts",
                 "entity": "posts"
             },
@@ -2135,7 +2135,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "3493b6ca-f84b-56a9-97cc-c0bd1c46c4c0",
-            "attribute": {
+            "attributes": {
                 "key": "edit_posts",
                 "entity": "posts"
             },
@@ -2146,7 +2146,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "f413ea13-fcd9-5b44-9d22-1fa1f7b063a5",
-            "attribute": {
+            "attributes": {
                 "key": "add_posts",
                 "entity": "posts"
             },
@@ -2157,7 +2157,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "f468d924-d23b-56c2-b90f-3d1cf4b45337",
-            "attribute": {
+            "attributes": {
                 "key": "delete_posts",
                 "entity": "posts"
             },
@@ -2168,7 +2168,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "8828c9d6-ed76-5c09-bf64-ba9e9cd90896",
-            "attribute": {
+            "attributes": {
                 "key": "browse_pages",
                 "entity": "pages"
             },
@@ -2179,7 +2179,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "facb7618-55ca-5c30-9cba-fd567b6c0611",
-            "attribute": {
+            "attributes": {
                 "key": "read_pages",
                 "entity": "pages"
             },
@@ -2190,7 +2190,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "96f3de0e-6412-5434-b406-67ef3352ab85",
-            "attribute": {
+            "attributes": {
                 "key": "edit_pages",
                 "entity": "pages"
             },
@@ -2201,7 +2201,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "9ebacb89-40ab-52b3-93a2-9054611d8f55",
-            "attribute": {
+            "attributes": {
                 "key": "add_pages",
                 "entity": "pages"
             },
@@ -2212,7 +2212,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "681046ff-9129-5ade-b11c-769864e02184",
-            "attribute": {
+            "attributes": {
                 "key": "delete_pages",
                 "entity": "pages"
             },
@@ -2223,7 +2223,7 @@ X-Page-Paging: 5
         {
             "type": "permissions",
             "id": "c13d0b5d-1ca3-57b6-a23f-8586bca44928",
-            "attribute": {
+            "attributes": {
                 "key": "browse_hooks",
                 "entity": null
             },
