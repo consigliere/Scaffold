@@ -1,12 +1,12 @@
 <?php
 /**
- * UserCollection.php
- * Created by @anonymoussc on 05/09/2019 6:44 PM.
+ * Copyright(c) 2019. All rights reserved.
+ * Last modified 8/1/19 3:18 PM
  */
 
 /**
- * Copyright(c) 2019. All rights reserved.
- * Last modified 7/20/19 2:06 AM
+ * UserCollection.php
+ * Created by @anonymoussc on 05/09/2019 6:44 PM.
  */
 
 namespace App\Components\Scaffold\Services\User\Responses;
@@ -162,9 +162,9 @@ final class UserCollection
 
         $include = $rolesMerge->map(static function($value, $key) {
             $newRole = [
-                'type'      => config('scaffold.api.roles.type'),
-                'id'        => $value->uuid,
-                'attribute' => [
+                'type'       => config('scaffold.api.roles.type'),
+                'id'         => $value->uuid,
+                'attributes' => [
                     'name'        => $value->name,
                     'displayName' => $value->display_name,
                 ]
