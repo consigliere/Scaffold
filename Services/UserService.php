@@ -1,12 +1,12 @@
 <?php
 /**
- * UserService.php
- * Created by @anonymoussc on 04/08/2019 11:44 PM.
+ * Copyright(c) 2019. All rights reserved.
+ * Last modified 9/28/19 3:34 PM
  */
 
 /**
- * Copyright(c) 2019. All rights reserved.
- * Last modified 7/9/19 1:34 AM
+ * UserService.php
+ * Created by @anonymoussc on 04/08/2019 11:44 PM.
  */
 
 namespace App\Components\Scaffold\Services;
@@ -30,17 +30,18 @@ use Illuminate\Foundation\Application;
 
 /**
  * Class UserService
+ *
  * @package App\Components\Scaffold\Services
  */
 class UserService extends Service
 {
     /**
-     * @var \App\Components\Scaffold\Repositories\UserRepositoryInterface
+     * @var UserRepositoryInterface
      */
     private $userRepository;
 
     /**
-     * @var \App\Components\Scaffold\Repositories\RoleRepositoryInterface
+     * @var RoleRepositoryInterface
      */
     private $roleRepository;
 
@@ -53,13 +54,37 @@ class UserService extends Service
      * @var mixed
      */
     private $request;
+    /**
+     * @var mixed
+     */
     private $users;
+    /**
+     * @var mixed
+     */
     private $user;
+    /**
+     * @var mixed
+     */
     private $userId;
+    /**
+     * @var mixed
+     */
     private $roleIds;
+    /**
+     * @var mixed
+     */
     private $roleId;
+    /**
+     * @var mixed
+     */
     private $inputRoles;
+    /**
+     * @var mixed
+     */
     private $primaryRoles;
+    /**
+     * @var mixed
+     */
     private $additionalRoles;
 
     /**
