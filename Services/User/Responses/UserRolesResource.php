@@ -1,24 +1,30 @@
 <?php
 /**
+ * Copyright(c) 2019. All rights reserved.
+ * Last modified 10/3/19 2:24 AM
+ */
+
+/**
  * UserRolesResource.php
  * Created by @anonymoussc on 06/28/2019 2:31 PM.
  */
 
-/**
- * Copyright(c) 2019. All rights reserved.
- * Last modified 7/20/19 2:03 AM
- */
-
 namespace App\Components\Scaffold\Services\User\Responses;
 
+use App\Components\Scaffold\Services\User\Shared\ResponseUserGetLinksResource;
+use App\Components\Scaffold\Services\User\Shared\ResponseUserGetMetaResource;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\App;
 
 /**
  * Class UserRolesResource
+ *
  * @package App\Components\Scaffold\Services\User\Responses
  */
 final class UserRolesResource
 {
+    use ResponseUserGetLinksResource, ResponseUserGetMetaResource;
+
     /**
      * @var \Illuminate\Auth\AuthManager|mixed
      */
@@ -30,14 +36,9 @@ final class UserRolesResource
     private $request;
 
     /**
-     * @var \Illuminate\Config\Repository|mixed
+     * @var string
      */
-    private $appname;
-
-    /**
-     * @var false|string
-     */
-    private $year;
+    private $version;
 
     /**
      * UserResource constructor.
@@ -46,8 +47,7 @@ final class UserRolesResource
     {
         $this->auth    = App::get('auth');
         $this->request = App::get('request');
-        $this->year    = date('Y');
-        $this->appname = config('app.name') ?? config('scaffold.name');
+        $this->version = $this->request->segment(2);
     }
 
     /**
@@ -76,60 +76,75 @@ final class UserRolesResource
 
             if (config('scaffold.api.users.hasRelationship')) {
                 if (null !== $value->role) {
-
-                    $user['relationships']['primary-role'] = [
-                        'links' => [
-                            'self'    => url("/api/v1/users/$value->uuid/relationships/primary-role"),
-                            'related' => url("/api/v1/users/$value->uuid/primary-role"),
-                        ],
-                        'data'  => [
-                            'type' => config('scaffold.api.roles.type'),
-                            'id'   => $value->role['uuid'],
-                        ],
-                    ];
+                    $user['relationships']['primary-role'] = $this->relationshipPrimaryRole($value);
                 } else {
                     $user['relationships']['primary-role'] = null;
                 }
 
                 if ($value->roles->isNotEmpty()) {
-                    $additionalRoles = $value->roles->map(static function($v, $k) {
-                        return ['type' => config('scaffold.api.roles.type'), 'id' => $v->uuid];
-                    });
-
-                    $user['relationships']['additional-roles'] = [
-                        'links' => [
-                            'self'    => url("/api/v1/users/$value->uuid/relationships/additional-roles"),
-                            'related' => url("/api/v1/users/$value->uuid/additional-roles"),
-                        ],
-                        'data'  => $additionalRoles,
-                    ];
+                    $user['relationships']['additional-roles'] = $this->relationshipAdditionalRole($value);
                 } else {
                     $user['relationships']['additional-roles'] = [];
                 }
             }
 
             $records['data'] = $user;
+
             if (config('scaffold.api.users.hasRelationship') && config('scaffold.api.users.hasIncluded')) {
-                $records['included'] = $this->loadCompoundDoc($data);
+                $records['included'] = $this->compoundDocument($data);
             }
         } else {
             $records['data'] = [];
         }
 
         if (config('scaffold.api.users.hasLink')) {
-            $records['links'] = [
-                'self' => $this->request->fullUrl(),
-            ];
+            $records['links'] = $this->getLinks();
         }
 
         if (config('scaffold.api.users.hasMeta')) {
-            $records['meta'] = [
-                'copyright' => "copyrightⒸ $this->year  $this->appname",
-                'author'    => config('scaffold.api.users.authors'),
-            ];
+            $records['meta'] = $this->getMetas();
         }
 
         return $records;
+    }
+
+    /**
+     * @param $value
+     *
+     * @return array
+     */
+    private function relationshipPrimaryRole($value): array
+    {
+        return [
+            'links' => [
+                'self'    => url("/api/$this->version/" . config('scaffold.api.users.type') . "/$value->uuid/relationships/primary-role"),
+                'related' => url("/api/$this->version/" . config('scaffold.api.users.type') . "/$value->uuid/primary-role"),
+            ],
+            'data'  => [
+                'type' => config('scaffold.api.roles.type'),
+                'id'   => $value->role['uuid'],
+            ],
+        ];
+    }
+
+    /**
+     * @param $value
+     *
+     * @return array
+     */
+    private function relationshipAdditionalRole($value): array
+    {
+        $additionalRoles = $value->roles->map(static function ($v, $k) {
+            return ['type' => config('scaffold.api.roles.type'), 'id' => $v->uuid];
+        });
+
+        return [
+            'links' => [
+                'self'    => url("/api/$this->version/" . config('scaffold.api.users.type') . "/$value->uuid/relationships/additional-roles"),
+                'related' => url("/api/$this->version/" . config('scaffold.api.users.type') . "/$value->uuid/additional-roles"),
+            ],
+            'data'  => $additionalRoles,
+        ];
     }
 
     /**
@@ -139,16 +154,15 @@ final class UserRolesResource
      *
      * @return \Illuminate\Support\Collection|static
      */
-    private function loadCompoundDoc($data, array $option = [], array $param = [])
+    private function compoundDocument($data, array $option = [], array $param = [])
     {
-        $rolesMerge = new \Illuminate\Database\Eloquent\Collection;
+        $rolesMerge = new Collection;
 
         $newCollection = $data->roles;
         $newCollection->prepend($data->role);
 
         $rolesMerge = $rolesMerge->merge($newCollection);
-
-        $include = $rolesMerge->map(static function($value, $key) {
+        $include    = $rolesMerge->map(function ($value, $key) {
             $newRole = [
                 'type'       => config('scaffold.api.roles.type'),
                 'id'         => $value->uuid,
@@ -159,7 +173,7 @@ final class UserRolesResource
             ];
 
             if ($value->permissions->isNotEmpty()) {
-                $permissions = $value->permissions->map(static function($v, $k) {
+                $permissions = $value->permissions->map(static function ($v, $k) {
                     return ['type' => config('scaffold.api.permissions.type'), 'id' => $v->uuid];
                 });
 
@@ -168,7 +182,7 @@ final class UserRolesResource
                 ];
             }
 
-            $newRole['links']['self'] = url("/api/v1/roles/$value->uuid");
+            $newRole['links']['self'] = url("/api/$this->version/" . config('scaffold.api.roles.type') . "/$value->uuid");
 
             return $newRole;
         });
